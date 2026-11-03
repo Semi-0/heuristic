@@ -1,0 +1,81 @@
+(define runtime
+  (network [environment model]
+    (-> (describe-environment environment) (inputs-of model))
+    (let [e (|> environment 
+                lexical-child
+                (construct-concept-of "i" (avatar-of model))
+                (construct-concept-of "my-thoughts" (thoughts-of model))
+                (construct-concept-of "running-env" e)
+                (construct-concept-of "incremental-compile" incremental-compile))]
+    (incremental-compile (actions-of model) e)
+    (list environment model))))
+
+(define default-environment 
+   (network [identity dependencies]
+     (let [env (|> (empty-env)
+                   (construct-concept-of "i-am" (describe-self (role-of identity) (history-of identity))) 
+                   (construct-concept-of "i-can" (avaliable-strategies-of identity dependences env))
+                   (construct-concept-of "i-should" (responsibility-of identity))
+                   (construct-concept-of "i-want" (purpose-of identity))
+                   (construct-concept-of "interact" interact-with))]
+    (list env))))
+
+(define interact-with
+   (network [object] 
+    (network [subject]
+      (-> (related-output-of object subject) (related-input-of subject object))
+      (-> (related-input-of subject object) (related-output-of object subject)))))
+
+(define conversation 
+   (network [a] 
+     (network [b]
+       (let [conversation-history (combine-history (accumulate-history a) (accumulate-history b))]
+        (-> conversation-history (conversation-from-to b a))
+        (-> conversation-history (conversation-from-to a b)))
+        conversation-history)))
+
+(define env-input
+  (network [role env]
+    (network [content] 
+     ((construct-concept-of (input-from role) content) env))))
+
+;; so a chatbot like conversation would just be
+;; i want the open to have different message to user by directly 
+;; function call
+(define chatbot
+  (network [user]
+    (network [env] 
+      (|> (construct-concept-of (name-of user) user) 
+          (construct-concept-of (conversation-history-with user) (conversation-history-to-model user))))))
+
+;;and model can select
+;;one-time-network
+;;because compound-object slot is bi-directional
+(define message-to-user
+   (network [user env]
+      (append-message (conversation-history-with user) env))) 
+           
+;; so agent can create a network of msg
+;; (|> (web-search-of "netherland-weather") (filter tomorrow) (message-to-user (user) env)) 
+
+
+(define seed-conversation 
+   (network [env] 
+      (|> env
+         (construct-concept-of 'have-conversation conversation))))
+
+
+(define construct-concept-of 
+   (network [idea content]
+     (network [env] 
+       (extend-env env (env:slot idea content)))))
+
+
+(define thoughts-of model:thinking)
+(define actions-of model:commands)
+
+
+
+
+
+ 

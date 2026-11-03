@@ -1,0 +1,157 @@
+;; soul-refined — the agent formulates a network; Lain compiles it.
+;; DESIGN DRAFT, not runnable yet. Adapter names below are proposed contracts.
+;; Reuses the existing CPS compiler/session infrastructure, not a new evaluator.
+;; soul.lain remains unchanged. No model/weather calls have been executed.
+
+;; The experiment is a persistent relationship, not a sequence of turns:
+;; the environment's connected description feeds the model; the model's source
+;; extends that same environment through the existing CPS compiler. Relevant
+;; changes propagate back through the description without a host refresh loop.
+;; Read alongside propagators/doc/how-to-think-in-lain.md, especially 4, 9, 19–22.
+
+;; Compositional operators such as |> require their existing library.
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+
+;; 1. Preserve your environment-extension vocabulary.
+;; These surface names still need mapping to existing environment primitives.
+;; Definitions and lexical captures should use compiler-native bindings.
+;; String concept names follow soul.lain; name-to-binding mapping is still an
+;; adapter contract, not an assumption that host quote syntax exists in Lain.
+(define construct-concept-of
+  (network [idea content]
+    (network [env]
+      (extend-env env (env:slot idea content)))))
+
+;; 2. Generic runtime: two concurrently maintained relationships.
+;; The request is information introduced into the environment by the caller,
+;; so it participates in the same live description as capabilities and results.
+;; These lines declare topology; their textual order does not schedule work.
+(define runtime
+  (network [environment model]
+    (let [e (lexical-child environment)]
+      (-> (describe-environment e) (inputs-of model))
+      (incremental-compile (actions-of model) e)
+      (list e model))))
+
+;; describe-environment is a connected transformation, not a one-time dump.
+;; It maintains the model-visible view of relevant bindings, definitions,
+;; observations and diagnostics, preserving their dependencies and support.
+;; Late information and relevant environment extensions update that view.
+;; An unrelated unknown field must not block information already available.
+;; New bindings must be discoverable through a live environment interface;
+;; retaining a frozen map of binding names would not satisfy this contract.
+;; Relevance is part of the view's dependencies, not an ad hoc refresh decision.
+;; Do not flatten live compound accessors or open lists into frozen host values
+;; inside this relationship, or substitute a one-time topology trace for it.
+
+;; inputs-of exposes the model's connected input interface. Related updates
+;; arrive automatically through the relationship above. The adapter determines
+;; when that evolving information supports an inference and what happens when
+;; inputs change during inference. Sampling, accumulation or cancellation, if
+;; needed, must have explicit temporal semantics at that boundary.
+;; A provider may need serialized input for one inference; that snapshot belongs
+;; at its effect boundary and must not sever the upstream live relationship.
+
+;; actions-of exposes generated Lain expressions as supported publications.
+;; incremental-compile maintains their connection to the evolving environment
+;; using existing CPS/session source extension. Each accepted source publication
+;; has identity/support; repropagating it must not install duplicate topology.
+;; Compiler diagnostics and results become observable environment information,
+;; so the same description relationship carries them back to the model.
+;; These are proposed surface contracts, not already-verified installed operators.
+;; No separate application dispatcher or explicit model/tool feedback loop.
+
+;; This cycle needs understood temporal/support semantics, not an assumption
+;; that arbitrary model feedback converges. Use existing versioned publication
+;; and TMS mechanisms for replacement/retraction; incompatible plain writes to
+;; one cell are contradictions, not successive messages or source revisions.
+;; Completion and resource bounds belong to the model/effect relationship.
+
+;; 3. A minimal seed environment; tools and providers are supplied extensions.
+;; compile-source is the host bridge backed by the existing CPS/session APIs.
+;; publish-message is an effectful capability, not an implicit host side channel.
+(define default-environment
+  (network [compile-source publish-message]
+    (|> (empty-env)
+        (construct-concept-of "incremental-compile" compile-source)
+        (construct-concept-of "message-to-user" publish-message))))
+
+;; 4. Weather-specific capabilities extend that same environment.
+;; weather-at accepts a place, absolute date and timezone, and returns an
+;; observation with source, observed-at and validity support.
+;; umbrella-advice is a supplied pure function over a weather observation.
+;; The generic runtime does not know these names or their workflow.
+(define weather-environment
+  (network [base-env weather-at umbrella-advice]
+    (|> base-env
+        lexical-child
+        (construct-concept-of "weather-at" weather-at)
+        (construct-concept-of "umbrella-advice" umbrella-advice))))
+
+;; 5. EXAMPLE OF AGENT-GENERATED SOURCE, not a hardcoded harness procedure.
+;; Given "Will I need an umbrella tomorrow in Amsterdam?", the model should
+;; formulate a parameterized composition like this in its invocation env:
+(define umbrella-for
+  (network [place date timezone]
+    (let [forecast (weather-at place date timezone)]
+      (umbrella-advice forecast))))
+
+;; Then emit an application connected to the response capability:
+;; (-> (umbrella-for "Amsterdam" requested-date requested-timezone)
+;;     (message-to-user user))
+;; requested-date/timezone/user are explicit request-context bindings.
+;; Resolving "tomorrow" depends on the request timestamp and timezone.
+;; A second request can compile a new application of umbrella-for for another
+;; place, without generating its body again. It may still need a fresh forecast.
+;; If observations reveal missing information, the model extends the network.
+;; Reuse the definition; do not mistake reuse for caching all external results.
+
+;; 6. Concrete existing implementation anchors (Clojure namespaces).
+;; propagators.compiler-2.api/compile-source [source environment options]
+;;   returns :network, :environment, :installed-propagator-ids,
+;;   :application-metadata, :result-cell and :diagnostics.
+;; propagators.compiler-2.cps-core
+;;   assembles CPS handlers for definitions, networks, applications and scope.
+;; propagators.compiler-2.session
+;;   provides immutable sessions, session-extension, extend-session and advance.
+;; propagators.compiler-2.session.host/extend-source!
+;;   provides source extension at the existing host boundary.
+;; Use these existing layers; do not call both compilation paths for one revision.
+;; The immutable extension API rejects conflicting monotone declarations;
+;; replacement/removal requires explicit version/lifecycle handling, not a claim
+;; that an arbitrary existing binding can be overwritten in place.
+
+;; 7. Dependencies and effects belong to the existing computational machinery.
+;; Reuse compiler binding/application structure and TMS support propagation.
+;; Verify lexical captures, supplied arguments and external observation support
+;; survive composition; do not assume metadata alone proves complete provenance.
+;; Session Dependency capabilities and TMS justifications are related integration
+;; points, not interchangeable concepts. Adapters must attach appropriate support.
+;; Model evaluation, weather IO and message publication use existing effect
+;; boundaries/receipts. No duplicate scheduler or tool-dispatch interpreter.
+;; Compiling/admitting a source extension can lead to execution: do not treat
+;; source installation as a harmless preview or promise rollback of sent effects.
+;; The host source API prepares an atomic extension; retain that admission path.
+;; Do not substitute the legacy per-form loader, which can retain a prefix
+;; on failure. Atomic admission still cannot undo effects dispatched afterward.
+
+;; 8. Small implementation plan and observable success criteria.
+;; A. Establish the live environment/model/compiler relationships once.
+;;    Publish a request into the environment; verify it reaches model inputs.
+;;    Publish a related observation or add a visible capability afterward;
+;;    verify its description propagates without rerunning runtime or refreshing.
+;;    Leave an unrelated field unresolved; available information must still flow.
+;;    Withdraw supported information; verify the model-visible view follows it.
+;; B. Install weather and response capabilities through session extensions.
+;; C. Ask the model to GENERATE umbrella-for; inspect the resulting network,
+;;    its applications, captured bindings, support and result in existing views.
+;; D. Ask for another place; compile an application referencing that definition.
+;;    Verify the definition is reused and the weather request has new inputs.
+;; E. Change a supported input; verify dependent pure results update and external
+;;    effects follow explicit request/refresh semantics rather than accidental replay.
+;; F. Save source revisions plus identity/provenance/receipts; reopen for inspection
+;;    without IO. Durable reconstruction is work to verify, not a property inferred
+;;    merely from using immutable in-memory compiler sessions.
+;;
+;; Core MVP question: can the model formulate a useful reusable computational
+;; network for the request? Provider choice and semantic memory search are secondary.
