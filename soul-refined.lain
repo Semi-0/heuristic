@@ -1,9 +1,13 @@
 ;; soul-refined — top-down experiment and reviewable specification.
-;; Compile/inspect this file in isolation. No runtime invocation or inference.
+;; Native facilities are supplied through an open-session extension.
+;; Loading this file declares topology; invoke experiment separately to start it.
 ;; Subsequent implementation and acceptance must use this source, not a replica.
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/primitive-bindings 1)
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-;; Future native adapter import: UNRESOLVED. No module path exists yet.
+;; Native module: src/lain_harness/runtime.clj. Prepare with an explicit owner.
+;; Model and user extensions supply their instances independently.
 ;; Supply these endpoints through the existing open-session extension API:
 ;; session/session-extension, host/open!, host/extend! and host/extend-source!.
 ;; session.operators/prim-op builds primitive operators; async-op takes an
@@ -12,38 +16,41 @@
 ;; Keep primitive facilities, model session and user input as independent
 ;; extensions/dependencies with distinct identities, ownership and lifecycles.
 ;; Connecting them here must not make user publication invoke inference itself.
-;; Missing callable cells below are not successful stubs or native imports.
+;; No weather provider or message delivery is installed implicitly.
 
 ;; empty-env [] -> environment; lexical-child [parent] -> lexical environment.
 ;; extend-env [environment contribution] -> extended environment; env:slot
 ;; [name value] -> binding contribution. Preserve cell identity, lexical capture,
 ;; support and extension provenance. These are compiler environments, not maps.
-(define empty-env)
-(define lexical-child)
-(define extend-env)
-(define env:slot)
+;; empty-env is supplied by the native facilities extension.
+;; lexical-child is supplied by the native facilities extension.
+;; extend-env is supplied by the native facilities extension.
+;; env:slot is supplied by the native facilities extension.
 
 ;; describe-environment [e] -> connected relevant view of bindings, additions,
 ;; results and diagnostics. Late additions and retractions update the view.
 ;; Unknown unrelated fields cannot block available information. Preserve open
 ;; compound accessors; no frozen list of names or fixed host description schema.
-(define describe-environment)
+;; describe-environment is supplied by the native facilities extension.
 
 ;; incremental-compile [supported-source e] -> admission/result interface.
 ;; Compile INTO the supplied e, preserving its lexical parent and captures.
 ;; Use existing atomic CPS/session admission; identity/support prevent duplicate
 ;; installation. Publish results, diagnostics and provenance into e. Replacement
 ;; needs explicit version/retraction semantics, not incompatible plain writes.
-;; host/extend-source! alone must not be assumed to target an arbitrary child:
-;; bridging the supplied e to compiler/session admission is an open obligation.
-(define incremental-compile)
+;; The scoped open-session extension carries target and support-cell explicitly.
+;; Each complete streamed form is an atomic monotone admission. A failed form
+;; stops that response; earlier admissions remain. Extension cells combine model,
+;; round and consumed-input premises using TTMS. Retraction withdraws availability,
+;; not topology; finishing a round does not retract its premise.
+;; incremental-compile is supplied by the native facilities extension.
 
 ;; inputs-of [model-session] -> connected input port; actions-of [model-session]
 ;; -> supported generated-source publications. Inference sampling, cancellation,
 ;; obsolete replies, completion and budgets belong to the async effect boundary.
 ;; A provider snapshot must not sever the upstream connected description.
-(define inputs-of)
-(define actions-of)
+;; inputs-of is supplied by the native facilities extension.
+;; actions-of is supplied by the native facilities extension.
 
 ;; Independent supplied instances, not constructors coupled to one another.
 ;; A model session is supplied by its own extension; user input is a separately
@@ -81,7 +88,7 @@
 (define harness-context
   (struct :source "soul-refined.lain"
           :purpose "Generate useful reusable Lain networks in a lexical child"
-          :review-state "specification; native obligations unresolved"
+          :review-state "implemented; deterministic verification; optional capabilities unresolved"
           :implementation-boundary "Compiler-2 open-session API: prim-op and async-op"))
 (define default-environment
   (network [compile-source publish-message guides context]
@@ -117,8 +124,8 @@
           :timezone "Europe/Amsterdam"
           :recipient "review-user"))
 
-;; Inspectable known structure alongside unresolved endpoint cells. An obligation
-;; names required behavior; it is not an implementation or passing test result.
+;; Inspectable implementation contracts; verification is recorded separately.
+;; Optional effect endpoints remain pending until explicitly supplied.
 (define implementation-obligations
   (list
     (struct :name "lexical-environment" :endpoint lexical-child
@@ -134,7 +141,7 @@
     (struct :name "capability-effects" :endpoint weather-at
             :requires "Independent forecast and message effects; supported observations and receipts")
     (struct :name "native-extension-import"
-            :requires "Supply missing bindings through open-session extensions using prim-op and async-op; module unresolved")))
+            :requires "Supply missing bindings through open-session extensions using prim-op and async-op; module supplied by open-session preparation")))
 (define acceptance-scenarios
   (list
     "Live updates: publish input, add relevant binding, retract support; existing model input follows without refresh; unrelated unknown does not block"
@@ -155,7 +162,7 @@
           :umbrella-advice umbrella-advice))
 (define specification
   (struct :entry-point "soul-refined.lain"
-          :status "awaiting review; implementations unresolved"
+          :status "implemented; offline verification; no live model run"
           :interfaces experiment-interfaces
           :obligations implementation-obligations
           :acceptance acceptance-scenarios

@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04",
+  "runtime_base": "5b5e4809c67902fd890d1d5ebc4f02ae19a55a2a",
+  "tests": 37,
+  "assertions": 238,
+  "failures": 0,
+  "errors": 0,
+  "source_check": "passed",
+  "transport": "deterministic fixtures; no live inference",
+  "uuid_initialization": "process-local offline adjustment; no deployed files changed",
+  "sha256": {
+    "soul-refined.lain": "45534d3f7c82a150d250155889844eaf39fbc9063c2cb95907fe0da6ac9a8ed3",
+    "runtime/streaming-extension.patch": "7cf5f890e285bb29951e03e24e1d2cdb259f89ab8ea05d9405cc72df352e6fb5",
+    "src/lain_harness/environment.clj": "a661502bb0367cfad0cdfdcfbd0fa93486febaa9a7fa82ab61fd21ea6e633cc1",
+    "src/lain_harness/premises.clj": "3a89d26339975ee105c6226ff7803a805c3b6d548f178b5c5193e4755a06650e",
+    "src/lain_harness/queue.clj": "afb6affaf41fcc48b94ebb7a5c9193095adb4a2682c643159e65f48caf7e2d6c",
+    "src/lain_harness/runtime.clj": "633c7d234024d8ddafbee4905bb5f78e976e664b02823d2da531f1ce05873c48",
+    "src/lain_harness/stream.clj": "7edd679bb5e049d8310ed248a3cfa989e54cc1d6be48d2151088786249cbf14a",
+    "src/lain_harness/transport.clj": "a2692671088a8d44a56c19f2e3f24ca8f8742a5802515170737bc3c6bbbf1cd5"
+  }
+}
