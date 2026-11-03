@@ -1,0 +1,4 @@
+(h4:publish "h4:request" 1 "Will I need an umbrella in Amsterdam on 2026-11-04? Generate umbrella-for-v4 and connect its application to h4:answer.")
+(h4:publish "h4:capabilities" 1 "h4:weather-rain-probability(place,date) -> probability NUMBER 0..1. LIVE Open-Meteo forecast, not fixture data. Existing output cells: h4:answer, h4:answer-2, h4:answer-live. Available syntax: define/network/let/if/-> and arithmetic comparisons. umbrella-for-v4 has not yet been defined. Reuse the network after creating it.")
+(h4:publish "h4:observation" 1 "initial")
+(h4:publish "h4:weather-mode" 1 "live")

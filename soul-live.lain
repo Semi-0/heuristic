@@ -1,0 +1,15 @@
+;; Live experiment result — 2026-11-03
+;; Existing session: 22364858-9b15-4a53-ad39-8907f115ebe9
+;; Run identity preserved: 13fa393f-da77-44e7-bbbf-2f3ef89bd24e
+;; This source is ALREADY installed. Open the running session; do not Run again.
+;; Editor command palette -> Reopen running session -> select the ID above.
+;; Inspect h4:answer or h4:answer-2 in graph mode; expand umbrella-for-v4.
+;; Inspect h4:model-input and h4:execution for the environment/model/compiler side.
+;; Both live weather requests completed. The bounded model run is now idle.
+;; Full scaffold: experiments/live/scaffold-v4.lain
+;; Native adapter: src/lain_harness/live_v4.clj
+;; Results and limitations: experiments/live/REPORT.md
+
+(define umbrella-for-v4 (network [place date] (let [prob (h4:weather-rain-probability place date)] (if (> prob 0.5) "Yes, bring an umbrella." "No umbrella needed."))))
+(-> (umbrella-for-v4 "Amsterdam" "2026-11-04") h4:answer)
+(-> (umbrella-for-v4 "Rotterdam" "2026-11-04") h4:answer-2)

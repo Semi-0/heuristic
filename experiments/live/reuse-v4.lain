@@ -1,0 +1,2 @@
+(h4:publish "h4:request" 2 "NEW request: reuse umbrella-for-v4(place,date) for Rotterdam on 2026-11-04 and connect its result to h4:answer-2. Exactly two arguments; do not redefine the function.")
+(h4:publish "h4:observation" 100 "The first Amsterdam request completed. LIVE definition: umbrella-for-v4 takes exactly [place date] and calls h4:weather-rain-probability. Its Rotterdam application to h4:answer-2 has NOT been compiled yet. Generate that single connection, no definition. Design sketches are not the live signature.")
