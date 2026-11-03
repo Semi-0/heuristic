@@ -1,6 +1,0 @@
-Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
-
-Testing lain-harness.live-v4-test
-
-Ran 3 tests containing 18 assertions.
-0 failures, 0 errors.
