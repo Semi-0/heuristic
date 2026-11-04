@@ -22,7 +22,7 @@
 
 (defn messages [services]
   (h/list-values (h/read-cell (host/current-session (:owner services))
-                              (h/model-cell "model" :delivered))))
+                              (h/model-cell (host/current-session (:owner services)) "model" :delivered))))
 (defn settled? [services]
   (let [state (h/model-state services "model")]
     (and (= :idle (:active state)) (zero? (get-in state [:inputs :count])))))

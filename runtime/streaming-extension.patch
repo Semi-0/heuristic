@@ -120,7 +120,7 @@ index a6a824f..9b4dc52 100644
             "run" (let [result (editor/run! editors command)]
                     (development-runtime/close-pane! developments id)
 diff --git a/propagators/compiler_2/session.clj b/propagators/compiler_2/session.clj
-index 18c54c9..aeab533 100644
+index 18c54c9..b9bc190 100644
 --- a/propagators/compiler_2/session.clj
 +++ b/propagators/compiler_2/session.clj
 @@ -1,6 +1,9 @@
@@ -433,7 +433,7 @@ index 18c54c9..aeab533 100644
                       effects/record-boundary-effects)
          current (cond-> prepared
                    (get-in (session-declarations session) [:options :record-inputs?])
-@@ -299,6 +449,125 @@
+@@ -299,6 +449,135 @@
                                   (session-declarations session) current)
            [] (effects/outbox-effects (:program/net current)))))
  
@@ -447,7 +447,7 @@ index 18c54c9..aeab533 100644
 +  {:runtime/input :admission :declaration declaration
 +   :receipt-id receipt-id :response-id response-id})
 +
-+(defn- advance-admission [session {:keys [declaration receipt-id response-id freeze-receipt?]}]
++(defn- advance-admission [session {:keys [declaration receipt-id response-id]}]
 +  (let [id (:id declaration)
 +        prior (get-in (compiler-state session) [::admissions id])
 +        stopped? (contains? (::stopped-responses (compiler-state session)) response-id)
@@ -485,10 +485,20 @@ index 18c54c9..aeab533 100644
 +                                         (collection/content
 +                                          (publication/next-source-datum receipt-id
 +                                                                         (net/network-cell-strongest (network candidate) receipt-id)
-+                                                                         (if freeze-receipt? (connected/frozen receipt) receipt) :active)))]))))
++                                                                         receipt :active)))]))))
 +
 +(defn publication-input [cell-id base]
 +  {:runtime/input :publication :cell-id cell-id :base base})
++
++(defn interface-cell
++  "Resolve a declared interface against compiled Lain topology. No cells are created."
++  [session interface]
++  (let [{:keys [cell binding field reference?]} (get-in (session-declarations session) [:interfaces interface])
++        v (when binding (connected/freeze (network session) (binding-value session binding)))
++        resolved (cond cell cell field (get v field) reference? v binding (binding-cell session binding))]
++    (when-not (and (ids/node-id? resolved) (contains? (net/net-env (network session)) resolved))
++      (throw (ex-info "Session interface is unresolved" {:interface interface})))
++    resolved))
 +
 +(defn- publish-value [session cell-id base]
 +  (advance-cell-session session
@@ -506,13 +516,13 @@ index 18c54c9..aeab533 100644
 +            (let [[target initial] values
 +                  current (connected/freeze (network session) (net/network-cell-strongest (network session) target))
 +                  status (cond (= current connected/pending) :accepted (= current initial) :replayed :else :already-initialized)
-+                  candidate (if (= status :accepted) (:session (publish-value session target (connected/frozen initial))) session)]
-+              (publish-value candidate receipt (connected/frozen {:status status})))
++                  candidate (if (= status :accepted) (:session (publish-value session target initial)) session)]
++              (publish-value candidate receipt {:status status}))
 +            :admission
 +            (if (= :idle (first values))
-+              (publish-value session receipt (connected/frozen {:id :idle :status :idle}))
++              (publish-value session receipt {:id :idle :status :idle})
 +              (advance-admission session {:declaration (first values)
-+                                          :response-id (second values) :receipt-id receipt :freeze-receipt? true}))
++                                          :response-id (second values) :receipt-id receipt}))
 +            :feedback
 +            (let [[target expected next-state] values
 +                  current (connected/freeze (network session)
@@ -525,8 +535,8 @@ index 18c54c9..aeab533 100644
 +                           (not= (inc expected) (:version next-state)) :invalid-version
 +                           :else :accepted)
 +                  candidate (if (= status :accepted)
-+                              (:session (publish-value session target (connected/frozen next-state))) session)]
-+              (publish-value candidate receipt (connected/frozen {:status status :version (:version next-state)}))))
++                              (:session (publish-value session target next-state)) session)]
++              (publish-value candidate receipt {:status status :version (:version next-state)})))
 +          candidate (:session result)]
 +      (turn (ImmutableLainSession. (session-identity candidate)
 +                                   (session-declarations candidate)
@@ -559,7 +569,7 @@ index 18c54c9..aeab533 100644
  (declare create-session)
  
  (extend-type ImmutableLainSession
-@@ -321,11 +590,11 @@
+@@ -321,11 +600,11 @@
        (throw (ex-info "Rerun requires a fresh run identity" {})))
      (let [identity (assoc (session-identity session) :run-id fresh-run-id)
            fresh (create-session
@@ -576,7 +586,7 @@ index 18c54c9..aeab533 100644
        (extend-session fresh (session-extension (assoc parts :id ::rerun))))))
  
  (defn create-session
-@@ -347,9 +616,9 @@
+@@ -347,9 +626,9 @@
                               current extension {:outbox-id (runtime-ids/boundary-outbox-id)}))
                            initial bootstrap)]
       (ImmutableLainSession. (select-keys options [:id :run-id])
@@ -589,6 +599,96 @@ index 18c54c9..aeab533 100644
  
  (defn with-compiler-state
    "Host inspection/boundary adapter. Domain state remains an immutable value."
+diff --git a/propagators/compiler_2/session/connected.clj b/propagators/compiler_2/session/connected.clj
+new file mode 100644
+index 0000000..fa70381
+--- /dev/null
++++ b/propagators/compiler_2/session/connected.clj
+@@ -0,0 +1,84 @@
++(ns propagators.compiler-2.session.connected
++  "Connected immutable declarations. No resource, worker, or host dependency."
++  (:require [propagators.cells.value :as value]
++            [propagators.compiler-2.compiler.basis :as basis]
++            [propagators.datastructures.support-collection :as collection]
++            [propagators.datastructures.membership-collection :as membership]
++            [propagators.compiler-2.model.operator-value :as operator]
++            [propagators.datastructures.compound-object :as object]
++            [propagators.experimental.visualization.data :as data]
++            [propagators.gur :as gur]
++            [propagators.network :as net]))
++
++(def payload data/payload)
++
++;; Immutable data lists are TTMS bases, not compiler-owned open list topology.
++;; Keep their empty scalar distinct from the compiler's list interface marker.
++(def empty-list :lain.data/empty)
++
++(defn- primitive-content [content]
++  (let [observations (or (:support/observations content) (:membership/observations content))
++        observation (when (= 1 (count observations)) (first observations))
++        base (:base observation)
++        constant? (and observation (empty? (:support observation))
++                       (empty? (:membership observation))
++                       (empty? (:support/states content))
++                       (empty? (:membership/states content)))]
++    (cond
++      ;; Plain scalar constants need no evidence container. Custom structures
++      ;; always stay in TTMS, even when they have no premises.
++      (and constant? (not (coll? base))) base
++      (or (collection/content? content) (membership/content? content)) content
++      (coll? content) (collection/content {:base content :support #{}})
++      :else content)))
++
++(defn primitive
++  "One pure primitive propagator. Custom results occupy the TTMS base layer;
++  scalar constants remain primitive values. Use the standard support algebra."
++  [name f]
++  (let [activate (operator/operator-activate (basis/primitive-operator f))]
++    (operator/propagator-operator
++     {:name name
++      :activate
++      (fn [network inputs [output] context]
++        (mapv #(update % :value primitive-content)
++              (activate network context inputs output)))})))
++
++(def declarations-key ::declarations)
++(def pending ::pending)
++
++(defn freeze
++  "Resolve a finite connected data value. Unknown fields keep a declaration pending.
++  Callables and lexical references are opaque. This is serialization, not selection."
++  ([network v] (freeze network v #{}))
++  ([network v seen]
++   (let [v (payload (data/payload v))]
++     (cond
++       (value/unusable? v) pending
++       (object/accessor-network? v)
++       (if (contains? seen v) pending
++           (let [fields (into {} (map (fn [k] [k (freeze network (data/slot-value network v k) (conj seen v))]))
++                              (object/accessor-slot-keys v))]
++             (if (some #{pending} (vals fields)) pending fields)))
++       :else v))))
++
++(defn thaw [v]
++  (if (and (map? v) (not (record? v)))
++    (object/as-accessor-network (update-vals v thaw)) v))
++
++(defn connector [kind]
++  (operator/propagator-operator
++   {:name kind
++    :activate
++    (fn [_ arguments [output] _context]
++      {:effects [(gur/bind-name [declarations-key] output
++                                {:kind kind :arguments arguments :receipt output})]})}))
++
++(defn declarations [network]
++  (->> (get (net/network-dict-entry network [:network :name-bindings]) [declarations-key])
++       vals
++       (sort-by (comp str :receipt))
++       (keep (fn [{:keys [arguments] :as declaration}]
++               (let [values (mapv #(freeze network (net/network-cell-strongest network %)) arguments)]
++                 (when-not (some #{pending} values)
++                   (assoc declaration :values values)))))))
 diff --git a/propagators/compiler_2/session/files.clj b/propagators/compiler_2/session/files.clj
 index b1e4633..4f48df1 100644
 --- a/propagators/compiler_2/session/files.clj
@@ -636,7 +736,7 @@ index b1e4633..4f48df1 100644
 +      :primitives (:primitives prepared) :dependencies dependencies
        :files (:files prepared) :imports (:imports prepared)})))
 diff --git a/propagators/compiler_2/session/host.clj b/propagators/compiler_2/session/host.clj
-index 84c8847..8de6ef5 100644
+index 84c8847..f78290b 100644
 --- a/propagators/compiler_2/session/host.clj
 +++ b/propagators/compiler_2/session/host.clj
 @@ -4,13 +4,15 @@
@@ -883,7 +983,7 @@ index 84c8847..8de6ef5 100644
      (.shutdownNow ^ExecutorService (.-deliveries ^SessionBoundary host)))
    ((requiring-resolve 'propagators.compiler-2.runtime/stop-clocks!) (runtime-session host))
    (doseq [trace (vals (:traces @(runtime-session host)))] ((:stop trace)))
-@@ -582,3 +646,69 @@
+@@ -582,3 +646,72 @@
        (catch Throwable error
          (swap! (runtime-session host) assoc ::phase :retirement-failed ::blocked? true)
          (throw error)))))
@@ -922,9 +1022,9 @@ index 84c8847..8de6ef5 100644
 +  "Read explicitly exported cells. This does not start or attach resources."
 +  [host]
 +  (let [s (current-session host)]
-+    (into {} (map (fn [[id {:keys [cell kind]}]]
++    (into {} (map (fn [[id {:keys [kind]}]]
 +                    [id {:kind kind :value (connected/freeze (session/network s)
-+                                                             (net/network-cell-strongest (session/network s) cell))}]))
++                                                             (net/network-cell-strongest (session/network s) (session/interface-cell s id)))}]))
 +          (:interfaces (session/session-declarations s)))))
 +
 +(defn publish-user-message!
@@ -937,22 +1037,25 @@ index 84c8847..8de6ef5 100644
 +                  (fn [s]
 +                    (when-not (= (str run-id) (str (:run-id (session/session-identity s))))
 +                      (throw (ex-info "Stale session run" {:stale true})))
-+                    (let [{:keys [kind cell]} (get-in (session/session-declarations s) [:interfaces interface])]
++                    (let [{:keys [kind]} (get-in (session/session-declarations s) [:interfaces interface])
++                          cell (session/interface-cell s interface)]
 +                      (when-not (= :user-message kind)
 +                        (throw (ex-info "Session does not expose this user ingress" {:interface interface})))
 +                      (let [current (connected/freeze (session/network s) (net/network-cell-strongest (session/network s) cell))
 +                            events (loop [xs current result []]
-+                                     (if (= xs basis/list-empty-marker) result
-+                                         (recur (:cdr xs) (conj result (:car xs)))))
++                                     (cond
++                                       (= xs connected/empty-list) result
++                                       (and (map? xs) (contains? xs :car) (contains? xs :cdr))
++                                       (recur (:cdr xs) (conj result (:car xs)))
++                                       :else (throw (ex-info "User ingress is not initialized" {:interface interface}))))
 +                            event {:id id :kind :user :payload text}
 +                            prior (first (filter #(= id (:id %)) events))]
 +                        (cond
 +                          (= prior event) []
 +                          prior (throw (ex-info "Conflicting message identity" {:id id}))
 +                          :else [(session/publication-input cell
-+                                                            (connected/frozen
-+                                                             (reduce (fn [tail event] {:car event :cdr tail})
-+                                                                     basis/list-empty-marker (reverse (conj events event)))))]))))))
++                                                            (reduce (fn [tail event] {:car event :cdr tail})
++                                                                    connected/empty-list (reverse (conj events event))))]))))))
 diff --git a/propagators/compiler_2/session/supported.clj b/propagators/compiler_2/session/supported.clj
 new file mode 100644
 index 0000000..19a4a64
@@ -1154,64 +1257,3 @@ index 0000000..51f0260
 +    (is (thrown? Exception (s/binding-cell result 'late-add)))
 +    (is (= 10 (data/payload (scoped result target 'x))))
 +    (is (= 1 (data/payload (s/binding-value result 'x))))))
-diff --git a/propagators/compiler_2/session/connected.clj b/propagators/compiler_2/session/connected.clj
-new file mode 100644
-index 0000000..5f2faf2
---- /dev/null
-+++ b/propagators/compiler_2/session/connected.clj
-@@ -0,0 +1,55 @@
-+(ns propagators.compiler-2.session.connected
-+  "Connected immutable declarations. No resource, worker, or host dependency."
-+  (:require [propagators.cells.value :as value]
-+            [propagators.compiler-2.model.operator-value :as operator]
-+            [propagators.datastructures.compound-object :as object]
-+            [propagators.experimental.visualization.data :as data]
-+            [propagators.gur :as gur]
-+            [propagators.network :as net]))
-+
-+(deftype Frozen [content]
-+  Object
-+  (equals [_ other] (and (instance? Frozen other) (= content (.-content ^Frozen other))))
-+  (hashCode [_] (hash content))
-+  (toString [_] (pr-str content)))
-+(defn frozen [v] (if (instance? Frozen v) v (Frozen. v)))
-+(defn payload [v] (if (instance? Frozen v) (.-content ^Frozen v) v))
-+
-+(def declarations-key ::declarations)
-+(def pending ::pending)
-+
-+(defn freeze
-+  "Resolve a finite connected data value. Unknown fields keep a declaration pending.
-+  Callables and lexical references are opaque. This is serialization, not selection."
-+  ([network v] (freeze network v #{}))
-+  ([network v seen]
-+   (let [v (payload (data/payload v))]
-+     (cond
-+       (value/unusable? v) pending
-+       (object/accessor-network? v)
-+       (if (contains? seen v) pending
-+           (let [fields (into {} (map (fn [k] [k (freeze network (data/slot-value network v k) (conj seen v))]))
-+                              (object/accessor-slot-keys v))]
-+             (if (some #{pending} (vals fields)) pending fields)))
-+       :else v))))
-+
-+(defn thaw [v]
-+  (if (and (map? v) (not (record? v)))
-+    (object/as-accessor-network (update-vals v thaw)) v))
-+
-+(defn connector [kind]
-+  (operator/operator-closure
-+   {:name kind
-+    :compiler-activate
-+    (fn [_ _ _ arguments output]
-+      {:effects [(gur/bind-name [declarations-key] output
-+                                {:kind kind :arguments arguments :receipt output})]})}))
-+
-+(defn declarations [network]
-+  (->> (get (net/network-dict-entry network [:network :name-bindings]) [declarations-key])
-+       vals
-+       (sort-by (comp str :receipt))
-+       (keep (fn [{:keys [arguments] :as declaration}]
-+               (let [values (mapv #(freeze network (net/network-cell-strongest network %)) arguments)]
-+                 (when-not (some #{pending} values)
-+                   (assoc declaration :values values)))))))

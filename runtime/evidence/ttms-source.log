@@ -1,0 +1,3 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+PASS: actual source and native import compiled; interfaces inspectable; optional instances remain pending; no inference or effects launched.

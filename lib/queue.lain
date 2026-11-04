@@ -13,13 +13,13 @@
 (define queue:feedback
   (network [current expected-version next-state]
            (if (= (data:get :version current) expected-version)
-             (if (= current next-state)
+             (if (data:equal? current next-state)
                (data:record :status :unchanged :state current)
                (if (= (data:get :version next-state) (+ expected-version 1))
                  (data:record :status :accepted :state next-state)
                  (data:record :status :invalid-version :state current)))
              (if (= (data:get :version current) (+ expected-version 1))
-               (if (= current next-state)
+               (if (data:equal? current next-state)
                  (data:record :status :replayed :state current)
                  (data:record :status :stale-version :state current))
                (data:record :status :stale-version :state current)))))

@@ -2,7 +2,7 @@
 
 This is an unfinished Lain-first migration. The immutable foundations pass their focused tests, but the canonical coded-conversation test does not yet deliver its first reply. Do not treat this checkout as acceptance of the orchestration plan. Current results and remaining work are recorded in [runtime/verification.json](runtime/verification.json) and [runtime/verification.log](runtime/verification.log).
 
-The companion runtime snapshot is [datalog-research at `f123eb7`](https://github.com/Semi-0/datalog-research/commit/f123eb77a112acc08090cc720856d7167c03191a). Both repositories use the branch `wip/lain-open-sessions-20261104` for this incomplete snapshot.
+The companion runtime snapshot is [datalog-research at `1ca0b5c`](https://github.com/Semi-0/datalog-research/commit/1ca0b5c9b64ea18383741ff1caafc17259f91783). Both repositories use the branch `wip/lain-open-sessions-20261104` for this incomplete snapshot.
 
 [soul-refined.lain](soul-refined.lain) imports the executable policies. The original [soul.lain](soul.lain) is unchanged. The orchestration observes the parent and targets its lexical child:
 
@@ -14,9 +14,13 @@ The companion runtime snapshot is [datalog-research at `f123eb7`](https://github
 
 `lib/observations.lain` implements lexical traversal, shadowing, selection and rendering. Native metadata describes one lexical frame or one compound's immediate fields. It has no native depth limit or domain-specific rendering schema. An additional contribution is implemented in `lib/observation-example.lain`.
 
+Model and user sources are declared in `.lain`: `source:new` in `lib/ports.lain` declares a cell and requests its acknowledged initialization; `model:new` in `lib/model.lain` constructs each model's ports and state. Harness extensions contain primitive/effectful propagators, source files, interface declarations and external dependencies. They contain no preseeded cells or binding aliases to host-allocated model cells. Interfaces resolve references exported by the compiled Lain network.
+
+Custom records and lists travel as TTMS base values; scalar constants use primitive values. There is no `Frozen` datatype. Data lists use `:lain.data/empty`, distinct from the compiler's open-list topology marker. Observation metadata uses `:premises` so inspecting a withdrawn premise does not itself retract the observation.
+
 `lib/model.lain` uses `lib/queue.lain` and `lib/rounds.lain` to select requests, build prompts, maintain history and advance versioned model state. `lib/compiler.lain` buffers source and selects one admission at a time, waiting for its connected receipt. These are connected to the current execution path; the former host model coordinator and shared model/stream registries are no longer used.
 
-The integrated path is still failing during supported state propagation. Fake transport requests and queued source events have been observed, but successful admission and acknowledged reply delivery through the full composition have not been established. Component tests are not a substitute for that missing acceptance evidence.
+The latest bounded probe accepts and queues a user message but leaves the model context uninitialized: zero transport requests and zero delivered replies. The parent-description connection remains unresolved. The earlier snapshot reached transport output and exhausted its propagation budget; that earlier evidence is retained separately. The refactor passes 43 focused tests with 513 assertions, but successful admission and acknowledged reply delivery through the full composition have not been established.
 
 ## Open-session interfaces
 

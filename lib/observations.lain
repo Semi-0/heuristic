@@ -2,24 +2,24 @@
 
 (define observation:available (network [fact] (data:get :available fact)))
 
-(define observation:seen (network [ids id] (if (data:empty? ids) false (if (= (data:get :car ids) id) true (observation:seen (data:get :cdr ids) id)))))
+(define observation:seen (network [ids id] (if (data:empty? ids) false (if (data:equal? (data:get :car ids) id) true (observation:seen (data:get :cdr ids) id)))))
 
-(define observation:value (network [fact seen] (let [v (data:get :value fact) id (data:get :cell fact)] (if (observation:seen seen id) :cycle (if (= (value:kind v) :compound) (data:map (network [field] (data:record :name (data:get :name field) :available (data:get :available field) :support (data:get :support field) :cell (data:get :cell field) :value (observation:value field (data:cons id seen)))) (value:slots v)) (if (= (value:kind v) :callable) :callable v))))))
+(define observation:value (network [fact seen] (let [v (data:get :value fact) id (data:get :cell fact)] (if (observation:seen seen id) :cycle (if (data:equal? (value:kind v) :compound) (data:map (network [field] (data:record :name (data:get :name field) :available (data:get :available field) :premises (data:get :premises field) :cell (data:get :cell field) :value (observation:value field (data:cons id seen)))) (value:slots v)) (if (data:equal? (value:kind v) :callable) :callable v))))))
 
-(define observation:binding (network [fact] (data:record :name (data:get :name fact) :value (observation:value fact (data:list)) :available (data:get :available fact) :support (data:get :support fact) :cell (data:get :cell fact) :frame (data:get :frame fact))))
+(define observation:binding (network [fact] (data:record :name (data:get :name fact) :value (observation:value fact (data:list)) :available (data:get :available fact) :premises (data:get :premises fact) :cell (data:get :cell fact) :frame (data:get :frame fact))))
 
 (define observation:describe-local (network [e describe] (data:map describe (lexical:bindings e))))
 
 (define observation:describe-available (network [e describe] (data:map describe (data:filter observation:available (lexical:bindings e)))))
 
-(define observation:has-name (network [facts name] (if (data:empty? facts) false (if (= (data:get :name (data:get :car facts)) name) true (observation:has-name (data:get :cdr facts) name)))))
+(define observation:has-name (network [facts name] (if (data:empty? facts) false (if (data:equal? (data:get :name (data:get :car facts)) name) true (observation:has-name (data:get :cdr facts) name)))))
 
 (define observation:unshadowed (network [local inherited] (data:filter (network [fact] (if (observation:has-name local (data:get :name fact)) false true)) inherited)))
 
-(define observation:lexical (network [e] (let [parent (lexical:parent e)] (if (= parent :lain-harness.lexical-observation/root) (data:list) (let [local (lexical:bindings e)] (list:append local (observation:lexical parent)))))))
+(define observation:lexical (network [e] (let [parent (lexical:parent e)] (if (data:equal? parent :lain-harness.lexical-observation/root) (data:list) (let [local (lexical:bindings e)] (list:append local (observation:lexical parent)))))))
 
 (define observation:visible (network [facts seen] (if (data:empty? facts) (data:list) (let [fact (data:get :car facts)] (if (observation:has-name seen (data:get :name fact)) (observation:visible (data:get :cdr facts) seen) (data:cons fact (observation:visible (data:get :cdr facts) (data:cons fact seen))))))))
 
-(define observation:context (network [fact] (if (= (data:get :name fact) "user-input") false (if (= (data:get :name fact) "incremental-compile") false true))))
+(define observation:context (network [fact] (if (data:equal? (data:get :name fact) "user-input") false (if (data:equal? (data:get :name fact) "incremental-compile") false true))))
 
 (define describe-environment (network [environment] (data:map observation:binding (data:filter observation:context (observation:visible (observation:lexical environment) (data:list))))))

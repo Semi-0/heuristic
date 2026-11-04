@@ -219,3 +219,43 @@
       (is (empty? (host/receipts owner)))
       (is (empty? (host/failures owner)))
       (finally (host/close! owner)))))
+
+(deftest extensions-declare-operators-and-lain-not-preseeded-cells
+  (let [owner (host/open! (session/create-session))
+        services (harness/services owner)]
+    (try
+      (doseq [extension (concat (harness/facility-extensions services)
+                                [(harness/model-extension services {:id "one" :transport (fn [& _])})
+                                 (harness/model-extension services {:id "two" :name 'second-model :transport (fn [& _])})
+                                 (harness/user-extension "user")
+                                 (harness/message-extension services "one")])]
+        (let [parts (session/extension-parts extension)]
+          (is (empty? (:cells parts)))
+          (is (empty? (:frames parts)))
+          (is (empty? (:derivations parts)))))
+      (doseq [file ["runtime" "connected_data" "environment" "lexical_observation" "value_metadata" "admission" "source_reader"]]
+        (let [source (slurp (str root "/src/lain_harness/" file ".clj"))]
+          (is (not (re-find #"operator/operator-closure\s|:compiler-activate|:application-installer|connected/frozen" source)))))
+      (finally (host/close! owner)))))
+
+(deftest lain-model-instances-own-their-sources
+  (let [{:keys [owner services]} (fixture)
+        requests (atom [])
+        transport (fn [request _emit!] (swap! requests conj request))]
+    (try
+      (host/extend! owner (harness/model-extension services {:id "one" :transport transport}))
+      (host/extend! owner (harness/model-extension services {:id "two" :name 'second-model :transport transport}))
+      (host/step! owner)
+      (let [current (host/current-session owner)
+            one (harness/model-state services "one")
+            two (harness/model-state services "two")]
+        (is (= "one" (:model-id one)))
+        (is (= "two" (:model-id two)))
+        (is (= :idle (:active one) (:active two)))
+        (doseq [part [:state :events :delivered]]
+          (is (not= (harness/model-cell current "one" part)
+                    (harness/model-cell current "two" part))))
+        (is (empty? @requests))
+        (is (empty? (host/receipts owner)))
+        (is (empty? (host/failures owner))))
+      (finally (host/close! owner)))))

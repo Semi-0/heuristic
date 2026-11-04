@@ -21,3 +21,26 @@ No service start/restart, deployment or merge was performed.
 
 Raw evidence is in runtime/evidence/. Historical intermediate verification is preserved there separately.
 Detailed gaps and milestone status are in runtime/verification.json. Component passes do not imply canonical acceptance.
+
+
+2026-11-04 — primitive/Lain construction and TTMS base refactor
+Runtime commit: 1ca0b5c9b64ea18383741ff1caafc17259f91783
+Harness extensions no longer preseed cells. lib/ports.lain declares publication
+sources; lib/model.lain constructs model ports/state. Frozen and Snapshot payload
+wrappers are removed. Primitive declarations use standard support handling.
+
+PASS runtime regressions: 29 tests, 188 assertions (ttms-runtime.log).
+PASS harness/connected/interface tests: 14 tests, 325 assertions (ttms-harness.log).
+Combined: 43 tests, 513 assertions; 0 failures, 0 errors.
+Includes independent model source identities, TTMS base/source identity checks,
+versioned feedback/replay, supported observation withdrawal/recovery, and shared
+ingress with existing editor ownership checks. No inference on model attachment.
+PASS actual source compilation, pinned clj-kondo/cljfmt (0 errors, 49 warnings),
+original soul.lain hash, and reverse application of the refreshed runtime patch.
+
+NOT ACCEPTED: bounded coded conversation queues a user message but leaves context
+uninitialized. 0 transport requests, 0 replies, no recorded host failures in the
+20-second polling window. The script's normal exit is not acceptance. See
+runtime/evidence/ttms-conversation.log and its .clj reproduction. Earlier timeout
+and canonical failure evidence are retained; no claim that the model loop is fixed.
+No live inference, deployment, merge, or service restart performed.

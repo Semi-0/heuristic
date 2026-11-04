@@ -1,0 +1,7 @@
+;; A publication source is declared by the network that owns it. The primitive
+;; declares initialization; immutable session advancement stamps the TTMS source.
+(define source:new
+  (network [initial]
+           (define value)
+           (session:initialize (cell:reference value) initial)
+           (cell:reference value)))

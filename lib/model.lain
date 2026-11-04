@@ -17,3 +17,18 @@
              (transport:request (data:get :transport model) (data:snapshot (data:get :active state)))
              :connected)))
 (define actions-of (network [model] model))
+
+;; Model topology and initial values belong here, not in an extension's :cells.
+(define model:new
+  (network [identity transport capacity budget]
+           (define inlet)
+           (let [state (source:new (data:with (model:initial capacity budget)
+                                              (data:record :model-id identity)))
+                 events (source:new (data:list))
+                 delivered (source:new (data:list))
+                 premise (source:new identity)
+                 instance (data:record :state-cell state :inlet (cell:reference inlet)
+                                       :events-cell events :delivered-cell delivered
+                                       :transport transport :premise premise)]
+             (model:connect instance inlet (cell:reference user-input))
+             instance)))
