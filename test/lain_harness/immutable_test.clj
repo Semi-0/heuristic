@@ -5,6 +5,7 @@
             [lain-harness.stream :as stream]
             [lain-harness.source-reader :as source-reader]
             [lain-harness.admission :as admission]
+            [lain-harness.connected-data :as connected-data]
             [lain-harness.runtime :as harness]
             [lain-harness.premises :as premises]
             [propagators.compiler-2.session :as session]
@@ -111,14 +112,19 @@
   (let [initial (session/create-session)
         root-env (session/environment initial)
         child (basis/stable-node-id :immutable-child)
-        premise (basis/stable-node-id :immutable-premise)
         initial (session/extend-session initial
                                         (session/session-extension
                                          {:id :frames :frames {child {:parent root-env :bindings []}}
-                                          :cells {premise (premises/content premise :test 1 :active)}}))
+                                          :primitives {'source:initialize (connected-data/initialize-operator)
+                                                       'cell:reference (connected-data/reference-operator)}
+                                          :files {"lib/ports.lain" (slurp (str root "/lib/ports.lain"))
+                                                  "receipts.lain" "(load-lain \"lib/ports.lain\")
+                                                    (define premise-reference (source:new :test))
+                                                    (define receipt-first) (define receipt-second) (define receipt-third)"}}))
+        premise (data/payload (session/binding-value initial 'premise-reference))
         declaration (fn [id text]
                       {:id id :target child :support-cell premise :files {(str id ".lain") text}})
-        receipt #(basis/stable-node-id :receipt %)
+        receipt #(session/binding-cell initial (symbol (str "receipt-" (name %))))
         input #(session/admission-input % (receipt (:id %)) :response)
         good (declaration :first "(define kept 7)")
         broken (declaration :second "(define kept 8)")
@@ -127,6 +133,9 @@
         observed #(data/payload (net/network-cell-strongest (session/network result) (receipt %)))
         cell (session/scoped-binding-cell result child 'kept)
         replay (:session (session/advance result [(input good)]))]
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"receipt must be declared"
+                          (session/advance initial [(session/admission-input good
+                                                                             (basis/stable-node-id :undeclared-receipt) :response)])))
     (is (= :admitted (:status (observed :first))))
     (is (= :rejected (:status (observed :second))))
     (is (= :skipped (:status (observed :third))))
@@ -139,11 +148,11 @@
         (let [initial (host/current-session owner)
               source (str "(define admission-child (lexical-child (empty-env)))\n"
                           "(define admission-plan (incremental-compile-form :generated \"(define result 42)\" admission-child nil))\n"
-                          "(define declaration (data:get :declaration admission-plan))")
+                          "(define declaration (data:get :declaration admission-plan))\n(define admission-receipt)")
               prepared (session/extend-session initial
                                                (session/session-extension {:id :plan :files {"plan.lain" source}}))
               declaration (connected/payload (data/payload (session/binding-value prepared 'declaration)))
-              receipt (basis/stable-node-id :actual-source-receipt)
+              receipt (session/binding-cell prepared 'admission-receipt)
               admitted (:session (session/advance prepared [(session/admission-input declaration receipt :actual)]))
               target (:target declaration)]
           (is (= 42 (data/payload (net/network-cell-strongest (session/network admitted)
@@ -178,14 +187,13 @@
                                                        "(load-lain \"lib/observation-example.lain\")
                                   (define observed-child (lexical-child (empty-env)))
                                   (define notes (observe-review-notes observed-child))
-                                  (define facts (lexical:bindings observed-child))"}}))
+                                  (define facts (lexical:bindings observed-child))\n(define observation-receipt)\n(define observation-support (source:new :observation))"}}))
             e (data/payload (session/binding-value prepared 'observed-child))
-            support (basis/stable-node-id :observed-support)
+            support (data/payload (session/binding-value prepared 'observation-support))
             declaration {:id :observed-addition :target (:id e) :frames (:frames e)
                          :support-cell support
-                         :cells {support (premises/content support :observation 1 :active)}
                          :files {"observed-addition.lain" "(define answer 42)"}}
-            receipt (basis/stable-node-id :observation-admission)
+            receipt (session/binding-cell prepared 'observation-receipt)
             admitted (:session (session/advance prepared [(session/admission-input declaration receipt :observation)]))
             checked (session/extend-session admitted
                                             (session/session-extension
@@ -252,10 +260,53 @@
         (is (= "one" (:model-id one)))
         (is (= "two" (:model-id two)))
         (is (= :idle (:active one) (:active two)))
-        (doseq [part [:state :events :delivered]]
+        (doseq [part [:state :events :delivered :commands]]
           (is (not= (harness/model-cell current "one" part)
                     (harness/model-cell current "two" part))))
         (is (empty? @requests))
         (is (empty? (host/receipts owner)))
         (is (empty? (host/failures owner))))
+      (harness/resume-model! services "one" "resume-1")
+      (host/step! owner)
+      (host/step! owner)
+      (let [resumed (harness/model-state services "one")]
+        (is (= ["resume-1"] (mapv :id (harness/list-values (:commands resumed)))))
+        (is (= connected/empty-list (:commands (harness/model-state services "two"))))
+        (harness/resume-model! services "one" "resume-1")
+        (host/step! owner)
+        (is (= resumed (harness/model-state services "one"))))
+      (finally (host/close! owner)))))
+
+(deftest boolean-and-command-policies
+  (let [{:keys [owner]} (fixture)]
+    (try
+      (host/extend-source! owner
+                           "         (define logic-and (and true true))
+         (define logic-and-false (and true false))
+         (define logic-or (or false true))
+         (define logic-or-false (or false false))
+         (define logic-empty-and (and))
+         (define logic-empty-or (or))
+         (define logic-not (not false))
+         (define logic-pending)
+         (define logic-decided (and false logic-pending))
+         (define cond-selected (cond [true 7 else logic-pending]))
+         (define string-capacity (data:get :status (queue:offer (queue:empty \"bad\") (data:record :id :a :payload 7))))
+         (define paused-model (data:with (model:initial 256 8)
+                               (data:record :round (data:record :turn :user-one :number 8 :budget 8 :busy false :paused true))))
+         (define resumed-model (model:command paused-model (data:record :id :resume-one :kind :resume)))
+         (define resume-paused (data:get :paused (data:get :round resumed-model)))
+         (define resume-round (data:get :number (data:get :round resumed-model)))
+         (define resume-turn (data:get :turn (data:get :round resumed-model)))
+         (define resume-eligible (round:eligible (data:get :round resumed-model) 1))
+         (define resume-inputs (data:equal? (data:get :inputs paused-model) (data:get :inputs resumed-model)))
+         (define resume-outputs (data:equal? (data:get :outputs paused-model) (data:get :outputs resumed-model)))
+ ")
+      (let [s (host/current-session owner)]
+        (doseq [[name expected] {'logic-and true 'logic-and-false false 'logic-or true 'logic-or-false false
+                                 'logic-empty-and true 'logic-empty-or false 'logic-not true
+                                 'logic-decided false 'cond-selected 7 'string-capacity :invalid-capacity
+                                 'resume-paused false 'resume-round 8 'resume-turn :user-one 'resume-eligible false
+                                 'resume-inputs true 'resume-outputs true}]
+          (is (= expected (data/payload (session/binding-value s name))) (str name))))
       (finally (host/close! owner)))))

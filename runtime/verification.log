@@ -44,3 +44,29 @@ uninitialized. 0 transport requests, 0 replies, no recorded host failures in the
 runtime/evidence/ttms-conversation.log and its .clj reproduction. Earlier timeout
 and canonical failure evidence are retained; no claim that the model loop is fixed.
 No live inference, deployment, merge, or service restart performed.
+
+
+2026-11-04 — direct Lain wiring and Boolean policies
+Runtime commit: 1d584e5509280bc07a3ebf5276dc5f5f10f615b1
+source:new now directly wires source:initialize to its declared cell. No host
+initialization declaration/round is involved. Admission requires a predeclared
+receipt; the unused host helper that manufactured receipts is removed.
+Resume publishes an identified command; model:command selects the transition
+in Lain and preserves turn/budget. Multiway policies use cond vector syntax.
+and/or are primitive Boolean propagators; not reuses the existing builtin.
+Deciding inputs permit partial information; all watched premise states travel
+independently of result support, including witness withdrawal and recovery.
+
+PASS runtime regressions: 29 tests, 188 assertions (wiring-runtime.log).
+PASS harness/connected/interface: 17 tests, 375 assertions (wiring-harness.log).
+Combined: 46 tests, 563 assertions; 0 failures, 0 errors.
+PASS actual source compilation, changed Lain formatting with cljfmt 0.16.6,
+pinned Clojure formatting/lint (0 errors, 46 warnings), unchanged soul.lain,
+and runtime patch reverse-application check.
+
+NOT ACCEPTED: actual soul-refined.lain bounded conversation still queues one
+user event, leaves context uninitialized, makes 0 requests and delivers 0 replies.
+No recorded host failures; see wiring-conversation.log and .clj reproduction.
+This remains a harness wiring defect, not evidence of a provider failure.
+Earlier failure and timeout evidence is preserved. No live inference,
+deployment, merge or service restart performed.

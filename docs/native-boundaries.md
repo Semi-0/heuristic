@@ -1,6 +1,6 @@
 # Native boundaries in the migration
 
-This inventory describes the current draft, not completed acceptance. Host extensions do not preseed cells or install custom compiler activation/installation hooks; native facilities declare primitive or effectful propagators. `lib/ports.lain` and `lib/model.lain` own the source and model networks. Initialization is an acknowledged immutable session transition requested by Lain. Every exported facility has a distinct extension identity and an explicit import in `soul-refined.lain`. The convenience installer assembles those extensions.
+This inventory describes the current draft, not completed acceptance. Host extensions do not preseed cells or install custom compiler activation/installation hooks; native facilities declare primitive or effectful propagators. `lib/ports.lain` and `lib/model.lain` own the source and model networks. Initialization is a primitive propagator wired by Lain to the cell it declares; it no longer registers a session transition. Every exported facility has a distinct extension identity and an explicit import in `soul-refined.lain`. The convenience installer assembles those extensions.
 
 | Boundary | Contract and justification | Mutation |
 | --- | --- | --- |
@@ -12,15 +12,17 @@ This inventory describes the current draft, not completed acceptance. Host exten
 | `cell:reference`, `cell:value`, `inputs-of` | Connect explicit cell identities and the model's description inlet. They do not select inference or compiler policy. | Immutable declarations |
 | `source:read-next` | Parse one form without rewriting admitted source. Explicit stream completion distinguishes final atoms, incomplete suffixes and malformed forms. | Invocation-local reader cursor only |
 | `admission:declaration` | Construct a targeted source declaration; never install it directly. Current wiring carries the model premise; round and consumed-context premises remain incomplete. | None |
-| `session:initialize`, `session:feedback`, `session:admit` | Register connected declarations. Immutable session advancement initializes once, compares versions, or admits one form and publishes a receipt. | None inside transformations |
+| `source:initialize` | Initialize the Lain-declared output once with a TTMS source datum when its initial input becomes available. It neither allocates the target nor overwrites an initialized source. | Immutable network publication |
+| `and`, `or`; builtin `not` | Boolean primitives. A deciding input suffices for `and`/`or`; otherwise all operands are required. Watched premise states remain distinct from result support, so witness withdrawal and recovery are preserved. | None |
+| `session:feedback`, `session:admit` | Register connected declarations. Immutable session advancement compares versions or admits one form and publishes a receipt. The receipt must already be declared and wired; missing receipts are rejected before admission. | None inside transformations |
 | Open-session host | Serialize external publication and commit immutable session snapshots. Validate exported ingress, run identity and message identity. | Authoritative session owner |
 | `transport:request` | Execute the request selected by Lain; publish chunks, completion or failure. | One external request thread, cancellation flag and event sequence counter |
 | `message-to-user` | Publish generated message content with an invocation identity and acknowledge delivery. | Authoritative publication and dependency lifecycle |
 | Editor owner catalog | Existing discovery, attachment and generation machinery; narrow user-message operation for opted-in external owners. | Existing view/owner registry |
 
-The current `resume-model!` helper still directly advances model state through the host publication boundary. Moving resume selection into the Lain policy is outstanding. Event ingress retains immutable logs but does not yet enforce the required end-to-end 256-pending-event backpressure. These are explicit remaining gaps.
+`resume-model!` publishes an identified command through the model’s exported control port. `model:command` in Lain selects the resume transition and records consumption without resetting the turn or budget. Identical command replay is harmless. The unused host `admit-source!` helper, which manufactured receipt cells, has been removed. Event ingress retains immutable logs but does not yet enforce the required end-to-end 256-pending-event backpressure. These are explicit remaining gaps.
 
-Focused tests cover immutable compare-and-advance, selected Lain feedback without a host, parser/admission components, observation withdrawal/recovery, import identities, and shared editor/headless ingress. Full transport lifecycle, supported admission recovery, model independence, and canonical coded conversation remain unverified.
+Focused tests cover immutable compare-and-advance, selected Lain feedback without a host, parser/admission components, direct source initialization, Boolean truth tables and premise withdrawal/recovery, Lain resume commands, observation withdrawal/recovery, import identities, and shared editor/headless ingress. Full transport lifecycle, supported admission recovery, model independence, and canonical coded conversation remain unverified.
 
 The existing `resource_queue.clj`, `resource_stream.clj`, and `resource_environment.clj` files are unused compatibility remnants. Their removal is deferred until the replacement's acceptance tests pass, as required by the migration plan.
 

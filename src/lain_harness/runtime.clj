@@ -23,7 +23,7 @@
 
 (defn services [owner] {:owner owner})
 (defn model-cell [s id part]
-  (session/interface-cell s [(case part :state :model :events :source :delivered :messages) id]))
+  (session/interface-cell s [(case part :state :model :events :source :delivered :messages :commands :control) id]))
 (defn read-cell [s id] (connected/freeze (session/network s) (net/network-cell-strongest (session/network s) id)))
 (defn linked-list [xs]
   (reduce (fn [tail x] {:car x :cdr tail}) connected/empty-list (reverse xs)))
@@ -87,7 +87,7 @@
                                                 {:effects [(gur/declare-prop (basis/stable-node-id :model-inlet output inlet)
                                                                              :model-inlet [output] [inlet]
                                                                              (fn [_ _ current] (basis/mono-sync-messages current output inlet)))]})))})
-                           'session:initialize (connected/connector :initialize)
+                           'source:initialize (cd/initialize-operator)
                            'session:feedback (connected/connector :feedback)
                            'session:admit (connected/connector :admission)
                            'cell:reference (cd/reference-operator)
@@ -99,6 +99,8 @@
                            'data:list (connected/primitive 'data:list cd/list-value)
                            'data:integer? (connected/primitive 'data:integer? integer?)
                            'data:equal? (connected/primitive 'data:equal? =)
+                           'and (cd/and-operator)
+                           'or (cd/or-operator)
                            'data:empty? (connected/primitive 'data:empty? #(= connected/empty-list (cd/unpack %)))
                            'data:get (connected/primitive 'data:get cd/field-value)
                            'transport:request (ops/async-op (host/effect-interpreter owner)
@@ -121,7 +123,8 @@
      {:id [:model id]
       :interfaces {[:model id] {:kind :model :binding name :field :state-cell}
                    [:messages id] {:kind :messages :binding name :field :delivered-cell}
-                   [:source id] {:kind :source :binding name :field :events-cell}}
+                   [:source id] {:kind :source :binding name :field :events-cell}
+                   [:control id] {:kind :model-control :binding name :field :commands-cell}}
       :dependencies {dependency-id (transport-dependency (:owner services) id transport)}
       :files {(str "instance/" name ".lain")
               (pr-str (list 'define name (list 'model:new (str id) dependency-id capacity max-inferences)))}})))
@@ -139,11 +142,12 @@
                                :id identity :text text}))
 (defn model-state [services id]
   (let [s (host/current-session (:owner services))] (read-cell s (model-cell s id :state))))
-(defn resume-model! [services id]
-  (host/publish-input! (:owner services)
-                       (fn [s]
-                         (let [cell (model-cell s id :state) state (read-cell s cell)]
-                           [(session/publication-input cell (-> state (update :version inc) (assoc-in [:round :paused] false)))]))))
+(defn resume-model!
+  "Publish an explicit command identity. Lain owns the state transition and replay."
+  ([services id] (resume-model! services id (random-uuid)))
+  ([services id identity]
+   (publish-event! (:owner services) [:control id]
+                   {:id identity :kind :resume :payload :resume})))
 
 (defn message-extension [services model-id]
   (let [owner (:owner services) dep (keyword "lain-harness.delivery" (str model-id))]

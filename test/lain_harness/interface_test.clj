@@ -15,8 +15,6 @@
       (host/extend! owner (harness/specification-extension services
                                                            (str (System/getenv "LAIN_HARNESS_ROOT") "/soul-refined.lain")))
       (host/extend! owner (harness/user-extension "user"))
-      ;; Initialization is a Lain declaration committed through the normal round.
-      (host/step! owner)
       (let [entry (editor/register-compiler-session! owners owner "")
             run-id (:run-id (session/session-identity (host/current-session owner)))
             command (assoc entry :inputId "user" :messageId "first" :text "hello" :runId (str run-id))]

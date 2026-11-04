@@ -2,7 +2,12 @@
 
 (define round:for-user (network [state id] (if (= (data:get :turn state) id) state (data:with state (data:record :turn id :number 0)))))
 
-(define round:eligible (network [state pending-count] (if (data:get :busy state) false (if (data:get :paused state) false (if (< (data:get :number state) (data:get :budget state)) (> pending-count 0) false)))))
+(define round:eligible
+  (network [state pending-count]
+           (and (not (data:get :busy state))
+                (not (data:get :paused state))
+                (< (data:get :number state) (data:get :budget state))
+                (> pending-count 0))))
 
 (define round:start (network [state pending-count] (if (round:eligible state pending-count) (data:with state (data:record :number (+ 1 (data:get :number state)) :busy true)) state)))
 
