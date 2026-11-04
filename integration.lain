@@ -1,0 +1,104 @@
+;; Dependency networks, external capability slots and experiment limits.
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/and 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/or 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/cell:value 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/cell:input 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:integer? 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:equal? 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:empty? 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/source:initialize 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:record 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:list 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:get 1)
+;; Explicit imports for the dependency networks used by soul-refined.
+;; Native facilities are supplied through an open-session extension.
+;; Loading this file declares topology; invoke experiment separately to start it.
+;; Subsequent implementation and acceptance must use this source, not a replica.
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/empty-env 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/lexical-child 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/env:slot 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/extend-env 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/session:feedback 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/session:admit 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/cell:reference 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/data:snapshot 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/data:merge 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/session:export 1)
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+(load-lain "propagators/compiler_2/runtime/lain/list.lain")
+(load-primitive-environment "lain_harness/source_reader.clj" :lain-harness.source-reader/primitive-bindings 1)
+(load-primitive-environment "lain_harness/admission.clj" :lain-harness.admission/primitive-bindings 1)
+(load-primitive-environment "lain_harness/lexical_observation.clj" :lain-harness.lexical-observation/primitive-bindings 1)
+(load-primitive-environment "lain_harness/lexical_observation.clj" :lain-harness.lexical-observation/parent-bindings 1)
+(load-lain "lib/data.lain")
+(load-lain "lib/ports.lain")
+(load-lain "lib/queue.lain")
+(load-lain "lib/rounds.lain")
+(load-lain "lib/observations.lain")
+(load-lain "lib/compiler.lain")
+(load-lain "lib/model.lain")
+
+(load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:kind 1)
+(load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:slots 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:unpack 1)
+;; Policy defaults belong to the experiment, not to a transport implementation.
+(define pending-event-limit 256)
+(define inference-round-budget 8)
+(define initial-input-queue (queue:empty pending-event-limit))
+(define initial-round-state (round:initial inference-round-budget))
+
+(define model-session)
+(define user-input)
+(define message-to-user)
+(define conversation-child)
+(define result)
+(define weather-at)
+(define umbrella-advice)
+
+;; External effects are supplied independently; loading declarations starts no IO.
+(define transport:stream)
+(define message:deliver)
+
+(define integration:user
+  (network [identity]
+           (let [source (source:new (data:list))]
+             (session:export :user identity :user-message source)
+             source)))
+
+(define integration:model
+  (network [identity user capabilities]
+           (model:new identity ((slot :request) capabilities)
+                      pending-event-limit inference-round-budget user)))
+
+(define integration:connect
+  (network [identity user-identity capabilities]
+           (let [user (integration:user user-identity)
+                 model (integration:model identity user capabilities)
+                 reply (network [content]
+                                (((slot :deliver) capabilities) content ((slot :delivered-cell) model)))
+                 input (cell:value user)]
+             (struct :model model :user input :reply reply
+                     :conversation (conversation-experiment model input reply)))))
+
+;; Mount one conversation into the editor's declared display endpoints.
+;; Other models use integration:model without claiming these names.
+(define integration:launch
+  (network [identity user-identity capabilities]
+           (let [integrated (integration:connect identity user-identity capabilities)
+                 conversation ((slot :conversation) integrated)]
+             (-> ((slot :model) integrated) model-session)
+             (-> ((slot :user) integrated) user-input)
+             (-> ((slot :reply) integrated) message-to-user)
+             (-> (car conversation) conversation-child)
+             (-> (cell:value ((slot :state-cell) ((slot :model) integrated))) result)
+             conversation)))

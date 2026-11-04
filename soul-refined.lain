@@ -1,66 +1,14 @@
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/cell:value 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/inputs-of 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:integer? 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:empty? 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/session:initialize 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:record 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:list 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:get 1)
-;; soul-refined — top-down experiment and reviewable specification.
-;; Native facilities are supplied through an open-session extension.
-;; Loading this file declares topology; invoke experiment separately to start it.
-;; Subsequent implementation and acceptance must use this source, not a replica.
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/empty-env 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/lexical-child 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/env:slot 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/extend-env 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/session:feedback 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/session:admit 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/cell:reference 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/data:snapshot 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/data:merge 1)
-(load-primitive-environment "lain_harness/runtime.clj"
-                            :lain-harness.runtime/transport:request 1)
-(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
-(load-lain "propagators/compiler_2/runtime/lain/list.lain")
-(load-primitive-environment "lain_harness/source_reader.clj" :lain-harness.source-reader/primitive-bindings 1)
-(load-primitive-environment "lain_harness/admission.clj" :lain-harness.admission/primitive-bindings 1)
-(load-primitive-environment "lain_harness/lexical_observation.clj" :lain-harness.lexical-observation/primitive-bindings 1)
-(load-primitive-environment "lain_harness/lexical_observation.clj" :lain-harness.lexical-observation/parent-bindings 1)
-(load-lain "lib/data.lain")
-(load-lain "lib/queue.lain")
-(load-lain "lib/rounds.lain")
-(load-lain "lib/observations.lain")
-(load-lain "lib/compiler.lain")
-(load-lain "lib/model.lain")
-
-(load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:kind 1)
-(load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:slots 1)
-(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:unpack 1)
-;; Policy defaults belong to the experiment, not to a transport implementation.
-(define pending-event-limit 256)
-(define inference-round-budget 8)
-(define initial-input-queue (queue:empty pending-event-limit))
-(define initial-round-state (round:initial inference-round-budget))
+(load-lain "integration.lain")
 
 ;; Native module: src/lain_harness/runtime.clj. Prepare with an explicit owner.
-;; Model and user extensions supply their instances independently.
+;; integration.lain supplies dependency composition and independent endpoints.
 ;; Supply these endpoints through the existing open-session extension API:
 ;; session/session-extension, host/open!, host/extend! and host/extend-source!.
 ;; session.operators/prim-op builds primitive operators; async-op takes an
 ;; injected EffectInterpreter and a pure cell-output/effect-output selector.
 ;; Effects dispatch after commit, via next-round-input or dependency-input.
-;; Keep primitive facilities, model session and user input as independent
-;; extensions/dependencies with distinct identities, ownership and lifecycles.
+;; Keep primitive facilities and external capabilities independently supplied.
+;; integration.lain constructs model/user networks with distinct source identities.
 ;; Connecting them here must not make user publication invoke inference itself.
 ;; No weather provider or message delivery is installed implicitly.
 
@@ -92,24 +40,18 @@
 ;; incremental-compile is composed in lib/compiler.lain.
 
 ;; inputs-of [model-session] -> connected input port; actions-of [model-session]
-;; -> supported generated-source publications. Inference sampling, cancellation,
-;; obsolete replies, completion and budgets belong to the async effect boundary.
+;; -> supported generated-source publications. Lain selects prompts and budgets;
+;; the async effect boundary executes requests, publishes completion and cancels IO.
 ;; A provider snapshot must not sever the upstream connected description.
-;; inputs-of is supplied by the native facilities extension.
+;; inputs-of and actions-of are composed in lib/model.lain.
 ;; actions-of is composed in lib/model.lain.
 
 ;; Independent supplied instances, not constructors coupled to one another.
-;; A model session is supplied by its own extension; user input is a separately
-;; supported publication stream, not a field owned by the model adapter.
-(define model-session)
-(define user-input)
+;; Model and user instances are declared by the integration network.
 ;; message-to-user [content] -> acknowledged delivery; weather-at [place date timezone]
 ;; -> supported observation with source, observed-at and validity information;
 ;; umbrella-advice [observation] -> advice. IO requires async operators; pure
 ;; advice uses a primitive operator or a Lain network. None is installed here.
-(define message-to-user)
-(define weather-at)
-(define umbrella-advice)
 
 (define construct-concept-of
   (network [idea content]

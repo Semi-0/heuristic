@@ -1,0 +1,3 @@
+(load-lain "lib/behavior.lain")
+(define input-cell)
+(define sums (scan input-cell +))

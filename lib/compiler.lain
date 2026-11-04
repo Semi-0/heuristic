@@ -18,41 +18,51 @@
                                                    (data:with parser (data:record :finish true))))))))
 (define compiler:declaration
   (network [state parsed target support]
-           (if (= (data:get :active state) :idle) :idle
-               (if (= (data:get :status (data:get :parser state)) :done) :idle
-                   (if (= (data:get :status parsed) :form)
-                     (admission:declaration
-                      (str (data:get :model-id state) "/" (data:get :serial state) "/" (data:get :index (data:get :parser state)))
-                      (data:get :source parsed) target support) :idle)))))
+           (cond [(or (= (data:get :active state) :idle)
+                      (= (data:get :status (data:get :parser state)) :done)) :idle
+                  (= (data:get :status parsed) :form)
+                  (admission:declaration
+                   (str (data:get :model-id state) "/" (data:get :serial state) "/"
+                        (data:get :index (data:get :parser state)))
+                   (data:get :source parsed) target support)
+                  else :idle])))
+
 (define compiler:step
   (network [state parsed declaration receipt]
            (let [parser (data:get :parser state)
                  status (data:get :status parsed)
                  output (data:get :outputs state)]
-             (if (= (data:get :active state) :idle) state
-                 (if (= (data:get :status parser) :done) state
-                     (if (= status :form)
-                       (if (= (data:get :id receipt) (data:get :id declaration))
-                         (if (= (data:get :status receipt) :admitted)
+             (cond [(or (= (data:get :active state) :idle)
+                        (= (data:get :status parser) :done)) state
+                    (= status :form)
+                    (cond [(not (data:equal? (data:get :id receipt) (data:get :id declaration))) state
+                           (= (data:get :status receipt) :admitted)
                            (state:advance state
-                                          (data:record :parser (data:with parser
-                                                                          (data:record :buffer (data:get :remaining parsed) :index (+ 1 (data:get :index parser))))))
-                           (state:advance state (data:record :parser (data:with parser (data:record :status :done))
-                                                             :diagnostic "Generated form rejected"))) state)
-                       (if (= status :invalid)
-                         (state:advance state (data:record :parser (data:with parser (data:record :status :done))
-                                                           :diagnostic (data:get :message parsed)))
-                         (if (= status :complete)
-                           (state:advance state (data:record :parser (data:with parser (data:record :status :done))))
-                           (if (data:empty? (data:get :pending output)) state
-                               (compiler:consume state (data:get :car (data:get :pending output))))))))))))
+                                          (data:record :parser
+                                                       (data:with parser
+                                                                  (data:record :buffer (data:get :remaining parsed)
+                                                                               :index (+ 1 (data:get :index parser))))))
+                           else
+                           (state:advance state
+                                          (data:record :parser (data:with parser (data:record :status :done))
+                                                       :diagnostic "Generated form rejected"))])
+                    (= status :invalid)
+                    (state:advance state
+                                   (data:record :parser (data:with parser (data:record :status :done))
+                                                :diagnostic (data:get :message parsed)))
+                    (= status :complete)
+                    (state:advance state
+                                   (data:record :parser (data:with parser (data:record :status :done))))
+                    (data:empty? (data:get :pending output)) state
+                    else (compiler:consume state (data:get :car (data:get :pending output)))]))))
+
 (define incremental-compile
   (network [actions target]
-           (let [state (cell:value (data:get :state-cell actions))
+           (let [state (cell:value ((slot :state-cell) actions))
                  parser (data:get :parser state)
                  parsed (data:snapshot (source:read-next (data:get :buffer parser) (data:get :finish parser)))
-                 declaration (data:snapshot (compiler:declaration state parsed target (data:get :premise actions)))
+                 declaration (data:snapshot (compiler:declaration state parsed target ((slot :premise) actions)))
                  receipt (data:snapshot (session:admit declaration (data:snapshot (str (data:get :model-id state) "/" (data:get :serial state)))))
                  next (compiler:step state parsed declaration receipt)]
-             (session:feedback (data:get :state-cell actions) (data:get :version state) next)
+             (session:feedback ((slot :state-cell) actions) (data:get :version state) next)
              :connected)))

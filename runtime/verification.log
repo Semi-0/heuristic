@@ -21,3 +21,86 @@ No service start/restart, deployment or merge was performed.
 
 Raw evidence is in runtime/evidence/. Historical intermediate verification is preserved there separately.
 Detailed gaps and milestone status are in runtime/verification.json. Component passes do not imply canonical acceptance.
+
+
+2026-11-04 — primitive/Lain construction and TTMS base refactor
+Runtime commit: 1ca0b5c9b64ea18383741ff1caafc17259f91783
+Harness extensions no longer preseed cells. lib/ports.lain declares publication
+sources; lib/model.lain constructs model ports/state. Frozen and Snapshot payload
+wrappers are removed. Primitive declarations use standard support handling.
+
+PASS runtime regressions: 29 tests, 188 assertions (ttms-runtime.log).
+PASS harness/connected/interface tests: 14 tests, 325 assertions (ttms-harness.log).
+Combined: 43 tests, 513 assertions; 0 failures, 0 errors.
+Includes independent model source identities, TTMS base/source identity checks,
+versioned feedback/replay, supported observation withdrawal/recovery, and shared
+ingress with existing editor ownership checks. No inference on model attachment.
+PASS actual source compilation, pinned clj-kondo/cljfmt (0 errors, 49 warnings),
+original soul.lain hash, and reverse application of the refreshed runtime patch.
+
+NOT ACCEPTED: bounded coded conversation queues a user message but leaves context
+uninitialized. 0 transport requests, 0 replies, no recorded host failures in the
+20-second polling window. The script's normal exit is not acceptance. See
+runtime/evidence/ttms-conversation.log and its .clj reproduction. Earlier timeout
+and canonical failure evidence are retained; no claim that the model loop is fixed.
+No live inference, deployment, merge, or service restart performed.
+
+
+2026-11-04 — direct Lain wiring and Boolean policies
+Runtime commit: 1d584e5509280bc07a3ebf5276dc5f5f10f615b1
+source:new now directly wires source:initialize to its declared cell. No host
+initialization declaration/round is involved. Admission requires a predeclared
+receipt; the unused host helper that manufactured receipts is removed.
+Resume publishes an identified command; model:command selects the transition
+in Lain and preserves turn/budget. Multiway policies use cond vector syntax.
+and/or are primitive Boolean propagators; not reuses the existing builtin.
+Deciding inputs permit partial information; all watched premise states travel
+independently of result support, including witness withdrawal and recovery.
+
+PASS runtime regressions: 29 tests, 188 assertions (wiring-runtime.log).
+PASS harness/connected/interface: 17 tests, 375 assertions (wiring-harness.log).
+Combined: 46 tests, 563 assertions; 0 failures, 0 errors.
+PASS actual source compilation, changed Lain formatting with cljfmt 0.16.6,
+pinned Clojure formatting/lint (0 errors, 46 warnings), unchanged soul.lain,
+and runtime patch reverse-application check.
+
+NOT ACCEPTED: actual soul-refined.lain bounded conversation still queues one
+user event, leaves context uninitialized, makes 0 requests and delivers 0 replies.
+No recorded host failures; see wiring-conversation.log and .clj reproduction.
+This remains a harness wiring defect, not evidence of a provider failure.
+Earlier failure and timeout evidence is preserved. No live inference,
+deployment, merge or service restart performed.
+
+
+2026-11-04 — Lain integration and struct capability composition
+Runtime commit: 6f147518dde882d027682fc0323f6ef0477d9441
+soul-refined.lain imports integration.lain; original soul.lain remains unchanged.
+Dependency imports, optional endpoints and 256-event/8-inference defaults live
+in integration.lain. Host model-extension and user-extension are removed.
+Lain constructs independent model structs, selects capability slots and exports
+cell references through generic session:export. inputs-of is a Lain composition
+of slot access and cell:input. Native IO accepts explicitly wired references.
+Transport normal-completion cleanup no longer interrupts its own receipt wait.
+
+PASS combined runtime/harness/connected/interface: 48 tests, 601 assertions,
+0 failures, 0 errors (integration-foundations.log). Includes late/independent
+exports, conflicting exports, primitive capability invocation through struct,
+ordered source events, acknowledged delivery/deduplication, owner cleanup and
+independent Lain-created models. The lexical-target test uses a unique name
+because result is now an explicit editor endpoint.
+PASS actual source compilation, no-inference launch and model-state display,
+pinned Clojure/Lain formatting and lint (0 errors, 46 warnings), original soul
+hash, and runtime patch reverse application.
+
+EDITOR: isolated loopback preview launched on 4790. Browser attaches the existing
+owner, displays live model state, records no JavaScript errors, then detaches
+its test view without stopping the owner. Full model topology inspection timed
+out at the 30-second request bound and remains unverified. Initial projection
+of the entire integration bundle failed with ambiguous slot parents; the default
+display now reads the actual model-state cell. Evidence: integration-editor.json
+and integration-editor-limitations.json.
+
+NOT ACCEPTED: bounded canonical conversation still queues one user event with
+context uninitialized, 0 requests and 0 replies; no recorded host failures.
+See integration-conversation.log. Provider discovery rechecked successfully;
+no live inference attempted. Deployed editor and model service unchanged.

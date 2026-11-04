@@ -6,51 +6,56 @@
             [lain-harness.lexical-observation :as lexical]
             [lain-harness.connected-data :as cd]
             [lain-harness.value-metadata :as value-metadata]
-            [lain-harness.premises :as premises]
-            [propagators.compiler-2.compiler.basis :as basis]
-            [propagators.compiler-2.model.env :as env]
-            [propagators.compiler-2.model.operator-value :as operator]
-            [propagators.experimental.visualization.data :as view]
-            [propagators.gur :as gur]
             [propagators.compiler-2.session :as session]
             [propagators.compiler-2.session.connected :as connected]
             [propagators.compiler-2.session.host :as host]
             [propagators.compiler-2.session.files :as files]
             [propagators.compiler-2.session.dependencies :as dependency]
             [propagators.compiler-2.session.operators :as ops]
-            [propagators.network :as net]
-            [propagators.cells.value :as value]))
+            [propagators.network :as net]))
 
 (defn services [owner] {:owner owner})
-(defn model-cell [id part] (basis/stable-node-id :model id part))
+(defn model-cell [s id part]
+  (session/interface-cell s [(case part :state :model :events :source :delivered :messages :commands :control) id]))
 (defn read-cell [s id] (connected/freeze (session/network s) (net/network-cell-strongest (session/network s) id)))
 (defn linked-list [xs]
-  (reduce (fn [tail x] {:car x :cdr tail}) basis/list-empty-marker (reverse xs)))
+  (reduce (fn [tail x] {:car x :cdr tail}) connected/empty-list (reverse xs)))
 (defn list-values [xs]
-  (if (= xs basis/list-empty-marker) [] (into [(:car xs)] (list-values (:cdr xs)))))
+  (loop [xs xs result []]
+    (cond
+      (= xs connected/empty-list) result
+      (and (map? xs) (contains? xs :car) (contains? xs :cdr))
+      (recur (:cdr xs) (conj result (:car xs)))
+      :else (throw (ex-info "Event source is unresolved or malformed" {:value xs})))))
+
+(defn- event-inputs [s cell event]
+  (let [events (list-values (read-cell s cell))
+        prior (first (filter #(= (:id %) (:id event)) events))]
+    (cond
+      (= prior event) []
+      prior (throw (ex-info "Conflicting event identity" {:id (:id event)}))
+      :else [(session/publication-input cell (linked-list (conj events event)))])))
 
 (defn publish-event!
   "External ingress has stable identity and ordering. Lain owns consumption."
-  [owner cell event]
+  [owner interface event]
   (host/publish-input! owner
-                       (fn [s]
-                         (let [events (list-values (read-cell s cell))
-                               prior (first (filter #(= (:id %) (:id event)) events))]
-                           (cond
-                             (= prior event) []
-                             prior (throw (ex-info "Conflicting event identity" {:id (:id event)}))
-                             :else [(session/publication-input cell (connected/frozen (linked-list (conj events event))))])))))
+                       (fn [s] (event-inputs s (session/interface-cell s interface) event))))
 
-(defn- transport-dependency [owner id transport]
+(defn- publish-cell-event! [owner cell event]
+  (host/publish-input! owner (fn [s] (event-inputs s cell event))))
+
+(defn- transport-dependency [owner transport]
   (dependency/callback-dependency
    (fn [context emit!]
-     (let [request (cd/unpack (:input context))
+     (let [{:keys [request events]} (cd/unpack (:input context))
            cancelled (atom false)
+           finished (atom false)
            cancelled? #(or @cancelled ((:cancelled? context)))
            publish (fn [index kind payload]
                      (when (cancelled?) (throw (ex-info "Transport cancelled" {})))
-                     (publish-event! owner (model-cell id :events)
-                                     {:id [(:id request) index] :kind kind :payload payload}))
+                     (publish-cell-event! owner events
+                                          {:id [(:id request) index] :kind kind :payload payload}))
            thread (Thread.
                    (fn []
                      (let [index (atom 0)]
@@ -62,39 +67,39 @@
                          (catch Exception error
                            (when-not (cancelled?)
                              (publish (swap! index inc) :failure (ex-message error))))
-                         (finally ((:complete! context)))))) "lain-transport")]
+                         (finally
+                           (reset! finished true)
+                           (Thread/interrupted)
+                           ((:complete! context)))))) "lain-transport")]
        (.setDaemon thread true)
        (.start thread)
-       (fn [] (reset! cancelled true) (.interrupt thread) {:status :closed})))))
+       (fn []
+         (reset! cancelled true)
+         ;; Normal completion must not interrupt the thread awaiting its receipt.
+         (when-not @finished (.interrupt thread))
+         {:status :closed})))))
 
 (defn facility-extensions [services]
   (let [owner (:owner services)
         primitives (merge (environment/bindings (session/environment (host/current-session owner)))
-                          {'inputs-of (operator/operator-closure
-                                       {:name 'inputs-of
-                                        :compiler-activate
-                                        (fn [_ network _ [model] output]
-                                          (let [v (view/payload (net/network-cell-strongest network model))
-                                                inlet (:inlet (cd/unpack v))]
-                                            (if (or (value/unusable? v) (nil? inlet) (value/unusable? inlet)) {:messages []}
-                                                {:effects [(gur/declare-prop (basis/stable-node-id :model-inlet output inlet)
-                                                                             :model-inlet [output] [inlet]
-                                                                             (fn [_ _ current] (basis/mono-sync-messages current output inlet)))]})))})
-                           'session:initialize (connected/connector :initialize)
+                          {'cell:input (cd/input-operator)
+                           'session:export (connected/export-operator)
+                           'source:initialize (cd/initialize-operator)
                            'session:feedback (connected/connector :feedback)
                            'session:admit (connected/connector :admission)
                            'cell:reference (cd/reference-operator)
                            'cell:value (cd/value-operator)
                            'data:snapshot (cd/snapshot-operator)
-                           'data:unpack (ops/prim-op (fn [p] (p #(connected/thaw (cd/unpack %)))))
-                           'data:merge (ops/prim-op (fn [p] (p cd/merge-values)))
-                           'data:record (ops/prim-op (fn [p] (p cd/record-value)))
-                           'data:list (ops/prim-op (fn [p] (p cd/list-value)))
-                           'data:integer? (ops/prim-op (fn [p] (p integer?)))
-                           'data:empty? (ops/prim-op (fn [p] (p #(= basis/list-empty-marker (cd/unpack %)))))
-                           'data:get (ops/prim-op (fn [p] (p cd/field-value)))
-                           'transport:request (ops/async-op (host/effect-interpreter owner)
-                                                            (fn [a] (a (fn [id request] (if (= :idle (cd/unpack request)) (ops/cell-output :idle) (ops/effect-output (ops/dependency-input id request)))))))})]
+                           'data:unpack (connected/primitive 'data:unpack #(connected/thaw (cd/unpack %)))
+                           'data:merge (connected/primitive 'data:merge cd/merge-values)
+                           'data:record (connected/primitive 'data:record cd/record-value)
+                           'data:list (connected/primitive 'data:list cd/list-value)
+                           'data:integer? (connected/primitive 'data:integer? integer?)
+                           'data:equal? (connected/primitive 'data:equal? =)
+                           'and (cd/and-operator)
+                           'or (cd/or-operator)
+                           'data:empty? (connected/primitive 'data:empty? #(= connected/empty-list (cd/unpack %)))
+                           'data:get (connected/primitive 'data:get cd/field-value)})]
     (into (into [(source-reader/extension) (admission/extension) (lexical/extension) (lexical/parent-extension)] (value-metadata/extensions))
           (map (fn [[name primitive]]
                  (let [id (keyword "lain-harness.runtime" (str name))]
@@ -104,73 +109,46 @@
 (defn install-facilities! [services]
   (doseq [extension (facility-extensions services)] (host/extend! (:owner services) extension)))
 
-(defn model-extension [services {:keys [id transport name capacity max-inferences]
-                                 :or {name 'model-session capacity 256 max-inferences 8}}]
-  (when-not (and id (fn? transport) (pos-int? capacity) (pos-int? max-inferences))
-    (throw (ex-info "Model identity, transport and positive limits required" {})))
-  (let [dependency-id (keyword "lain-harness.transport" (str id))
-        prefix (str "model-" (subs (str (:uuid (basis/stable-node-id id))) 0 12))
-        state-name (symbol (str prefix "-state"))
-        inlet-name (symbol (str prefix "-inlet"))
-        events-name (symbol (str prefix "-events"))
-        delivered-name (symbol (str prefix "-delivered"))
-        premise (model-cell id :premise)]
+(defn transport-extension
+  "Supply only an effectful transport primitive and its external resource."
+  [services transport]
+  (when-not (fn? transport) (throw (ex-info "Transport function required" {})))
+  (let [owner (:owner services) dep ::transport]
     (session/session-extension
-     {:id [:model id]
-      :interfaces {[:model id] {:kind :model :cell (model-cell id :state)}
-                   [:messages id] {:kind :messages :cell (model-cell id :delivered)}
-                   [:source id] {:kind :source :cell (model-cell id :events)}}
-      :cells {(model-cell id :state) value/nothing
-              (model-cell id :inlet) value/nothing
-              (model-cell id :events) (premises/content (model-cell id :events) (connected/frozen basis/list-empty-marker) 1 :active)
-              (model-cell id :delivered) (premises/content (model-cell id :delivered) (connected/frozen basis/list-empty-marker) 1 :active)
-              premise (premises/content premise {:model id} 1 :active)
-              (model-cell id :instance) (connected/frozen
-                                         {:state-cell (model-cell id :state) :inlet (model-cell id :inlet)
-                                          :events-cell (model-cell id :events) :delivered-cell (model-cell id :delivered)
-                                          :transport dependency-id :premise premise})}
-      :primitives {name (env/cell-binding (model-cell id :instance))
-                   state-name (env/cell-binding (model-cell id :state))
-                   inlet-name (env/cell-binding (model-cell id :inlet))
-                   events-name (env/cell-binding (model-cell id :events))
-                   delivered-name (env/cell-binding (model-cell id :delivered))
-                   (symbol (str prefix "-premise")) (env/cell-binding premise)}
-      :dependencies {dependency-id (transport-dependency (:owner services) id transport)}
-      :files {(str prefix ".lain")
-              (str "(define " prefix "-initialize (session:initialize (cell:reference " state-name ")"
-                   " (data:with (model:initial " capacity " " max-inferences ") (data:record :model-id " (pr-str (str id)) "))))\n"
-                   "(model:connect " name " " inlet-name " (cell:reference user-input))")}
+     {:id dep
+      :primitives {'transport:stream
+                   (ops/async-op (host/effect-interpreter owner)
+                                 (fn [a] (a (fn [request events]
+                                              (if (= :idle (cd/unpack request)) (ops/cell-output :idle)
+                                                  (ops/effect-output
+                                                   (ops/dependency-input dep {:request (cd/unpack request) :events events})))))))}
+      :dependencies {dep (transport-dependency owner transport)}})))
 
-      :scoped-primitives {}})))
-
-(defn user-extension [id]
-  (let [cell (basis/stable-node-id :user-input id)]
-    (session/session-extension {:id [:user id]
-                                :interfaces {[:user id] {:kind :user-message :cell cell}}
-                                :cells {cell (premises/content cell (connected/frozen basis/list-empty-marker) 1 :active)}
-                                :primitives {'user-input (env/cell-binding cell)}})))
 (defn publish-user! [services id identity text]
   (host/publish-user-message! (:owner services)
                               {:interface [:user id]
                                :run-id (:run-id (session/session-identity (host/current-session (:owner services))))
                                :id identity :text text}))
-(defn model-state [services id] (read-cell (host/current-session (:owner services)) (model-cell id :state)))
-(defn resume-model! [services id]
-  (host/publish-input! (:owner services)
-                       (fn [s]
-                         (let [cell (model-cell id :state) state (read-cell s cell)]
-                           [(session/publication-input cell (connected/frozen (-> state (update :version inc) (assoc-in [:round :paused] false))))]))))
+(defn model-state [services id]
+  (let [s (host/current-session (:owner services))] (read-cell s (model-cell s id :state))))
+(defn resume-model!
+  "Publish an explicit command identity. Lain owns the state transition and replay."
+  ([services id] (resume-model! services id (random-uuid)))
+  ([services id identity]
+   (publish-event! (:owner services) [:control id]
+                   {:id identity :kind :resume :payload :resume})))
 
-(defn message-extension [services model-id]
-  (let [owner (:owner services) dep (keyword "lain-harness.delivery" (str model-id))]
+(defn message-extension [services]
+  (let [owner (:owner services) dep ::delivery]
     (session/session-extension
-     {:id [:message-to-user model-id]
-      :primitives {'message-to-user (ops/async-op (host/effect-interpreter owner)
-                                                  (fn [a] (a (fn [content] (ops/effect-output (ops/dependency-input dep content))))))}
+     {:id dep
+      :primitives {'message:deliver (ops/async-op (host/effect-interpreter owner)
+                                                  (fn [a] (a (fn [content delivered] (ops/effect-output (ops/dependency-input dep {:content content :delivered delivered}))))))}
       :dependencies {dep (dependency/callback-dependency
                           (fn [context emit!]
-                            (publish-event! owner (model-cell model-id :delivered)
-                                            {:id (nth (:id context) 3) :payload (:input context)})
+                            (let [{:keys [content delivered]} (:input context)]
+                              (publish-cell-event! owner delivered
+                                                   {:id (nth (:id context) 3) :payload content}))
                             (emit! (connected/thaw {:status :delivered}))
                             ((:complete! context)) nil))}})))
 
@@ -187,7 +165,7 @@
         files (merge (:files parts)
                      {"soul-refined.lain" (slurp path)}
                      (into {} (map (fn [file] [file (slurp (str root "/" file))]))
-                           ["lib/data.lain" "lib/queue.lain" "lib/rounds.lain" "lib/observations.lain" "lib/observation-example.lain" "lib/compiler.lain" "lib/model.lain"]))]
+                           ["integration.lain" "lib/data.lain" "lib/ports.lain" "lib/queue.lain" "lib/rounds.lain" "lib/observations.lain" "lib/observation-example.lain" "lib/compiler.lain" "lib/model.lain"]))]
     (session/session-extension
      (assoc parts :id ::specification :files files
             :target (session/environment (host/current-session owner))))))
@@ -205,12 +183,12 @@
     (try
       (install-facilities! services)
       (host/extend! owner (specification-extension services source-path))
-      (host/extend! owner (user-extension user-id))
-      (host/extend! owner (model-extension services {:id model-id :transport transport}))
-      (host/extend! owner (message-extension services model-id))
+      (host/extend! owner (transport-extension services transport))
+      (host/extend! owner (message-extension services))
       (host/extend-source! owner
-                           "(define conversation (conversation-experiment model-session user-input message-to-user))
-         (define conversation-child (car conversation))")
+                           (str "(define conversation (integration:launch " (pr-str model-id) " " (pr-str user-id)
+                                " (struct :request transport:stream :deliver message:deliver)))"))
+      (host/step! owner)
       (when owners
         ((requiring-resolve 'graph.lain-editor.runtime.session/register-compiler-session!)
          owners owner (slurp source-path)))

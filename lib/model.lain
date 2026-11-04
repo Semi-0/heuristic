@@ -1,19 +1,130 @@
-(define model:initial (network [capacity budget] (data:record :version 0 :inputs (queue:empty capacity) :outputs (queue:empty capacity) :history (data:list) :deliveries (data:list) :round (round:initial budget) :serial 0 :context :uninitialized :active :idle :parser (parser:initial) :diagnostic "")))
+(define model:initial
+  (network [capacity budget]
+           (data:record :version 0 :inputs (queue:empty capacity) :outputs (queue:empty capacity)
+                        :history (data:list) :deliveries (data:list) :commands (data:list)
+                        :round (round:initial budget) :serial 0 :context :uninitialized
+                        :active :idle :parser (parser:initial) :diagnostic "")))
 
 (define model:prompt (network [history context event] (list:append (data:list (data:record :role "system" :content "Reply with executable Lain source only, without markdown. To reply call (message-to-user \"your reply\"). Use (define name (network [x] ...)) for reusable functions. Never redefine existing names. To request another inference connect a result to a unique slot of model-feedback using (-> result ((slot :unique-name) model-feedback)).")) (list:append history (data:list (data:record :role "user" :content (str "Parent environment: " context "\nRequest: " (data:get :payload event))))))))
 
-(define model:offer (network [state key queue event] (let [offered (queue:offer queue event)] (if (= (data:get :status offered) :accepted) (state:advance state (data:record key (data:get :state offered))) (if (= (data:get :status offered) :duplicate) state (state:advance state (data:record :diagnostic (str "Queue " (data:get :status offered)) :round (round:finish (data:get :round state) true))))))))
+(define model:offer
+  (network [state key queue event]
+           (let [offered (queue:offer queue event)]
+             (cond [(= (data:get :status offered) :accepted)
+                    (state:advance state (data:record key (data:get :state offered)))
+                    (= (data:get :status offered) :duplicate) state
+                    else
+                    (state:advance state
+                                   (data:record :diagnostic (str "Queue " (data:get :status offered))
+                                                :round (round:finish (data:get :round state) true)))]))))
 
-(define model:start (network [state event context] (let [round (data:get :round state) prepared (if (= (data:get :kind event) :user) (round:for-user round (data:get :id event)) round)] (if (round:eligible prepared (data:get :count (data:get :inputs state))) (let [serial (+ 1 (data:get :serial state)) history (data:get :history state) request (data:record :id serial :round serial :messages (model:prompt history context event))] (state:advance state (data:record :serial serial :active request :parser (parser:initial) :round (round:start prepared 1) :history (if (= (data:get :kind event) :user) (queue:append-list history (data:record :role "user" :content (data:get :payload event))) history)))) state))))
+(define model:start
+  (network [state event context]
+           (let [round (data:get :round state)
+                 prepared (if (= (data:get :kind event) :user)
+                            (round:for-user round (data:get :id event)) round)]
+             (if (round:eligible prepared (data:get :count (data:get :inputs state)))
+               (let [serial (+ 1 (data:get :serial state))
+                     history (data:get :history state)
+                     request (data:record :id serial :round serial
+                                          :messages (model:prompt history context event))]
+                 (state:advance state
+                                (data:record :serial serial :active request :parser (parser:initial)
+                                             :round (round:start prepared 1)
+                                             :history (if (= (data:get :kind event) :user)
+                                                        (queue:append-list history
+                                                                           (data:record :role "user" :content (data:get :payload event)))
+                                                        history))))
+               state))))
 
-(define model:step (network [state users events delivered context] (let [inputs (data:get :inputs state) outputs (data:get :outputs state) new-users (queue:unseen users (data:get :history inputs)) new-events (queue:unseen events (data:get :history outputs)) new-deliveries (queue:unseen delivered (data:get :deliveries state))] (if (data:empty? new-events) (if (data:empty? new-users) (if (data:empty? new-deliveries) (if (= (data:get :context state) context) (if (= (data:get :active state) :idle) (if (data:empty? (data:get :pending inputs)) state (model:start state (data:get :car (data:get :pending inputs)) context)) (if (= (data:get :status (data:get :parser state)) :done) (state:advance state (data:record :active :idle :round (round:finish (data:get :round state) false) :inputs (data:get :state (queue:acknowledge inputs (data:get :id (data:get :car (data:get :pending inputs))))))) state)) (if (= (data:get :context state) :uninitialized) (state:advance state (data:record :context context)) (data:with (model:offer state :inputs inputs (data:record :id context :kind :feedback :payload (str context))) (data:record :context context)))) (let [delivery (data:get :car new-deliveries)] (state:advance state (data:record :deliveries (queue:append-list (data:get :deliveries state) delivery) :history (queue:append-list (data:get :history state) (data:record :role "assistant" :content (data:get :payload delivery))))))) (model:offer state :inputs inputs (data:get :car new-users))) (let [event (data:get :car new-events)] (if (= (data:get :kind event) :failure) (state:advance state (data:record :active :idle :round (round:finish (data:get :round state) true) :outputs (data:get :state (queue:offer outputs event)) :diagnostic (data:get :payload event))) (model:offer state :outputs outputs event)))))))
+(define model:command
+  (network [state command]
+           (state:advance state
+                          (data:record :commands (queue:append-list (data:get :commands state) command)
+                                       :round (if (= (data:get :kind command) :resume)
+                                                (round:resume (data:get :round state))
+                                                (data:get :round state))))))
+
+(define model:step
+  (network [state users events delivered commands context]
+           (let [inputs (data:get :inputs state)
+                 outputs (data:get :outputs state)
+                 new-commands (queue:unseen commands (data:get :commands state))
+                 new-users (queue:unseen users (data:get :history inputs))
+                 new-events (queue:unseen events (data:get :history outputs))
+                 new-deliveries (queue:unseen delivered (data:get :deliveries state))]
+             (cond [(not (data:empty? new-commands))
+                    (model:command state (data:get :car new-commands))
+
+                    (not (data:empty? new-events))
+                    (let [event (data:get :car new-events)]
+                      (if (= (data:get :kind event) :failure)
+                        (state:advance state
+                                       (data:record :active :idle
+                                                    :round (round:finish (data:get :round state) true)
+                                                    :outputs (data:get :state (queue:offer outputs event))
+                                                    :diagnostic (data:get :payload event)))
+                        (model:offer state :outputs outputs event)))
+
+                    (not (data:empty? new-users))
+                    (model:offer state :inputs inputs (data:get :car new-users))
+
+                    (not (data:empty? new-deliveries))
+                    (let [delivery (data:get :car new-deliveries)]
+                      (state:advance state
+                                     (data:record :deliveries (queue:append-list (data:get :deliveries state) delivery)
+                                                  :history (queue:append-list (data:get :history state)
+                                                                              (data:record :role "assistant" :content (data:get :payload delivery))))))
+
+                    (not (data:equal? (data:get :context state) context))
+                    (if (= (data:get :context state) :uninitialized)
+                      (state:advance state (data:record :context context))
+                      (data:with
+                       (model:offer state :inputs inputs
+                                    (data:record :id context :kind :feedback :payload (str context)))
+                       (data:record :context context)))
+
+                    (= (data:get :active state) :idle)
+                    (if (data:empty? (data:get :pending inputs)) state
+                        (model:start state (data:get :car (data:get :pending inputs)) context))
+
+                    (= (data:get :status (data:get :parser state)) :done)
+                    (state:advance state
+                                   (data:record :active :idle
+                                                :round (round:finish (data:get :round state) false)
+                                                :inputs (data:get :state
+                                                                  (queue:acknowledge inputs
+                                                                                     (data:get :id (data:get :car (data:get :pending inputs)))))))
+                    else state]))))
 
 (define model:connect
   (network [model description user-cell]
-           (let [state (cell:value (data:get :state-cell model))
-                 next (model:step state (cell:value user-cell) (cell:value (data:get :events-cell model))
-                                  (cell:value (data:get :delivered-cell model)) (data:snapshot description))]
-             (session:feedback (data:get :state-cell model) (data:get :version state) next)
-             (transport:request (data:get :transport model) (data:snapshot (data:get :active state)))
+           (let [state (cell:value ((slot :state-cell) model))
+                 next (model:step state (cell:value user-cell) (cell:value ((slot :events-cell) model))
+                                  (cell:value ((slot :delivered-cell) model))
+                                  (cell:value ((slot :commands-cell) model)) (data:snapshot description))]
+             (session:feedback ((slot :state-cell) model) (data:get :version state) next)
+             (((slot :request) model) (data:snapshot (data:get :active state)) ((slot :events-cell) model))
              :connected)))
 (define actions-of (network [model] model))
+(define inputs-of (network [model] (cell:input ((slot :inlet) model))))
+
+;; Model topology and initial values belong here, not in an extension's :cells.
+(define model:new
+  (network [identity request capacity budget user]
+           (define inlet)
+           (let [state (source:new (data:with (model:initial capacity budget)
+                                              (data:record :model-id identity)))
+                 events (source:new (data:list))
+                 delivered (source:new (data:list))
+                 commands (source:new (data:list))
+                 premise (source:new identity)
+                 instance (struct :state-cell state :inlet (cell:reference inlet)
+                                  :events-cell events :delivered-cell delivered
+                                  :commands-cell commands :request request :premise premise)]
+             (session:export :model identity :model state)
+             (session:export :source identity :source events)
+             (session:export :messages identity :messages delivered)
+             (session:export :control identity :model-control commands)
+             (model:connect instance inlet user)
+             instance)))

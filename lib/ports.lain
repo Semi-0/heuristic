@@ -1,0 +1,7 @@
+;; The source and its initializing propagator are wired in this network.
+;; No session coordinator or host initialization transaction is involved.
+(define source:new
+  (network [initial]
+           (define value)
+           (source:initialize value initial)
+           (cell:reference value)))

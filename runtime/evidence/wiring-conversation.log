@@ -1,0 +1,7 @@
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_lain/7 because it is locked by another process (errno = 11)
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+:prepared {:version 0, :active :idle, :context :uninitialized}
+:requests 0
+:interfaces {[:user user] {:kind :user-message, :value {:car {:id first, :kind :user, :payload hello}, :cdr :lain.data/empty}}, [:model model] {:kind :model, :value {:model-id model, :diagnostic , :history :lain.data/empty, :round {:turn :none, :number 0, :budget 8, :busy false, :paused false}, :serial 0, :commands :lain.data/empty, :parser {:buffer , :finish false, :index 0, :status :waiting}, :inputs {:pending {:car {:id first, :kind :user, :payload hello}, :cdr :lain.data/empty}, :history {:car {:id first, :kind :user, :payload hello}, :cdr :lain.data/empty}, :count 1, :capacity 256, :version 1}, :active :idle, :deliveries :lain.data/empty, :outputs {:pending :lain.data/empty, :history :lain.data/empty, :count 0, :capacity 256, :version 0, :valid true}, :context :uninitialized, :version 1}}, [:messages model] {:kind :messages, :value :lain.data/empty}, [:source model] {:kind :source, :value :lain.data/empty}, [:control model] {:kind :model-control, :value :lain.data/empty}}
+:failures []

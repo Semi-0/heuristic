@@ -1,0 +1,5 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /home/lain/projects/lain-workspace/src
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_lain/7 because it is locked by another process (errno = 11)
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+PASS: Lain integration launch exposes current model state as editor result; no inference on launch.
