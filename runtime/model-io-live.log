@@ -1,0 +1,4 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:status :passed, :model "qwen3.8-flash-next", :elapsed-ms 1061.867086, :output {:kind :reply, :text "\n\nHello!", :thinking "We need to respond to user: \"Hi. Reply with one short greeting.\" Need final one short greeting. Keep concise.\n", :finish-reason "stop", :truncated? false}}
+{:cleanup {:status :closed}}

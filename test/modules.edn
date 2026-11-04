@@ -1,6 +1,8 @@
 {:behavior {:description "Compiled Lain temporal behaviors, immutable evidence, composition and bounded retention"
             :namespaces [lain-harness.behavior-test
                          propagators.experimental.temporal-behavior-test]}
+ :model-io {:description "Compiled Lain worker handles, core.async IO, cancellation and HTTP contracts"
+            :namespaces [lain-harness.model-io-test]}
  :transport {:description "Stream framing and native transport contracts"
              :vars [lain-harness.streaming-test/sse-contract]}
  :model {:description "Connected Lain model with controlled context and a test output consumer"

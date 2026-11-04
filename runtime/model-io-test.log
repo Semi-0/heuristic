@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE model-io — Compiled Lain worker handles, core.async IO, cancellation and HTTP contracts
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 6 tests containing 42 assertions.
+0 failures, 0 errors.
+MODULE-RESULT model-io {:test 6, :pass 42, :fail 0, :error 0}
