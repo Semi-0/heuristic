@@ -1,8 +1,3 @@
-;; Entirely Lain: add an observation with a distinct shape and domain vocabulary.
-(define observation:review-note
-  (network [fact]
-    (struct :review (str "Review binding " ((slot :name) fact))
-            :available ((slot :available) fact))))
-(define observe-review-notes
-  (network [e]
-    (observation:describe-local e observation:review-note)))
+(define observation:review-note (network [fact] (data:record :review (str "Review binding " (data:get :name fact)) :available (data:get :available fact))))
+
+(define observe-review-notes (network [e] (observation:describe-local e observation:review-note)))

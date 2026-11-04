@@ -8,6 +8,7 @@
             [lain-harness.runtime :as harness]
             [lain-harness.premises :as premises]
             [propagators.compiler-2.session :as session]
+            [propagators.compiler-2.session.connected :as connected]
             [propagators.compiler-2.session.host :as host]
             [propagators.compiler-2.compiler.basis :as basis]
             [propagators.experimental.visualization.data :as data]
@@ -60,19 +61,26 @@
     (try
       (host/extend-source! owner
                            "(define q0 (queue:empty 1))
-         (define event-a (struct :id :a :payload 7))
-         (define q1 ((slot :state) (queue:offer q0 event-a)))
-         (define duplicate-status ((slot :status) (queue:offer q1 event-a)))
-         (define overflow-status ((slot :status) (queue:offer q1 (struct :id :b :payload 8))))
-         (define conflict-status ((slot :status) (queue:offer q1 (struct :id :a :payload 8))))
-         (define ack-status ((slot :status) (queue:acknowledge q1 :a)))
-         (define wrong-ack-status ((slot :status) (queue:acknowledge q1 :b)))
+         (define event-a (data:record :id :a :kind :chunk :payload 7))
+         (define q1 (data:get :state (queue:offer q0 event-a)))
+         (define duplicate-status (data:get :status (queue:offer q1 event-a)))
+         (define overflow-status (data:get :status (queue:offer q1 (data:record :id :b :payload 8))))
+         (define conflict-status (data:get :status (queue:offer q1 (data:record :id :a :payload 8))))
+         (define ack-status (data:get :status (queue:acknowledge q1 :a)))
+         (define wrong-ack-status (data:get :status (queue:acknowledge q1 :b)))
          (define r1 (round:start initial-round-state 1))
          (define active-eligible (round:eligible r1 1))
          (define failed (round:finish r1 true))
          (define failed-eligible (round:eligible failed 1))
          (define resumed-eligible (round:eligible (round:resume failed) 1))
-         (define budget-limit (round:eligible (struct :number 8 :budget 8 :busy false :paused false) 1))
+         (define budget-limit (round:eligible (data:record :number 8 :budget 8 :busy false :paused false) 1))
+         (define kind-conflict (data:get :status (queue:offer q1 (data:record :id :a :kind :complete :payload 7))))
+         (define zero-capacity (data:get :status (queue:offer (queue:empty 0) event-a)))
+         (define fractional-capacity (data:get :status (queue:offer (queue:empty 1.5) event-a)))
+         (define replay (data:get :status (queue:feedback q1 0 q1)))
+         (define stale-replay (data:get :status (queue:feedback q1 99 q1)))
+         (define same-turn (data:get :number (round:for-user (data:record :turn :a :number 8) :a)))
+         (define next-turn (data:get :number (round:for-user (data:record :turn :a :number 8) :b)))
          (define default-limit pending-event-limit)
          (define default-budget inference-round-budget)")
       (let [s (host/current-session owner)
@@ -82,7 +90,9 @@
                                  'wrong-ack-status :invalid-acknowledgement
                                  'active-eligible false 'failed-eligible false
                                  'resumed-eligible true 'budget-limit false
-                                 'default-limit 256 'default-budget 8}]
+                                 'default-limit 256 'default-budget 8
+                                 'kind-conflict :conflict 'zero-capacity :invalid-capacity 'fractional-capacity :invalid-capacity
+                                 'replay :replayed 'stale-replay :stale-version 'same-turn 8 'next-turn 0}]
           (is (= expected (observed name)) (str name))))
       (finally (host/close! owner)))))
 
@@ -129,10 +139,10 @@
         (let [initial (host/current-session owner)
               source (str "(define admission-child (lexical-child (empty-env)))\n"
                           "(define admission-plan (incremental-compile-form :generated \"(define result 42)\" admission-child nil))\n"
-                          "(define declaration ((slot :declaration) admission-plan))")
+                          "(define declaration (data:get :declaration admission-plan))")
               prepared (session/extend-session initial
                                                (session/session-extension {:id :plan :files {"plan.lain" source}}))
-              declaration (data/payload (session/binding-value prepared 'declaration))
+              declaration (connected/payload (data/payload (session/binding-value prepared 'declaration)))
               receipt (basis/stable-node-id :actual-source-receipt)
               admitted (:session (session/advance prepared [(session/admission-input declaration receipt :actual)]))
               target (:target declaration)]
@@ -143,9 +153,14 @@
         (finally (host/close! owner))))))
 
 (deftest pure-core-architecture
-  (doseq [file ["queue.clj" "stream.clj" "admission.clj" "environment.clj" "lexical_observation.clj"]]
+  (doseq [file ["queue.clj" "stream.clj" "source_reader.clj" "admission.clj" "environment.clj" "lexical_observation.clj" "connected_data.clj" "value_metadata.clj"]]
     (let [source (slurp (str root "/src/lain_harness/" file))]
-      (doseq [forbidden ["(atom " "swap!" "reset!" "promise" "future" "Thread."
+      (doseq [forbidden ["(atom " "(swap!" "(reset!" "promise" "future" "Thread."
+                         "session.host" "slurp" "spit" "java.net"]]
+        (is (not (str/includes? source forbidden)) (str file " contains " forbidden)))))
+  (doseq [file ["propagators/compiler_2/session.clj" "propagators/compiler_2/session/connected.clj"]]
+    (let [source (slurp file)]
+      (doseq [forbidden ["(atom " "(swap!" "(reset!" "promise" "future" "Thread."
                          "session.host" "slurp" "spit" "java.net"]]
         (is (not (str/includes? source forbidden)) (str file " contains " forbidden)))))
   (let [source (slurp (str root "/src/lain_harness/runtime.clj"))]
@@ -176,9 +191,9 @@
                                             (session/session-extension
                                              {:id :observation-check
                                               :files {"observation-check.lain"
-                                                      "(define note ((slot :review) (car notes)))
-                                 (define fact-value ((slot :value) (car facts)))
-                                 (define fact-available ((slot :available) (car facts)))"}}))]
+                                                      "(define note (data:get :review (data:get :car notes)))
+                                 (define fact-value (data:get :value (data:get :car facts)))
+                                 (define fact-available (data:get :available (data:get :car facts)))"}}))]
         (is (= "Review binding answer" (data/payload (session/binding-value checked 'note))))
         (is (= 42 (data/payload (session/binding-value checked 'fact-value))))
         (let [withdrawn (:session (session/advance checked

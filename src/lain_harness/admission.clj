@@ -2,6 +2,7 @@
   "Pure source admission declarations. Session advancement owns the transaction."
   (:require [propagators.compiler-2.compiler.basis :as basis]
             [propagators.compiler-2.session :as session]
+            [propagators.compiler-2.session.connected :as connected]
             [propagators.compiler-2.session.operators :as ops]))
 
 (defn declaration [id source target support-cell]
@@ -10,7 +11,7 @@
    :files {(str "admission/" (basis/stable-node-id :admission id) ".lain") source}})
 
 (defn primitive-bindings []
-  [['admission:declaration (ops/prim-op (fn [p] (p declaration)))]])
+  [['admission:declaration (ops/prim-op (fn [p] (p (comp connected/frozen declaration))))]])
 
 (defn extension []
   (session/session-extension

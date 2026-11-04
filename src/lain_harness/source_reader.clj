@@ -3,11 +3,11 @@
   (:require [lain-harness.stream :as stream]
             [propagators.compiler-2.session :as session]
             [propagators.compiler-2.session.operators :as ops]
-            [propagators.datastructures.compound-object :as object]))
+            [propagators.compiler-2.session.connected :as connected]))
 
 (defn read-next [text finish?]
   (let [result (stream/advance-form (assoc (stream/framer) :buffer text) finish?)]
-    (object/as-accessor-network
+    (connected/frozen
      {:status (:status result) :source (or (:source result) "")
       :remaining (get-in result [:state :buffer])
       :message (or (:message result) "")})))

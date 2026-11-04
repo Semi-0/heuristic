@@ -1,17 +1,139 @@
+diff --git a/editor/src/graph/lain_editor/runtime/session.clj b/editor/src/graph/lain_editor/runtime/session.clj
+index 11f4c94..3538a62 100644
+--- a/editor/src/graph/lain_editor/runtime/session.clj
++++ b/editor/src/graph/lain_editor/runtime/session.clj
+@@ -119,7 +119,7 @@
+         identity (when boundary (compiler-session/session-identity (compiler-host/current-session boundary)))
+         mode (display/mode (:program/net @(:session entry)))]
+     (cond-> (assoc (select-keys entry [:sessionId :generation :source :extensions
+-                                     :appliedExtensions :compilerSession :ownership])
++                                       :appliedExtensions :compilerSession :ownership])
+                    :runtime (if boundary "session" "legacy")
+                    :runId (when identity (str (:run-id identity)))
+                    :lifecycle (if boundary (name (compiler-host/lifecycle boundary)) "active"))
+@@ -154,14 +154,14 @@
+                                              display/extension history/extension
+                                              capture-observation/extension stack-primitives/extension]}))
+         base (compiler-session/extend-session initial
+-                                             (or (get committed "base") (source-extension initial "base" source)))
++                                              (or (get committed "base") (source-extension initial "base" source)))
+         compiled (reduce (fn [current {:keys [id source]}]
+                            (compiler-session/extend-session current
+-                                                             (or (get committed id) (source-extension current id source))))
++                                                            (or (get committed id) (source-extension current id source))))
+                          base applied)]
+     (compiler-session/with-compiler-state
+-     compiled (assoc (compiler-session/compiler-state compiled)
+-                     semantic-capture/storage-key sources retained-inspection/storage-key (atom {})))))
++      compiled (assoc (compiler-session/compiler-state compiled)
++                      semantic-capture/storage-key sources retained-inspection/storage-key (atom {})))))
+ 
+ (defn- committed-declarations [compiled]
+   (into {} (map (fn [[id parts]] [id (compiler-session/session-extension (assoc parts :id id))]))
+@@ -237,8 +237,8 @@
+               candidate (compile-owner source applied (assoc identity :run-id (random-uuid)))]
+           (compiler-host/replace! boundary candidate)
+           (publish-owner! editors (assoc previous :source source :extensions extensions
+-                                        :appliedExtensions applied :committedDeclarations (committed-declarations candidate)
+-                                        :generation (str (random-uuid)))))
++                                         :appliedExtensions applied :committedDeclarations (committed-declarations candidate)
++                                         :generation (str (random-uuid)))))
+         (let [entry (prepare-compiler source extensions)]
+           (when previous (close-entry! previous))
+           (publish-owner! editors entry)
+@@ -260,7 +260,7 @@
+           (load-checked! candidate source)
+           (swap! candidate assoc semantic-capture/storage-key sources)
+           (promote! editors pane (assoc previous :session candidate :generation (str (random-uuid))
+-                                       :extensions (conj (:extensions previous) source)))
++                                        :extensions (conj (:extensions previous) source)))
+           (catch Throwable error (close-session! candidate) (throw error)))))))
+ 
+ (defn extend! [editors {:keys [source generation] :as command}]
+@@ -273,10 +273,10 @@
+             extension (source-extension (compiler-host/current-session boundary) (:id applied) source)]
+         (compiler-host/extend! boundary extension)
+         (publish-owner! editors (-> previous
+-                                   (assoc :generation (str (random-uuid)))
+-                                   (update :extensions conj source)
+-                                   (update :appliedExtensions conj applied)
+-                                   (update :committedDeclarations assoc (:id applied) extension))))
++                                    (assoc :generation (str (random-uuid)))
++                                    (update :extensions conj source)
++                                    (update :appliedExtensions conj applied)
++                                    (update :committedDeclarations assoc (:id applied) extension))))
+       (extend-legacy! editors command))))
+ 
+ (defn remove-extension! [editors {:keys [generation extensionId] :as command}]
+@@ -293,8 +293,8 @@
+                                    (:committedDeclarations previous))]
+       (compiler-host/replace! boundary candidate)
+       (publish-owner! editors (assoc previous :appliedExtensions applied
+-                                    :extensions (mapv :source applied) :committedDeclarations (committed-declarations candidate)
+-                                    :generation (str (random-uuid)))))))
++                                     :extensions (mapv :source applied) :committedDeclarations (committed-declarations candidate)
++                                     :generation (str (random-uuid)))))))
+ 
+ (defn spawn-slots! [editors {:keys [generation] :as command}]
+   (let [previous (require-owner editors command)
+@@ -336,7 +336,7 @@
+       :runIds (into {} (map (fn [[id entry]] [id (:runId (public-entry entry))])) restored)
+       :sessions (into {} (map (fn [[id entry]] [id (public-entry entry)])) restored)
+       :displayModes (into {} (keep (fn [[id entry]]
+-                                    (when-let [mode (:displayMode (public-entry entry))] [id mode]))) restored)})))
++                                     (when-let [mode (:displayMode (public-entry entry))] [id mode]))) restored)})))
+ 
+ (defn detached-entry [owners session-id]
+   (or (get @owners session-id) (throw (ex-info "Session not found; Run explicitly" {:sessionId session-id}))))
+@@ -390,3 +390,20 @@
+     (reset! editors {})
+     (when (and owners (not (identical? owners editors)))
+       (swap! owners (fn [entries] (into {} (filter #(= :external (:ownership (val %)))) entries))))))
++
++(defn conversation-status [editors {:keys [generation] :as command}]
++  (let [entry (require-owner editors command)
++        _ (require-generation entry generation)
++        boundary (compiler-host/boundary-for (:session entry))]
++    (when-not boundary (throw (ex-info "An open compiler session is required" {})))
++    (assoc (public-entry entry) :interfaces (compiler-host/interface-values boundary))))
++
++(defn publish-user-message! [editors {:keys [generation inputId messageId text runId] :as command}]
++  (let [entry (require-owner editors command)
++        _ (require-generation entry generation)
++        boundary (compiler-host/boundary-for (:session entry))]
++    (when-not boundary (throw (ex-info "An open compiler session is required" {})))
++    ;; External owners opt in by exporting this narrow interface. Their source,
++    ;; dependencies, and all other cells retain the existing mutation protection.
++    (compiler-host/publish-user-message! boundary
++                                         {:interface [:user inputId] :run-id runId :id messageId :text text})))
+diff --git a/editor/src/graph/lain_editor/server.clj b/editor/src/graph/lain_editor/server.clj
+index a6a824f..9b4dc52 100644
+--- a/editor/src/graph/lain_editor/server.clj
++++ b/editor/src/graph/lain_editor/server.clj
+@@ -60,6 +60,8 @@
+                         (graph-layout/compute! layouts command))
+            "open-session" (editor/open-session! editors command)
+            "session-status" (editor/session-status editors command)
++           "conversation-status" (editor/conversation-status editors command)
++           "user-message" (editor/publish-user-message! editors command)
+            "remove-extension" (editor/remove-extension! editors command)
+            "run" (let [result (editor/run! editors command)]
+                    (development-runtime/close-pane! developments id)
 diff --git a/propagators/compiler_2/session.clj b/propagators/compiler_2/session.clj
-index 18c54c9..4ad2795 100644
+index 18c54c9..aeab533 100644
 --- a/propagators/compiler_2/session.clj
 +++ b/propagators/compiler_2/session.clj
-@@ -1,6 +1,8 @@
+@@ -1,6 +1,9 @@
  (ns propagators.compiler-2.session
    "Immutable Lain compiler sessions. No host callback or file IO runs here."
    (:require [propagators.cells.value :as value]
 +            [propagators.compiler-2.cps-core :as compiler]
 +            [propagators.compiler-2.session.supported :as supported]
++            [propagators.compiler-2.session.connected :as connected]
              [propagators.compiler-2.compiler.basis :as basis]
              [propagators.compiler-2.model.env :as env]
              [propagators.compiler-2.model.env.binding :as binding]
-@@ -19,6 +21,10 @@
+@@ -19,6 +22,10 @@
              [propagators.network :as net]
              [propagators.network-builder :as nb]
              [propagators.runner :as runner]
@@ -22,18 +144,18 @@ index 18c54c9..4ad2795 100644
              [propagators.relationship-observer :as observer])
    (:import [java.util UUID]))
  
-@@ -92,7 +98,9 @@
+@@ -92,7 +99,9 @@
  
  (defn session-extension
    "Snapshot declared values. Files are supplied contents, never paths to load."
 -  [{:keys [id primitives dependencies files imports]}]
-+  [{:keys [id primitives dependencies files imports target support-cell cells frames targets supports derivations scoped-primitives]}]
++  [{:keys [id primitives dependencies files imports target support-cell cells frames targets supports derivations scoped-primitives interfaces]}]
 +  (when (and support-cell (nil? target))
 +    (throw (ex-info "Definition support requires a lexical target" {})))
    (when (nil? id)
      (throw (ex-info "Compiler extension requires an id" {})))
    (when-not (or (nil? dependencies) (map? dependencies))
-@@ -110,9 +118,15 @@
+@@ -110,9 +119,15 @@
        (when-not (and (string? file) (string? text))
          (throw (ex-info "Invalid source file declaration" {:file file})))
        (source/read-source-forms text))
@@ -45,22 +167,31 @@ index 18c54c9..4ad2795 100644
                              :dependencies (into {} dependencies)
 -                            :files files :imports (into {} imports)})))
 +                            :files files :imports (into {} imports)
-+                            :cells (into {} cells) :frames (into {} frames) :derivations (into {} derivations)
++                            :cells (into {} cells) :frames (into {} frames) :derivations (into {} derivations) :interfaces (into {} interfaces)
 +                            :targets (merge targets (when target (zipmap (keys files) (repeat target))))
 +                            :supports (merge supports (when support-cell (zipmap (keys files) (repeat support-cell))))})))
  
  (defn- join-additions [existing additions kind]
    (reduce-kv
-@@ -128,7 +142,7 @@
+@@ -128,7 +143,7 @@
    (reduce (fn [result kind]
              (assoc result kind (join-additions (get base kind {})
                                                 (get additions kind {}) kind)))
 -          base [:primitives :dependencies :files :imports]))
-+          base [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives]))
++          base [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives :interfaces]))
  
  (defn cell-input
    "An ordinary domain update; its support and payload are not coerced."
-@@ -162,9 +176,23 @@
+@@ -145,6 +160,8 @@
+          (contains? input :update))
+     (cell-input (:cell-id input) (:update input))
+ 
++    (and (map? input) (#{:connected :admission} (:runtime/input input))) input
++
+     (message/message? input)
+     (cell-input (message/message-id input) (message/message-value input))
+ 
+@@ -162,9 +179,23 @@
  (defn binding-value [session sym]
    (net/network-cell-strongest (network session) (binding-cell session sym)))
  
@@ -85,7 +216,7 @@ index 18c54c9..4ad2795 100644
            :when (and definition (> (count definition) 2))]
      (throw (ex-info "Conflicting binding: source definition already owns this name"
                      {:symbol sym :definition definition})))
-@@ -176,12 +204,16 @@
+@@ -176,12 +207,16 @@
            pending (keep (fn [[sym implementation]]
                            (let [descriptor (env/resolve-binding (:program/net runtime)
                                                                  (:program/env runtime) sym)
@@ -104,7 +235,7 @@ index 18c54c9..4ad2795 100644
                          pairs)
            pending-by-name (into {} pending)
            aliases (mapv (fn [[sym implementation]]
-@@ -189,11 +221,29 @@
+@@ -189,11 +224,29 @@
                              [sym (binding/cell-binding (:cell-id reserved))]
                              [sym implementation])) pairs)
            declared (env/declare-bindings (:program/net runtime) (:program/env runtime) aliases)
@@ -136,7 +267,7 @@ index 18c54c9..4ad2795 100644
  
  (defn- definition-name [form]
    (when (and (seq? form) (= 'define (first form)))
-@@ -203,16 +253,104 @@
+@@ -203,16 +256,104 @@
  (declare compile-file)
  
  (defn- compile-declaration [runtime file form]
@@ -249,18 +380,28 @@ index 18c54c9..4ad2795 100644
  
  (defn- compile-file-form [runtime file form]
    (let [head (when (seq? form) (first form))]
-@@ -262,8 +400,8 @@
+@@ -247,7 +388,8 @@
+ (defn- refresh-observers [runtime]
+   ;; Source publication must finish observer wiring while still pure. Host
+   ;; delivery remains post-commit; do not use the IO-performing loader adapter.
+-  (let [[ids prepared] (observer/refresh-roots (:program/net runtime))
++  (let [[root-ids prepared] (observer/refresh-roots (:program/net runtime))
++        ids (into (vec root-ids) (vals (get (net/network-dict-entry prepared [:network :name-bindings]) [:session :samples])))
+         [observed network] (temperature/run-propagators runtime :relationship/refresh prepared ids)]
+     (assoc observed :program/net network)))
+ 
+@@ -262,8 +404,8 @@
          declarations (assoc-in joined [:extensions (extension-id extension)] parts)]
      (when (and prior (not= prior parts))
        (throw (ex-info "Extension identity already declared" {:id (extension-id extension)})))
 -    (if (= (select-keys before [:primitives :dependencies :files :imports])
 -           (select-keys joined [:primitives :dependencies :files :imports]))
-+    (if (= (select-keys before [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives])
-+           (select-keys joined [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives]))
++    (if (= (select-keys before [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives :interfaces])
++           (select-keys joined [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives :interfaces]))
        (if prior
          session
          (ImmutableLainSession. identity declarations (compiler-state session)))
-@@ -271,15 +409,22 @@
+@@ -271,15 +413,22 @@
              new-files (apply dissoc (:files parts) (keys (:files before)))
              candidate (-> (compiler-state session)
                            (assoc ::catalog joined)
@@ -284,7 +425,7 @@ index 18c54c9..4ad2795 100644
    (let [inputs (mapv normalize-input inputs)
          before (compiler-state session)
          tick (inc (get before :runtime/commit-tick 0))
-@@ -288,6 +433,7 @@
+@@ -288,6 +437,7 @@
                       (input/assoc-program-commit-tick tick)
                       (input/apply-program-updates
                        (mapv #(select-keys % [:cell-id :update]) inputs))
@@ -292,7 +433,7 @@ index 18c54c9..4ad2795 100644
                       effects/record-boundary-effects)
          current (cond-> prepared
                    (get-in (session-declarations session) [:options :record-inputs?])
-@@ -299,6 +445,74 @@
+@@ -299,6 +449,125 @@
                                   (session-declarations session) current)
            [] (effects/outbox-effects (:program/net current)))))
  
@@ -306,7 +447,7 @@ index 18c54c9..4ad2795 100644
 +  {:runtime/input :admission :declaration declaration
 +   :receipt-id receipt-id :response-id response-id})
 +
-+(defn- advance-admission [session {:keys [declaration receipt-id response-id]}]
++(defn- advance-admission [session {:keys [declaration receipt-id response-id freeze-receipt?]}]
 +  (let [id (:id declaration)
 +        prior (get-in (compiler-state session) [::admissions id])
 +        stopped? (contains? (::stopped-responses (compiler-state session)) response-id)
@@ -344,30 +485,81 @@ index 18c54c9..4ad2795 100644
 +                                         (collection/content
 +                                          (publication/next-source-datum receipt-id
 +                                                                         (net/network-cell-strongest (network candidate) receipt-id)
-+                                                                         receipt :active)))]))))
++                                                                         (if freeze-receipt? (connected/frozen receipt) receipt) :active)))]))))
++
++(defn publication-input [cell-id base]
++  {:runtime/input :publication :cell-id cell-id :base base})
++
++(defn- publish-value [session cell-id base]
++  (advance-cell-session session
++                        [(cell-input cell-id (collection/content
++                                              (publication/next-source-datum cell-id
++                                                                             (net/network-cell-strongest (network session) cell-id)
++                                                                             base :active)))]))
++
++(defn- advance-connected [session {:keys [kind values receipt token]}]
++  (if (contains? (::connected (compiler-state session)) token)
++    (turn session [] [])
++    (let [result
++          (case kind
++            :initialize
++            (let [[target initial] values
++                  current (connected/freeze (network session) (net/network-cell-strongest (network session) target))
++                  status (cond (= current connected/pending) :accepted (= current initial) :replayed :else :already-initialized)
++                  candidate (if (= status :accepted) (:session (publish-value session target (connected/frozen initial))) session)]
++              (publish-value candidate receipt (connected/frozen {:status status})))
++            :admission
++            (if (= :idle (first values))
++              (publish-value session receipt (connected/frozen {:id :idle :status :idle}))
++              (advance-admission session {:declaration (first values)
++                                          :response-id (second values) :receipt-id receipt :freeze-receipt? true}))
++            :feedback
++            (let [[target expected next-state] values
++                  current (connected/freeze (network session)
++                                            (net/network-cell-strongest (network session) target))
++                  status (cond
++                           (not (and (nat-int? expected) (nat-int? (:version next-state)))) :invalid-version
++                           (and (= current next-state) (= expected (:version current))) :unchanged
++                           (and (= current next-state) (= (inc expected) (:version next-state))) :replayed
++                           (not= expected (:version current)) :stale-version
++                           (not= (inc expected) (:version next-state)) :invalid-version
++                           :else :accepted)
++                  candidate (if (= status :accepted)
++                              (:session (publish-value session target (connected/frozen next-state))) session)]
++              (publish-value candidate receipt (connected/frozen {:status status :version (:version next-state)}))))
++          candidate (:session result)]
++      (turn (ImmutableLainSession. (session-identity candidate)
++                                   (session-declarations candidate)
++                                   (update (compiler-state candidate) ::connected (fnil conj #{}) token)) [] []))))
++
++(defn connected-inputs
++  "Collect declarations made available by a settled immutable network."
++  [current]
++  (keep (fn [{:keys [receipt values] :as declaration}]
++          (let [token [receipt values]]
++            (when-not (contains? (::connected (compiler-state current)) token)
++              (assoc declaration :runtime/input :connected :token token))))
++        (connected/declarations (network current))))
 +
 +(defn- advance-session [session inputs]
-+  ;; Admission is a compiler transaction between propagation rounds. No host,
-+  ;; worker, promise, resource callback, or mutable service registry participates.
-+  (reduce (fn [result batch]
-+            (let [current (:session result)
-+                  next-turn
-+                  (if (= :admission (:runtime/input (first batch)))
-+                    (reduce (fn [turn input]
-+                              (admission-input (:declaration input) (:receipt-id input) (:response-id input))
-+                              (advance-admission (:session turn) input))
-+                            result batch)
-+                    (advance-cell-session current batch))]
-+              (turn (:session next-turn)
-+                    (into (:next-inputs result) (:next-inputs next-turn))
-+                    (:requests next-turn))))
-+          (advance-cell-session session [])
-+          (partition-by #(= :admission (:runtime/input %)) inputs)))
++  (let [result
++        (reduce (fn [result batch]
++                  (let [current (:session result)]
++                    (case (:runtime/input (first batch))
++                      :connected (reduce (fn [turn input] (advance-connected (:session turn) input)) result batch)
++                      :publication (reduce (fn [turn input] (publish-value (:session turn) (:cell-id input) (:base input))) result batch)
++                      :admission (reduce (fn [turn input] (advance-admission (:session turn) input)) result batch)
++                      (advance-cell-session current batch))))
++                (advance-cell-session session [])
++                (partition-by :runtime/input inputs))
++        current (:session result)
++        pending (connected-inputs current)]
++    (turn current pending (effects/outbox-effects (network current)))))
 +
  (declare create-session)
  
  (extend-type ImmutableLainSession
-@@ -321,11 +535,11 @@
+@@ -321,11 +590,11 @@
        (throw (ex-info "Rerun requires a fresh run identity" {})))
      (let [identity (assoc (session-identity session) :run-id fresh-run-id)
            fresh (create-session
@@ -380,11 +572,11 @@ index 18c54c9..4ad2795 100644
 +                        :native-extensions (:bootstrap (session-declarations session))
 +                        :runtime-options (:options (session-declarations session))
 +                        :propagation-options (:limits (session-declarations session))))
-+          parts (select-keys (session-declarations session) [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives])]
++          parts (select-keys (session-declarations session) [:primitives :dependencies :files :imports :cells :frames :targets :supports :derivations :scoped-primitives :interfaces])]
        (extend-session fresh (session-extension (assoc parts :id ::rerun))))))
  
  (defn create-session
-@@ -347,9 +561,9 @@
+@@ -347,9 +616,9 @@
                               current extension {:outbox-id (runtime-ids/boundary-outbox-id)}))
                            initial bootstrap)]
       (ImmutableLainSession. (select-keys options [:id :run-id])
@@ -444,10 +636,18 @@ index b1e4633..4f48df1 100644
 +      :primitives (:primitives prepared) :dependencies dependencies
        :files (:files prepared) :imports (:imports prepared)})))
 diff --git a/propagators/compiler_2/session/host.clj b/propagators/compiler_2/session/host.clj
-index 84c8847..46ce664 100644
+index 84c8847..8de6ef5 100644
 --- a/propagators/compiler_2/session/host.clj
 +++ b/propagators/compiler_2/session/host.clj
-@@ -10,7 +10,7 @@
+@@ -4,13 +4,15 @@
+   (:require [propagators.compiler-2.compiler.basis :as basis]
+             [propagators.compiler-2.runtime.boundary.effects :as effects]
+             [propagators.compiler-2.session :as session]
++            [propagators.compiler-2.session.connected :as connected]
++            [propagators.network :as net]
+             [propagators.compiler-2.session.dependencies :as dependency]
+             [propagators.compiler-2.session.files :as files]
+             [propagators.compiler-2.session.operators :as operators]
              [propagators.message :as message])
    (:import [java.util UUID]
             [java.util.concurrent Executors ExecutorService ThreadFactory TimeUnit FutureTask Callable TimeoutException
@@ -456,7 +656,7 @@ index 84c8847..46ce664 100644
  
  (deftype SessionBoundary [roundGate gate view executor deliveries capacity automatic cleanupTimeout])
  
-@@ -20,7 +20,7 @@
+@@ -20,7 +22,7 @@
  (defn- round-gate [host] (.-roundGate ^SessionBoundary host))
  
  (def ^:private host-keys
@@ -465,7 +665,7 @@ index 84c8847..46ce664 100644
  
  (defn current-session [host]
    (let [view @(runtime-session host)
-@@ -39,7 +39,8 @@
+@@ -39,7 +41,8 @@
      (reset! view (host-delivery-policy
                    (merge (session/compiler-state compiler-session)
                           (select-keys @view host-keys)
@@ -475,7 +675,7 @@ index 84c8847..46ce664 100644
  
  (defn receipts [host] (::receipts @(runtime-session host)))
  (defn pending-count [host] (count (::pending @(runtime-session host))))
-@@ -77,6 +78,49 @@
+@@ -77,6 +80,49 @@
      (when (= :accepted result) (wake! host))
      result))
  
@@ -525,7 +725,7 @@ index 84c8847..46ce664 100644
  (defn- normalized-replies [host request normalized]
    (let [output (:boundary/receipt-id request)
          input-ids (get-in request [:boundary/payload :input-ids])]
-@@ -215,7 +259,7 @@
+@@ -215,7 +261,7 @@
                    (swap! (runtime-session host) update-in [::receipts id]
                           (fn [receipt]
                             (cond-> (assoc receipt :start-finished? true :stop stop
@@ -534,7 +734,7 @@ index 84c8847..46ce664 100644
                               (= :starting (:status receipt)) (assoc :status :active))))
                    (not= :active (get-in (receipts host) [id :status])))]
              (when terminal? (cleanup! host id))))
-@@ -307,6 +351,7 @@
+@@ -307,6 +353,7 @@
  
  (defn- admitted-inputs [host queued]
    (->> queued
@@ -542,7 +742,7 @@ index 84c8847..46ce664 100644
         (filter (fn [{:keys [request]}]
                   (or (nil? request)
                       (and (live-request? host request)
-@@ -318,37 +363,44 @@
+@@ -318,37 +365,49 @@
    "Commit one admitted batch, then deliver current intents. Replies stay queued."
    [host]
    (locking (round-gate host)
@@ -604,6 +804,11 @@ index 84c8847..46ce664 100644
 +         (runtime-session host))
 +        ((requiring-resolve 'propagators.compiler-2.runtime/refresh-trace-subscriptions!)
 +         (runtime-session host))
++        ;; Native boundary receipts can activate connected declarations. Collect
++        ;; their immutable next-round inputs after those receipts have settled.
++        (locking (gate host)
++          (swap! (runtime-session host) update ::pending into
++                 (mapv #(hash-map :input %) (session/connected-inputs (current-session host)))))
 +        (doseq [request (effects/outbox-effects (:program/net @(runtime-session host)))
 +                :when (operators/callback-request? request)]
 +          (dispatch! host request))
@@ -615,7 +820,7 @@ index 84c8847..46ce664 100644
  
  (defn wake! [host]
    (when (.-automatic ^SessionBoundary host)
-@@ -393,9 +445,9 @@
+@@ -393,9 +452,9 @@
     (when-not (and (pos-int? capacity) (pos-int? cleanup-timeout-ms) (pos-int? delivery-threads))
       (throw (ex-info "Positive boundary capacity and cleanup timeout required" {})))
     (let [view (atom (host-delivery-policy (merge (session/compiler-state compiler-session)
@@ -628,7 +833,7 @@ index 84c8847..46ce664 100644
           executor (Executors/newSingleThreadExecutor
                     (reify ThreadFactory
                       (newThread [_ runnable]
-@@ -430,6 +482,7 @@
+@@ -430,6 +489,7 @@
          file (str "session-extension/" (UUID/randomUUID) ".lain")
          extension (files/prepare-extension!
                     {:id [:source-extension file]
@@ -636,7 +841,7 @@ index 84c8847..46ce664 100644
                      :files (assoc (session/source-files current) file text)})]
      (extend! host extension)))
  
-@@ -508,6 +561,8 @@
+@@ -508,6 +568,8 @@
      (try
        (retire-run! host)
        (locking (gate host)
@@ -645,7 +850,7 @@ index 84c8847..46ce664 100644
          (publish! host candidate)
          (swap! (runtime-session host) assoc ::pending [] ::receipts {}
                 ::phase :idle ::blocked? false ::delivery-ready? false))
-@@ -532,16 +587,18 @@
+@@ -532,16 +594,18 @@
    ([host id dependency-id] (subscribe! host id dependency-id nil))
    ([host id dependency-id output-cell]
     (dispatch! host {:boundary/id [:subscription (:run-id (session/session-identity
@@ -667,7 +872,7 @@ index 84c8847..46ce664 100644
    (.shutdownNow ^ExecutorService (.-executor ^SessionBoundary host))
    (locking (gate host)
      (swap! (runtime-session host) update ::receipts
-@@ -551,8 +608,8 @@
+@@ -551,8 +615,8 @@
                                     (assoc receipt :status :cancelled) receipt)])) receipts))))
    (.shutdown ^ExecutorService (.-deliveries ^SessionBoundary host))
    (when-not (.awaitTermination ^ExecutorService (.-deliveries ^SessionBoundary host)
@@ -678,7 +883,7 @@ index 84c8847..46ce664 100644
      (.shutdownNow ^ExecutorService (.-deliveries ^SessionBoundary host)))
    ((requiring-resolve 'propagators.compiler-2.runtime/stop-clocks!) (runtime-session host))
    (doseq [trace (vals (:traces @(runtime-session host)))] ((:stop trace)))
-@@ -582,3 +639,19 @@
+@@ -582,3 +646,69 @@
        (catch Throwable error
          (swap! (runtime-session host) assoc ::phase :retirement-failed ::blocked? true)
          (throw error)))))
@@ -698,6 +903,56 @@ index 84c8847..46ce664 100644
 +                            (session/network candidate) [receipt-id]))]
 +        (publish! host candidate)
 +        receipt))))
++
++(defn publish-input!
++  "Serialize trusted external publication with immutable session advancement.
++  transform receives the current immutable session and returns explicit inputs."
++  [host transform]
++  (locking (round-gate host)
++    (locking (gate host)
++      (require-open! host)
++      (let [result (session/advance (current-session host) (transform (current-session host)))]
++        (publish! host (:session result))
++        (swap! (runtime-session host) update ::pending into
++               (mapv #(hash-map :input %) (:next-inputs result)))
++        (wake! host)
++        :accepted))))
++
++(defn interface-values
++  "Read explicitly exported cells. This does not start or attach resources."
++  [host]
++  (let [s (current-session host)]
++    (into {} (map (fn [[id {:keys [cell kind]}]]
++                    [id {:kind kind :value (connected/freeze (session/network s)
++                                                             (net/network-cell-strongest (session/network s) cell))}]))
++          (:interfaces (session/session-declarations s)))))
++
++(defn publish-user-message!
++  "The sole public conversational ingress: exported user cells, stable identity,
++  and a current run token. No arbitrary cell or source mutation is accepted."
++  [host {:keys [interface run-id id text]}]
++  (when-not (and (some? id) (string? text))
++    (throw (ex-info "Message identity and text required" {})))
++  (publish-input! host
++                  (fn [s]
++                    (when-not (= (str run-id) (str (:run-id (session/session-identity s))))
++                      (throw (ex-info "Stale session run" {:stale true})))
++                    (let [{:keys [kind cell]} (get-in (session/session-declarations s) [:interfaces interface])]
++                      (when-not (= :user-message kind)
++                        (throw (ex-info "Session does not expose this user ingress" {:interface interface})))
++                      (let [current (connected/freeze (session/network s) (net/network-cell-strongest (session/network s) cell))
++                            events (loop [xs current result []]
++                                     (if (= xs basis/list-empty-marker) result
++                                         (recur (:cdr xs) (conj result (:car xs)))))
++                            event {:id id :kind :user :payload text}
++                            prior (first (filter #(= id (:id %)) events))]
++                        (cond
++                          (= prior event) []
++                          prior (throw (ex-info "Conflicting message identity" {:id id}))
++                          :else [(session/publication-input cell
++                                                            (connected/frozen
++                                                             (reduce (fn [tail event] {:car event :cdr tail})
++                                                                     basis/list-empty-marker (reverse (conj events event)))))]))))))
 diff --git a/propagators/compiler_2/session/supported.clj b/propagators/compiler_2/session/supported.clj
 new file mode 100644
 index 0000000..19a4a64
@@ -899,3 +1154,64 @@ index 0000000..51f0260
 +    (is (thrown? Exception (s/binding-cell result 'late-add)))
 +    (is (= 10 (data/payload (scoped result target 'x))))
 +    (is (= 1 (data/payload (s/binding-value result 'x))))))
+diff --git a/propagators/compiler_2/session/connected.clj b/propagators/compiler_2/session/connected.clj
+new file mode 100644
+index 0000000..5f2faf2
+--- /dev/null
++++ b/propagators/compiler_2/session/connected.clj
+@@ -0,0 +1,55 @@
++(ns propagators.compiler-2.session.connected
++  "Connected immutable declarations. No resource, worker, or host dependency."
++  (:require [propagators.cells.value :as value]
++            [propagators.compiler-2.model.operator-value :as operator]
++            [propagators.datastructures.compound-object :as object]
++            [propagators.experimental.visualization.data :as data]
++            [propagators.gur :as gur]
++            [propagators.network :as net]))
++
++(deftype Frozen [content]
++  Object
++  (equals [_ other] (and (instance? Frozen other) (= content (.-content ^Frozen other))))
++  (hashCode [_] (hash content))
++  (toString [_] (pr-str content)))
++(defn frozen [v] (if (instance? Frozen v) v (Frozen. v)))
++(defn payload [v] (if (instance? Frozen v) (.-content ^Frozen v) v))
++
++(def declarations-key ::declarations)
++(def pending ::pending)
++
++(defn freeze
++  "Resolve a finite connected data value. Unknown fields keep a declaration pending.
++  Callables and lexical references are opaque. This is serialization, not selection."
++  ([network v] (freeze network v #{}))
++  ([network v seen]
++   (let [v (payload (data/payload v))]
++     (cond
++       (value/unusable? v) pending
++       (object/accessor-network? v)
++       (if (contains? seen v) pending
++           (let [fields (into {} (map (fn [k] [k (freeze network (data/slot-value network v k) (conj seen v))]))
++                              (object/accessor-slot-keys v))]
++             (if (some #{pending} (vals fields)) pending fields)))
++       :else v))))
++
++(defn thaw [v]
++  (if (and (map? v) (not (record? v)))
++    (object/as-accessor-network (update-vals v thaw)) v))
++
++(defn connector [kind]
++  (operator/operator-closure
++   {:name kind
++    :compiler-activate
++    (fn [_ _ _ arguments output]
++      {:effects [(gur/bind-name [declarations-key] output
++                                {:kind kind :arguments arguments :receipt output})]})}))
++
++(defn declarations [network]
++  (->> (get (net/network-dict-entry network [:network :name-bindings]) [declarations-key])
++       vals
++       (sort-by (comp str :receipt))
++       (keep (fn [{:keys [arguments] :as declaration}]
++               (let [values (mapv #(freeze network (net/network-cell-strongest network %)) arguments)]
++                 (when-not (some #{pending} values)
++                   (assoc declaration :values values)))))))
