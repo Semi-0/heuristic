@@ -2,7 +2,9 @@
 (require '[clojure.test :as test]
          'propagators.compiler-2.stream-extension-test
          'propagators.compiler-2.immutable-session-test
-         'lain-harness.streaming-test)
-(let [result (test/run-tests 'propagators.compiler-2.stream-extension-test 'propagators.compiler-2.immutable-session-test 'lain-harness.streaming-test)]
+         'lain-harness.streaming-test
+         'lain-harness.immutable-test)
+(let [result (test/run-tests 'propagators.compiler-2.stream-extension-test 'propagators.compiler-2.immutable-session-test 'lain-harness.streaming-test
+                             'lain-harness.immutable-test)]
   (shutdown-agents)
   (System/exit (if (zero? (+ (:fail result) (:error result))) 0 1)))

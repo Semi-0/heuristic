@@ -1,0 +1,55 @@
+;; FIFO policy is ordinary Lain topology; state is an immutable value.
+;; Consumers retain the returned state and publish it under a fresh version.
+(define queue:append-list
+  (network [xs item]
+    (if (empty-list? xs) (list item)
+      (cons (car xs) (queue:append-list (cdr xs) item)))))
+(define queue:contains
+  (network [xs id]
+    (if (empty-list? xs) false
+      (if (= ((slot :id) (car xs)) id) true
+        (queue:contains (cdr xs) id)))))
+(define queue:lookup
+  (network [xs id]
+    (if (= ((slot :id) (car xs)) id) (car xs)
+      (queue:lookup (cdr xs) id))))
+(define queue:empty
+  (network [capacity]
+    (struct :pending (list) :history (list) :count 0
+            :capacity capacity :version 0)))
+(define queue:offer
+  (network [state event]
+    (let [history ((slot :history) state)
+          id ((slot :id) event)]
+      (if (queue:contains history id)
+        (if (= ((slot :payload) (queue:lookup history id)) ((slot :payload) event))
+          (struct :status :duplicate :state state)
+          (struct :status :conflict :state state))
+        (if (< ((slot :count) state) ((slot :capacity) state))
+          (struct :status :accepted
+            :state (struct :pending (queue:append-list ((slot :pending) state) event)
+                           :history (queue:append-list history event)
+                           :count (+ 1 ((slot :count) state))
+                           :capacity ((slot :capacity) state)
+                           :version (+ 1 ((slot :version) state))))
+          (struct :status :overflow :state state))))))
+(define queue:acknowledge
+  (network [state id]
+    (if (empty-list? ((slot :pending) state))
+      (struct :status :invalid-acknowledgement :state state)
+      (if (= ((slot :id) (car ((slot :pending) state))) id)
+        (struct :status :acknowledged
+          :state (struct :pending (cdr ((slot :pending) state))
+                         :history ((slot :history) state)
+                         :count (- ((slot :count) state) 1)
+                         :capacity ((slot :capacity) state)
+                         :version (+ ((slot :version) state) 1)))
+        (struct :status :invalid-acknowledgement :state state)))))
+
+(define queue:feedback
+  (network [current expected-version next-state]
+    (if (= ((slot :version) current) expected-version)
+      (if (= ((slot :version) next-state) (+ expected-version 1))
+        (struct :status :accepted :state next-state)
+        (struct :status :invalid-version :state current))
+      (struct :status :stale-version :state current))))

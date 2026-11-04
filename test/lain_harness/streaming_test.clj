@@ -1,7 +1,8 @@
 (ns lain-harness.streaming-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [clojure.java.io :as io]
-            [lain-harness.queue :as q] [lain-harness.stream :as stream]
+  (:require [clojure.test :refer [deftest is]]
+            [clojure.string :as str]
+            [lain-harness.environment :as environment]
+            [lain-harness.resource-queue :as q] [lain-harness.resource-stream :as stream]
             [lain-harness.transport :as transport] [lain-harness.runtime :as h]
             [lain-harness.premises :as premises]
             [propagators.compiler-2.session :as s]
@@ -15,7 +16,7 @@
 (defn await! [f]
   (let [deadline (+ (System/currentTimeMillis) 20000)]
     (loop [] (cond (f) true (> (System/currentTimeMillis) deadline) false
-                  :else (do (Thread/sleep 20) (recur))))))
+                   :else (do (Thread/sleep 20) (recur))))))
 (deftest queue-contract
   (let [q (q/queue 2) a {:id :a :value 1} b {:id :b :value 1}]
     (is (= :accepted (q/append! q a)))
@@ -42,18 +43,18 @@
   (is (thrown? Exception (stream/feed! (stream/framer) "(define x ])" false identity)))
   (let [f (stream/framer) seen (atom [])]
     (is (thrown? Exception (stream/feed! f "(define a 1)(define b 2)" true
-                            (fn [form] (swap! seen conj form) (throw (ex-info "Admission failed" {}))))))
+                                         (fn [form] (swap! seen conj form) (throw (ex-info "Admission failed" {}))))))
     (is (= 1 (count @seen)))))
 (deftest sse-contract
   (let [seen (atom [])]
     (transport/consume-sse! (BufferedReader. (StringReader.
-      "data: {\"choices\":[{\"delta\":{\"content\":\"(define x 1)\"}}]}\n\ndata: [DONE]\n"))
-      (constantly false) #(swap! seen conj %))
+                                              "data: {\"choices\":[{\"delta\":{\"content\":\"(define x 1)\"}}]}\n\ndata: [DONE]\n"))
+                            (constantly false) #(swap! seen conj %))
     (is (= ["(define x 1)"] @seen)))
   (is (thrown? Exception (transport/consume-sse! (BufferedReader. (StringReader. "")) (constantly false) identity))))
 (defn setup [transport]
   (let [owner (host/open! (s/create-session)) services (h/services owner)]
-    (host/extend! owner (h/facilities-extension services))
+    (h/install-facilities! services)
     (host/extend! owner (h/specification-extension services source-path))
     ;; Deliberately supply the independent model and user AFTER their pending cells.
     (host/extend! owner (h/user-extension :test-user))
@@ -63,7 +64,7 @@
   (h/publish-user! services :test-user 1 "Make plus-two and apply it.")
   (h/start-model! services)
   (host/extend-source! owner
-    "(define active-run (runtime ((contribute-user-input user-input) ((construct-concept-of \"context\" harness-context) (empty-env))) model-session))"))
+                       "(define active-run (runtime ((contribute-user-input user-input) ((construct-concept-of \"context\" harness-context) (empty-env))) model-session))"))
 (defn observed [{:keys [owner model]} name]
   (let [s (host/current-session owner) target (:target @(:state model))]
     (when target
@@ -79,13 +80,13 @@
                                  (emit! "(define answer (plus-two 5))"))
                            2 (emit! "(define reused (plus-two 8))")
                            nil)))
-        {:keys [owner services model]} fixture]
+        {:keys [owner model]} fixture]
     (try
       (is (value/nothing? (data/payload (s/binding-value (host/current-session owner) 'weather-at))))
       (is (empty? @calls))
       (launch! fixture)
       (is (await! #(and (= 10 (data/payload (observed fixture 'reused)))
-                         (= 3 (count (:admissions @(:state model)))))))
+                        (= 3 (count (:admissions @(:state model)))))))
       (is (= 7 (data/payload (observed fixture 'answer))))
       (is (= 3 (count (:admissions @(:state model)))))
       (is (empty? (host/failures owner)))
@@ -120,8 +121,8 @@
       (is (await! #(true? (:paused? @(:state model)))))
       (is (await! #(seq (:diagnostics @(:state model)))))
       (is (= 1 @calls))
-      (is (await! #(seq (filter (fn [event] (clojure.string/starts-with? (str (:binding event)) "diagnostic-"))
-                       (vals (lain-harness.environment/snapshot (host/current-session owner) (:target @(:state model))))))))
+      (is (await! #(seq (filter (fn [event] (str/starts-with? (str (:binding event)) "diagnostic-"))
+                                (vals (environment/snapshot (host/current-session owner) (:target @(:state model))))))))
       (is (empty? (:admissions @(:state model))))
       (finally (host/close! owner)))))
 (deftest changes-during-inference-wait-for-next-round
@@ -147,7 +148,7 @@
           model #(host/extend! owner (h/model-extension services {:id order :transport (fn [_ _] (swap! calls inc))}))
           user #(host/extend! owner (h/user-extension order))]
       (try
-        (host/extend! owner (h/facilities-extension services))
+        (h/install-facilities! services)
         (if (= :model-first order) (do (model) (user)) (do (user) (model)))
         (host/extend! owner (h/specification-extension services source-path))
         (is (= 0 @calls))

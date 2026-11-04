@@ -3,8 +3,51 @@
 ;; Loading this file declares topology; invoke experiment separately to start it.
 ;; Subsequent implementation and acceptance must use this source, not a replica.
 (load-primitive-environment "lain_harness/runtime.clj"
-  :lain-harness.runtime/primitive-bindings 1)
+  :lain-harness.runtime/empty-env 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/lexical-child 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/env:slot 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/extend-env 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/describe-environment 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/incremental-compile 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/inputs-of 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+  :lain-harness.runtime/actions-of 1)
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+
+(load-primitive-environment "lain_harness/source_reader.clj"
+  :lain-harness.source-reader/primitive-bindings 1)
+(load-primitive-environment "lain_harness/admission.clj"
+  :lain-harness.admission/primitive-bindings 1)
+(load-primitive-environment "lain_harness/lexical_observation.clj"
+  :lain-harness.lexical-observation/primitive-bindings 1)
+(load-primitive-environment "lain_harness/lexical_observation.clj"
+  :lain-harness.lexical-observation/parent-bindings 1)
+(load-lain "lib/observations.lain")
+(load-lain "lib/queue.lain")
+(load-lain "lib/rounds.lain")
+
+;; Policy defaults belong to the experiment, not to a transport implementation.
+(define pending-event-limit 256)
+(define inference-round-budget 8)
+(define initial-input-queue (queue:empty pending-event-limit))
+(define initial-round-state (round:initial inference-round-budget))
+
+;; One complete form becomes a declaration. The connected receipt decides when
+;; a caller may inspect the remaining suffix. Session advancement applies it.
+(define incremental-compile-form
+  (network [identity source e support-cell]
+    (let [parsed (source:read-next source false)]
+      (if (= ((slot :status) parsed) :form)
+        (struct :status :ready
+                :declaration (admission:declaration identity ((slot :source) parsed) e support-cell)
+                :remaining ((slot :remaining) parsed))
+        parsed))))
 
 ;; Native module: src/lain_harness/runtime.clj. Prepare with an explicit owner.
 ;; Model and user extensions supply their instances independently.
@@ -88,7 +131,7 @@
 (define harness-context
   (struct :source "soul-refined.lain"
           :purpose "Generate useful reusable Lain networks in a lexical child"
-          :review-state "implemented; deterministic verification; optional capabilities unresolved"
+          :review-state "partial Lain-first migration; compatibility transport coordination remains"
           :implementation-boundary "Compiler-2 open-session API: prim-op and async-op"))
 (define default-environment
   (network [compile-source publish-message guides context]
@@ -162,7 +205,7 @@
           :umbrella-advice umbrella-advice))
 (define specification
   (struct :entry-point "soul-refined.lain"
-          :status "implemented; offline verification; no live model run"
+          :status "partial Lain-first migration; offline verification; no live model run"
           :interfaces experiment-interfaces
           :obligations implementation-obligations
           :acceptance acceptance-scenarios

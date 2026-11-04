@@ -1,0 +1,17 @@
+(load-lain "propagators/compiler_2/runtime/lain/list.lain")
+
+;; Contributors supply ordinary networks. No host description dispatcher exists
+;; on this path; each caller chooses facts, filtering, and its own output shape.
+(define observation:available
+  (network [fact] ((slot :available) fact)))
+(define observation:binding
+  (network [fact]
+    (struct :text (str ((slot :name) fact) " = " ((slot :value) fact))
+            :support ((slot :support) fact)
+            :cell ((slot :cell) fact) :frame ((slot :frame) fact))))
+(define observation:describe-local
+  (network [e describe]
+    (map-list describe (lexical:bindings e))))
+(define observation:describe-available
+  (network [e describe]
+    (map-list describe (filter-list observation:available (lexical:bindings e)))))
