@@ -1,74 +1,59 @@
 # lain-harness
 
-[soul-refined.lain](soul-refined.lain) is the source of the experiment. It now imports native open-session facilities while retaining environment construction, lexical inheritance and capability composition in Lain:
+This is an unfinished Lain-first migration. The immutable foundations pass their focused tests, but the canonical coded-conversation test does not yet deliver its first reply. Do not treat this checkout as acceptance of the orchestration plan. Current results and remaining work are recorded in [runtime/verification.json](runtime/verification.json) and [runtime/verification.log](runtime/verification.log).
+
+The companion runtime snapshot is [datalog-research at `f123eb7`](https://github.com/Semi-0/datalog-research/commit/f123eb77a112acc08090cc720856d7167c03191a). Both repositories use the branch `wip/lain-open-sessions-20261104` for this incomplete snapshot.
+
+[soul-refined.lain](soul-refined.lain) imports the executable policies. The original [soul.lain](soul.lain) is unchanged. The orchestration observes the parent and targets its lexical child:
 
 ```clojure
-(-> (describe-environment e) (inputs-of model))
-(incremental-compile (actions-of model) e)
+(let [e (lexical-child environment)]
+  (-> (describe-environment environment) (inputs-of model))
+  (incremental-compile (actions-of model) e))
 ```
 
-The implementation uses independent model inbound/outbound FIFO queues, a streaming model transport, and atomic admission of each complete Lain form into `e`. It has been exercised with deterministic transports, not a live model. Loading the source does not start inference.
+`lib/observations.lain` implements lexical traversal, shadowing, selection and rendering. Native metadata describes one lexical frame or one compound's immediate fields. It has no native depth limit or domain-specific rendering schema. An additional contribution is implemented in `lib/observation-example.lain`.
 
-## Components
+`lib/model.lain` uses `lib/queue.lain` and `lib/rounds.lain` to select requests, build prompts, maintain history and advance versioned model state. `lib/compiler.lain` buffers source and selects one admission at a time, waiting for its connected receipt. These are connected to the current execution path; the former host model coordinator and shared model/stream registries are no longer used.
 
-- `src/lain_harness/runtime.clj` supplies the native facilities, independent model/user extensions, and their open-session dependencies. Pure operators use `prim-op`; IO and subscriptions use `async-op` with the owner's effect interpreter.
-- `src/lain_harness/environment.clj` describes initial lexical bindings and subsequent value/support changes. Native frame references retain lexical parentage and binding-cell identity. Compound previews are bounded at serialization, while live accessors remain connected.
-- `src/lain_harness/queue.clj`, `stream.clj`, and `transport.clj` provide FIFO event identity/acknowledgement, incremental Lain framing, and configurable OpenAI-compatible SSE transport. Mutable queues and transport resources stay outside propagator values; Lain carries immutable stream handles.
-- The companion Compiler-2 change adds targeted, premise-supported extensions and queued admission at an idle host boundary. It is developed in `/home/lain/projects/lain-harness-runtime`; the reproducible [patch](runtime/streaming-extension.patch) is based on `5b5e4809c67902fd890d1d5ebc4f02ae19a55a2a` of `Semi-0/datalog-research`.
+The integrated path is still failing during supported state propagation. Fake transport requests and queued source events have been observed, but successful admission and acknowledged reply delivery through the full composition have not been established. Component tests are not a substitute for that missing acceptance evidence.
 
-The existing deployment and loaded modules are unchanged. Apply the patch only to a separate checkout of that base revision. `LAIN_RUNTIME_ROOT` selects the development backend; verification scripts default to the sibling `lain-harness-runtime` checkout.
+## Open-session interfaces
 
-## Premises and streaming behavior
+The isolated runtime adds immutable connected declarations and declared interfaces to the existing session API. The authoritative host publishes user messages with stable identities and a current run token. Identical replay is harmless; conflicting identity reuse is rejected.
 
-Each model session and inference round has its own premise source. Each emitted form has a derived extension cell carrying those premises and the support of context sent to the model. A context-validity premise prevents an input's changed value from silently validating code generated from its previous value.
+The editor commands `user-message` and `conversation-status` use the same owner and ingress operation as headless tooling. Existing owner discovery, generation checks, external-owner mutation restrictions and attachment mechanisms remain in force. Detaching a view does not close its owner.
 
-Finishing a round leaves its premise active. Explicit withdrawal changes availability, retaining compiled topology. Recovery reuses topology. Retraction does not undo external effects already delivered. Use `lain-harness.premises/publish!` with the real source cell, increasing epoch, and `:active` or `:retracted` status.
-
-Complete forms are admitted in FIFO order. An admission failure stops that response, retains earlier forms, and contributes a diagnostic to the environment for the next inference. Network/transport failure pauses the model; `resume-model!` is explicit. A model runs at most one inference at a time, queuing intervening environment changes for its next inference. The default budget is eight inferences; pending events remain inspectable when exhausted.
-
-The native queues retain event history separately from consumer cursors. Duplicate identity/content is a no-op; conflicting identity reuse and pending-capacity overflow fail explicitly. There is no silent event dropping or generated-source rewriting.
-
-Use declared output/parameter definitions for writes from supported networks, as in the existing premise-closure API. Scalar results, linked-list members, direct source links, and explicit parameter definitions have focused support tests. This is not a claim of unrestricted bidirectionality for arbitrary compound interfaces.
-
-## Preparing an isolated session
-
-Add this repository's `src` directory to the patched backend's classpath. From the backend working directory:
+Trusted experimental preparation is available through:
 
 ```clojure
 (require '[lain-harness.runtime :as harness]
-         '[propagators.compiler-2.session :as session]
          '[propagators.compiler-2.session.host :as host])
-
-(def owner (host/open! (session/create-session)))
-(def services (harness/services owner))
-(host/extend! owner (harness/facilities-extension services))
-(host/extend! owner
-  (harness/specification-extension services "/path/to/lain-harness/soul-refined.lain"))
+(def services
+  (harness/prepare!
+    {:source-path "/path/to/lain-workspace/soul-refined.lain"
+     :transport fake-transport
+     ;; Optional: the editor service's existing owner catalog.
+     :owners owners}))
+(harness/publish-user! services "user" "message-1" "Hello")
+(host/interface-values (:owner services))
+(host/close! (:owner services))
 ```
 
-`specification-extension` prepares the actual source and existing compositional library, using the native import already supplied through `facilities-extension`. Later source extensions reuse that prepared import instead of reloading a live module.
+Preparation submits no user message. Model attachment has no compiler-target argument; `conversation-experiment` explicitly connects compilation. Generated Lain source must invoke `message-to-user`; transport output is never directly displayed as a conversation reply.
 
-Supply `model-extension` with `{:id ... :transport ...}` and `user-extension` with a separate identity through `host/extend!`. Either installation order is supported, including after the source has declared pending instance cells. `transport/streaming-model` accepts endpoint, model name, headers, token limit and timeout; tests inject a deterministic function instead. One model and one user-input interface are exposed per harness session.
-
-`start-model!` starts the model dependency. Inference starts only once the Lain runtime connects an environment-description stream and compiler target. `publish-user!` publishes versioned user input independently. Optional weather and message-delivery capabilities remain unresolved until supplied; no hardcoded umbrella answer or weather dispatcher is installed.
-
-Inspect `specification`, model `:state`, queue histories, source-admission receipts and the Compiler-2 source ledger. Close the isolated owner with `host/close!` when finished.
-
-## Verification
+## Verification and boundaries
 
 ```sh
-tools/check_specification.sh
-tools/test_streaming.sh
+LAIN_OFFLINE_UUID=1 tools/check_specification.sh
+LAIN_OFFLINE_UUID=1 tools/test_streaming.sh
+tools/check_quality.sh
 ```
 
-In this sandbox, `clj-uuid` fails during network-interface enumeration before Compiler-2 loads. Set `LAIN_OFFLINE_UUID=1` to use the documented process-local initialization adjustment in `tools/offline_uuid.clj`. It changes no dependency files or compiler behavior. The normal check remains available without that flag.
+The full test command includes the canonical conversation test and currently fails. The UUID workaround is process-local and changes no deployed dependency files. Quality tools are pinned to clj-kondo 2026.08.04 and cljfmt 0.16.6.
 
-Tests cover the actual source, both extension orders, fragmented SSE/code, lexical targeting, atomic failure, queue contracts, premise withdrawal/recovery, stale epochs, consumed-input changes, alternative support, network reuse, diagnostic feedback, transport pause, and changes arriving during inference. Existing immutable-session tests run alongside the new tests. No test calls Blazux or a weather provider.
+The [runtime patch](runtime/streaming-extension.patch) targets `5b5e4809c67902fd890d1d5ebc4f02ae19a55a2a` and is developed only in `/home/lain/projects/lain-harness-runtime`. No deployment, merge or service restart was performed. Native and mutable boundaries are listed in [docs/native-boundaries.md](docs/native-boundaries.md).
 
-## Preserved evidence
+The archived Blazux configuration was checked on 2026-11-04. Access outside the restricted tool sandbox returned `qwen3.8-flash-next` from `http://127.0.0.1:18320/v1/models`. A live coded conversation has not been attempted because the deterministic harness path is not passing.
 
-- [Original idea](soul.lain), retained unchanged.
-- [Language guide](docs/how-to-think-in-lain.md) and [worked examples](docs/how-to-think-in-lain-examples.md).
-- [Archived parallel experiment](/home/lain/experiments/lain-harness-live-20261103/parallel-scaffold-archive/experiments/live/REPORT.md) and [checksum manifest](/home/lain/experiments/lain-harness-live-20261103/parallel-scaffold-archive/manifest.json).
-
-The archived scaffold is not a dependency of this implementation. Git history and unrelated workspace files remain intact.
+Remaining work includes the integrated propagation failure, model/round/consumed-context admission premises, Lain-owned diagnostic feedback, ingress/output backpressure, failure/resume and cancellation correctness, complete per-turn budget coverage, selective feedback acceptance, and full conversation preservation across editor attachments. The obsolete `resource_*` adapters remain unreferenced pending passing replacements; they are not an alternate canonical runner.

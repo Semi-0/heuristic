@@ -1,0 +1,11 @@
+(define data:cons (network [head tail] (data:record :car head :cdr tail)))
+
+(define data:map (network [f xs] (if (data:empty? xs) (data:list) (data:cons (f (data:get :car xs)) (data:map f (data:get :cdr xs))))))
+
+(define data:filter (network [predicate xs] (if (data:empty? xs) (data:list) (let [head (data:get :car xs) tail (data:filter predicate (data:get :cdr xs))] (if (predicate head) (data:cons head tail) tail)))))
+
+(define data:with (network [record fields] (data:merge record fields)))
+
+(define state:advance (network [state fields] (data:with (data:with state fields) (data:record :version (+ 1 (data:get :version state))))))
+
+(define list:append (network [xs ys] (if (data:empty? xs) ys (data:cons (data:get :car xs) (list:append (data:get :cdr xs) ys)))))

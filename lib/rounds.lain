@@ -1,0 +1,11 @@
+(define round:initial (network [budget] (data:record :turn :none :number 0 :budget budget :busy false :paused false)))
+
+(define round:for-user (network [state id] (if (= (data:get :turn state) id) state (data:with state (data:record :turn id :number 0)))))
+
+(define round:eligible (network [state pending-count] (if (data:get :busy state) false (if (data:get :paused state) false (if (< (data:get :number state) (data:get :budget state)) (> pending-count 0) false)))))
+
+(define round:start (network [state pending-count] (if (round:eligible state pending-count) (data:with state (data:record :number (+ 1 (data:get :number state)) :busy true)) state)))
+
+(define round:finish (network [state transport-failed] (data:with state (data:record :busy false :paused transport-failed))))
+
+(define round:resume (network [state] (data:with state (data:record :paused false))))

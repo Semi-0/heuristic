@@ -1,10 +1,56 @@
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/cell:value 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/inputs-of 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:integer? 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:empty? 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/session:initialize 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:record 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:list 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:get 1)
 ;; soul-refined — top-down experiment and reviewable specification.
 ;; Native facilities are supplied through an open-session extension.
 ;; Loading this file declares topology; invoke experiment separately to start it.
 ;; Subsequent implementation and acceptance must use this source, not a replica.
 (load-primitive-environment "lain_harness/runtime.clj"
-  :lain-harness.runtime/primitive-bindings 1)
+                            :lain-harness.runtime/empty-env 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/lexical-child 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/env:slot 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/extend-env 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/session:feedback 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/session:admit 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/cell:reference 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/data:snapshot 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/data:merge 1)
+(load-primitive-environment "lain_harness/runtime.clj"
+                            :lain-harness.runtime/transport:request 1)
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+(load-lain "propagators/compiler_2/runtime/lain/list.lain")
+(load-primitive-environment "lain_harness/source_reader.clj" :lain-harness.source-reader/primitive-bindings 1)
+(load-primitive-environment "lain_harness/admission.clj" :lain-harness.admission/primitive-bindings 1)
+(load-primitive-environment "lain_harness/lexical_observation.clj" :lain-harness.lexical-observation/primitive-bindings 1)
+(load-primitive-environment "lain_harness/lexical_observation.clj" :lain-harness.lexical-observation/parent-bindings 1)
+(load-lain "lib/data.lain")
+(load-lain "lib/queue.lain")
+(load-lain "lib/rounds.lain")
+(load-lain "lib/observations.lain")
+(load-lain "lib/compiler.lain")
+(load-lain "lib/model.lain")
+
+(load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:kind 1)
+(load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:slots 1)
+(load-primitive-environment "lain_harness/runtime.clj" :lain-harness.runtime/data:unpack 1)
+;; Policy defaults belong to the experiment, not to a transport implementation.
+(define pending-event-limit 256)
+(define inference-round-budget 8)
+(define initial-input-queue (queue:empty pending-event-limit))
+(define initial-round-state (round:initial inference-round-budget))
 
 ;; Native module: src/lain_harness/runtime.clj. Prepare with an explicit owner.
 ;; Model and user extensions supply their instances independently.
@@ -31,7 +77,7 @@
 ;; results and diagnostics. Late additions and retractions update the view.
 ;; Unknown unrelated fields cannot block available information. Preserve open
 ;; compound accessors; no frozen list of names or fixed host description schema.
-;; describe-environment is supplied by the native facilities extension.
+;; describe-environment is composed in lib/observations.lain.
 
 ;; incremental-compile [supported-source e] -> admission/result interface.
 ;; Compile INTO the supplied e, preserving its lexical parent and captures.
@@ -43,21 +89,21 @@
 ;; stops that response; earlier admissions remain. Extension cells combine model,
 ;; round and consumed-input premises using TTMS. Retraction withdraws availability,
 ;; not topology; finishing a round does not retract its premise.
-;; incremental-compile is supplied by the native facilities extension.
+;; incremental-compile is composed in lib/compiler.lain.
 
 ;; inputs-of [model-session] -> connected input port; actions-of [model-session]
 ;; -> supported generated-source publications. Inference sampling, cancellation,
 ;; obsolete replies, completion and budgets belong to the async effect boundary.
 ;; A provider snapshot must not sever the upstream connected description.
 ;; inputs-of is supplied by the native facilities extension.
-;; actions-of is supplied by the native facilities extension.
+;; actions-of is composed in lib/model.lain.
 
 ;; Independent supplied instances, not constructors coupled to one another.
 ;; A model session is supplied by its own extension; user input is a separately
 ;; supported publication stream, not a field owned by the model adapter.
 (define model-session)
 (define user-input)
-;; message-to-user [recipient] -> output port; weather-at [place date timezone]
+;; message-to-user [content] -> acknowledged delivery; weather-at [place date timezone]
 ;; -> supported observation with source, observed-at and validity information;
 ;; umbrella-advice [observation] -> advice. IO requires async operators; pure
 ;; advice uses a primitive operator or a Lain network. None is installed here.
@@ -67,54 +113,51 @@
 
 (define construct-concept-of
   (network [idea content]
-    (network [env]
-      (extend-env env (env:slot idea content)))))
+           (network [env]
+                    (extend-env env (env:slot idea content)))))
 
-;; Topology, not scheduling. Both relationships concern the SAME child e.
+;; Observe the parent; generated forms extend only its lexical child.
 (define runtime
   (network [environment model]
-    (let [e (lexical-child environment)]
-      (-> (describe-environment e) (inputs-of model))
-      (incremental-compile (actions-of model) e)
-      (list e model))))
+           (let [e (lexical-child environment)]
+             (-> (describe-environment environment) (inputs-of model))
+             (incremental-compile (actions-of model) e)
+             (list e model))))
 
 ;; These are Lain environment contributions; the native adapter must not embed
 ;; a fixed guide/request/capability schema. Paths are a guide index, not a claim
 ;; that document contents have been loaded. Reading documents is a later supplied
 ;; capability. Keep source identity/revision visible when contributing contents.
 (define language-guide-index
-  (list "docs/how-to-think-in-lain.md"
-        "docs/how-to-think-in-lain-examples.md"))
+  "Guides: docs/how-to-think-in-lain.md and docs/how-to-think-in-lain-examples.md. Use network, let, define, struct, slot and ->. Reply by calling message-to-user; raw source is never a user reply.")
 (define harness-context
-  (struct :source "soul-refined.lain"
-          :purpose "Generate useful reusable Lain networks in a lexical child"
-          :review-state "implemented; deterministic verification; optional capabilities unresolved"
-          :implementation-boundary "Compiler-2 open-session API: prim-op and async-op"))
+  "Source: soul-refined.lain. Describe this parent; compile generated forms into its lexical child. Reuse admitted definitions. Contribute selected results to independent named slots of model-feedback.")
 (define default-environment
   (network [compile-source publish-message guides context]
-    (|> (empty-env)
-        (construct-concept-of "incremental-compile" compile-source)
-        (construct-concept-of "message-to-user" publish-message)
-        (construct-concept-of "language-guide-index" guides)
-        (construct-concept-of "harness-context" context))))
+           (|> (empty-env)
+               (construct-concept-of "incremental-compile" compile-source)
+               (construct-concept-of "message-to-user" publish-message)
+               (construct-concept-of "language-guide-index" guides)
+               (construct-concept-of "harness-context" context)
+               (construct-concept-of "model-feedback" (struct)))))
 (define contribute-user-input
   (network [input]
-    (construct-concept-of "user-input" input)))
+           (construct-concept-of "user-input" input)))
 (define weather-environment
   (network [base-env forecast advice]
-    (|> base-env
-        lexical-child
-        (construct-concept-of "weather-at" forecast)
-        (construct-concept-of "umbrella-advice" advice))))
+           (|> base-env
+               lexical-child
+               (construct-concept-of "weather-at" forecast)
+               (construct-concept-of "umbrella-advice" advice))))
 
 ;; Assembly stays in Lain. Defining this network does not invoke it.
 (define experiment
   (network [model input forecast advice publish-message]
-    (let [base (default-environment incremental-compile publish-message
-                                    language-guide-index harness-context)
-          capable (weather-environment base forecast advice)
-          requested ((contribute-user-input input) capable)]
-      (runtime requested model))))
+           (let [base (default-environment incremental-compile publish-message
+                                           language-guide-index harness-context)
+                 capable (weather-environment base forecast advice)
+                 requested ((contribute-user-input input) capable)]
+             (runtime requested model))))
 
 ;; Request data only: generating the reusable umbrella composition is the task.
 ;; Resolve tomorrow from explicit request time and timezone, never host now.
@@ -128,29 +171,29 @@
 ;; Optional effect endpoints remain pending until explicitly supplied.
 (define implementation-obligations
   (list
-    (struct :name "lexical-environment" :endpoint lexical-child
-            :requires "Native environments, inheritance, contributions and live discovery")
-    (struct :name "connected-description" :endpoint describe-environment
-            :requires "Relevant bindings, additions, results, diagnostics and support remain connected")
-    (struct :name "scoped-compilation" :endpoint incremental-compile
-            :requires "Atomic source admission into supplied child; identity, diagnostics and provenance")
-    (struct :name "model-interface" :endpoint inputs-of
-            :requires "Independent model session; connected inputs/actions; explicit async inference policy")
-    (struct :name "user-interface" :endpoint user-input
-            :requires "Independent user input dependency and publication lifecycle")
-    (struct :name "capability-effects" :endpoint weather-at
-            :requires "Independent forecast and message effects; supported observations and receipts")
-    (struct :name "native-extension-import"
-            :requires "Supply missing bindings through open-session extensions using prim-op and async-op; module supplied by open-session preparation")))
+   (struct :name "lexical-environment" :endpoint lexical-child
+           :requires "Native environments, inheritance, contributions and live discovery")
+   (struct :name "connected-description" :endpoint describe-environment
+           :requires "Relevant bindings, additions, results, diagnostics and support remain connected")
+   (struct :name "scoped-compilation" :endpoint incremental-compile
+           :requires "Atomic source admission into supplied child; identity, diagnostics and provenance")
+   (struct :name "model-interface" :endpoint inputs-of
+           :requires "Independent model session; connected inputs/actions; explicit async inference policy")
+   (struct :name "user-interface" :endpoint user-input
+           :requires "Independent user input dependency and publication lifecycle")
+   (struct :name "capability-effects" :endpoint weather-at
+           :requires "Independent forecast and message effects; supported observations and receipts")
+   (struct :name "native-extension-import"
+           :requires "Supply missing bindings through open-session extensions using prim-op and async-op; module supplied by open-session preparation")))
 (define acceptance-scenarios
   (list
-    "Live updates: publish input, add relevant binding, retract support; existing model input follows without refresh; unrelated unknown does not block"
-    "Lexical child: shadow a parent binding, compile generated source into e, verify child capture and no parent/sibling pollution"
-    "Generated reuse: model generates umbrella composition; second place uses same definition with fresh forecast inputs"
-    "Diagnostic feedback: invalid generated source leaves no partial admission; diagnostics reach existing model input through e"
-    "Visible provenance: inspect source identity, extension origin, captured bindings, observation support and effect receipts"
-    "Independent extensions: model session and user input can be supplied separately in either order; user updates do not recreate model or compiler session"
-    "Effect boundary: pending inputs cause no inference; revisions and obsolete replies obey explicit async policy; replay does not duplicate effects"))
+   "Live updates: publish input, add relevant binding, retract support; existing model input follows without refresh; unrelated unknown does not block"
+   "Lexical child: shadow a parent binding, compile generated source into e, verify child capture and no parent/sibling pollution"
+   "Generated reuse: model generates umbrella composition; second place uses same definition with fresh forecast inputs"
+   "Diagnostic feedback: invalid generated source leaves no partial admission; diagnostics reach existing model input through parent feedback"
+   "Visible provenance: inspect source identity, extension origin, captured bindings, observation support and effect receipts"
+   "Independent extensions: model session and user input can be supplied separately in either order; user updates do not recreate model or compiler session"
+   "Effect boundary: pending inputs cause no inference; revisions and obsolete replies obey explicit async policy; replay does not duplicate effects"))
 (define experiment-interfaces
   (struct :runtime runtime :assemble experiment
           :empty-environment empty-env :lexical-child lexical-child
@@ -162,10 +205,17 @@
           :umbrella-advice umbrella-advice))
 (define specification
   (struct :entry-point "soul-refined.lain"
-          :status "implemented; offline verification; no live model run"
+          :status "unfinished connected Lain migration; canonical conversation acceptance failing"
           :interfaces experiment-interfaces
           :obligations implementation-obligations
           :acceptance acceptance-scenarios
           :guides language-guide-index :context harness-context
           :request-example weather-request-example))
 specification
+
+;; Trusted preparation supplies independent IO capabilities before invoking this.
+(define conversation-experiment
+  (network [model input publish-message]
+           (let [parent ((contribute-user-input input)
+                         (default-environment incremental-compile publish-message language-guide-index harness-context))]
+             (runtime parent model))))

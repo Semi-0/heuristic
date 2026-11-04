@@ -1,0 +1,27 @@
+(define queue:append-list (network [xs item] (if (data:empty? xs) (data:list item) (data:cons (data:get :car xs) (queue:append-list (data:get :cdr xs) item)))))
+
+(define queue:contains (network [xs id] (if (data:empty? xs) false (if (= (data:get :id (data:get :car xs)) id) true (queue:contains (data:get :cdr xs) id)))))
+
+(define queue:lookup (network [xs id] (if (= (data:get :id (data:get :car xs)) id) (data:get :car xs) (queue:lookup (data:get :cdr xs) id))))
+
+(define queue:empty (network [capacity] (data:record :pending (data:list) :history (data:list) :count 0 :capacity capacity :version 0 :valid (if (data:integer? capacity) (> capacity 0) false))))
+
+(define queue:offer (network [state event] (if (if (data:integer? (data:get :capacity state)) (> (data:get :capacity state) 0) false) (let [history (data:get :history state) id (data:get :id event)] (if (queue:contains history id) (if (= (data:snapshot (queue:lookup history id)) (data:snapshot event)) (data:record :status :duplicate :state state) (data:record :status :conflict :state state)) (if (< (data:get :count state) (data:get :capacity state)) (data:record :status :accepted :state (data:record :pending (queue:append-list (data:get :pending state) event) :history (queue:append-list history event) :count (+ 1 (data:get :count state)) :capacity (data:get :capacity state) :version (+ 1 (data:get :version state)))) (data:record :status :overflow :state state)))) (data:record :status :invalid-capacity :state state))))
+
+(define queue:acknowledge (network [state id] (if (data:empty? (data:get :pending state)) (data:record :status :invalid-acknowledgement :state state) (if (= (data:get :id (data:get :car (data:get :pending state))) id) (data:record :status :acknowledged :state (data:record :pending (data:get :cdr (data:get :pending state)) :history (data:get :history state) :count (- (data:get :count state) 1) :capacity (data:get :capacity state) :version (+ (data:get :version state) 1))) (data:record :status :invalid-acknowledgement :state state)))))
+
+(define queue:feedback
+  (network [current expected-version next-state]
+           (if (= (data:get :version current) expected-version)
+             (if (= current next-state)
+               (data:record :status :unchanged :state current)
+               (if (= (data:get :version next-state) (+ expected-version 1))
+                 (data:record :status :accepted :state next-state)
+                 (data:record :status :invalid-version :state current)))
+             (if (= (data:get :version current) (+ expected-version 1))
+               (if (= current next-state)
+                 (data:record :status :replayed :state current)
+                 (data:record :status :stale-version :state current))
+               (data:record :status :stale-version :state current)))))
+
+(define queue:unseen (network [events history] (if (data:empty? events) (data:list) (if (queue:contains history (data:get :id (data:get :car events))) (queue:unseen (data:get :cdr events) history) events))))

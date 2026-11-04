@@ -1,0 +1,3 @@
+(define observation:review-note (network [fact] (data:record :review (str "Review binding " (data:get :name fact)) :available (data:get :available fact))))
+
+(define observe-review-notes (network [e] (observation:describe-local e observation:review-note)))

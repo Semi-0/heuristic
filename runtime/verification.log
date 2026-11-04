@@ -1,16 +1,23 @@
-Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
-Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+2026-11-04 — unfinished Lain-first migration
 
-Testing propagators.compiler-2.stream-extension-test
+PASS: foundation/runtime suites, 40 tests and 378 assertions, no failures/errors.
+PASS: expanded architecture check, 1 test and 102 assertions (overlaps foundation coverage).
+PASS: actual soul-refined.lain composition and libraries compile with Compiler-2; load starts no inference.
+PASS: pinned cljfmt formatting; clj-kondo 2026.08.04: 0 errors, 49 warnings.
+PASS: complete runtime patch reverse-application check against isolated checkout.
+PASS: original soul.lain SHA-256 unchanged: 80d45ed3e81c8f11014a61d0b4bafa1306370ae1456c725294f0f12ccbe5750f.
 
-Testing propagators.compiler-2.immutable-session-test
+FAIL: canonical-coded-conversation delivered no reply; bounded full test process exited 124.
+FAIL: minimal canonical first-reply reproduction recorded Compiler session propagation budget exhausted:
+      50,468 steps, 300,000 step limit, 180,000 ms timeout; state version 4, round 1,
+      one pending source event, empty parser buffer, zero delivered replies.
+      Thread samples show supported publication/accessor propagation while transport waits on the owner lock.
+      This is harness failure evidence, not a provider failure or completed milestone.
 
-Testing lain-harness.streaming-test
+LIVE DISCOVERY: 127.0.0.1:18320/v1/models is reachable outside the restricted network sandbox
+and lists qwen3.8-flash-next. Earlier sandbox connection refusal did not establish provider unavailability.
+No live inference was attempted while deterministic acceptance remained failing.
+No service start/restart, deployment or merge was performed.
 
-Ran 37 tests containing 238 assertions.
-0 failures, 0 errors.
-
-Standalone source verification:
-Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
-Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
-PASS: actual source and native import compiled; interfaces inspectable; optional instances remain pending; no inference or effects launched.
+Raw evidence is in runtime/evidence/. Historical intermediate verification is preserved there separately.
+Detailed gaps and milestone status are in runtime/verification.json. Component passes do not imply canonical acceptance.

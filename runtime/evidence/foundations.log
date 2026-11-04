@@ -1,0 +1,18 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /home/lain/projects/lain-workspace/src
+WARNING: Use of :paths external to the project has been deprecated, please remove: /home/lain/projects/lain-workspace/test
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_lain/8 because it is locked by another process (errno = 11)
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Testing propagators.compiler-2.stream-extension-test
+
+Testing propagators.compiler-2.immutable-session-test
+
+Testing lain-harness.immutable-test
+
+Testing lain-harness.connected-test
+
+Testing lain-harness.interface-test
+
+Ran 40 tests containing 378 assertions.
+0 failures, 0 errors.
