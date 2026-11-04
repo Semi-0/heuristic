@@ -1,0 +1,4 @@
+(load-lain "lib/behavior.lain")
+(define input-cell (behavior:source 64))
+(define sums (scan input-cell +))
+(define old-query (sample sums 1))

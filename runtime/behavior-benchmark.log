@@ -1,0 +1,60 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :scan, :size 100, :phase :setup, :compile-setup-ms 796.382499, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :scan, :size 100, :phase :warmup-complete}
+{:p95-ms 331.10078, :reducer-invocations 99, :approximate-heap-change-bytes 551544928, :processing-ms 12643.560032, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 93.313547, :size 100, :repetition 1, :preparation-ms 0.001424, :topology-before 1207, :validated true, :workload :scan, :topology-after 1207}
+{:p95-ms 330.392594, :reducer-invocations 99, :approximate-heap-change-bytes -100018496, :processing-ms 12662.770279, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 93.175532, :size 100, :repetition 2, :preparation-ms 0.001616, :topology-before 1207, :validated true, :workload :scan, :topology-after 1207}
+{:p95-ms 333.959143, :reducer-invocations 99, :approximate-heap-change-bytes -97909088, :processing-ms 12641.292467, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 92.854446, :size 100, :repetition 3, :preparation-ms 0.001072, :topology-before 1207, :validated true, :workload :scan, :topology-after 1207}
+{:reference-recomputation-ms 28.176565, :p95-ms 333.959143, :warmup-runs 1, :compile-setup-ms 796.382499, :measured-runs 3, :median-ms 93.313547, :size 100, :status :complete, :validated true, :workload :scan, :processing-total-ms 37947.622778}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :composed, :size 100, :phase :setup, :compile-setup-ms 869.491031, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :composed, :size 100, :phase :warmup-complete}
+{:p95-ms 570.954525, :reducer-invocations 199, :approximate-heap-change-bytes -444004992, :processing-ms 21678.914137, :retained {:retained-evidence 100, :derived-candidates 201, :cache-entries 200, :selection-references 10200, :premise-states 100, :replay-tombstones 0}, :median-ms 160.019584, :size 100, :repetition 1, :preparation-ms 0.001968, :topology-before 1473, :validated true, :workload :composed, :topology-after 1473}
+{:p95-ms 569.303225, :reducer-invocations 199, :approximate-heap-change-bytes 200832544, :processing-ms 21695.052752, :retained {:retained-evidence 100, :derived-candidates 201, :cache-entries 200, :selection-references 10200, :premise-states 100, :replay-tombstones 0}, :median-ms 162.329332, :size 100, :repetition 2, :preparation-ms 0.001088, :topology-before 1473, :validated true, :workload :composed, :topology-after 1473}
+{:p95-ms 572.511398, :reducer-invocations 199, :approximate-heap-change-bytes 192227408, :processing-ms 21676.025402, :retained {:retained-evidence 100, :derived-candidates 201, :cache-entries 200, :selection-references 10200, :premise-states 100, :replay-tombstones 0}, :median-ms 156.393159, :size 100, :repetition 3, :preparation-ms 0.001552, :topology-before 1473, :validated true, :workload :composed, :topology-after 1473}
+{:reference-recomputation-ms nil, :p95-ms 572.511398, :warmup-runs 1, :compile-setup-ms 869.491031, :measured-runs 3, :median-ms 162.329332, :size 100, :status :complete, :validated true, :workload :composed, :processing-total-ms 65049.992291}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :duplicate, :size 100, :phase :setup, :compile-setup-ms 758.102029, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :duplicate, :size 100, :phase :warmup-complete}
+{:p95-ms 35.091866, :reducer-invocations 0, :approximate-heap-change-bytes -276261600, :processing-ms 3152.319149, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 31.045785, :size 100, :repetition 1, :preparation-ms 1501.246974, :topology-before 1207, :validated true, :workload :duplicate, :topology-after 1207}
+{:p95-ms 34.566746, :reducer-invocations 0, :approximate-heap-change-bytes -276648528, :processing-ms 3155.928204, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 31.194169, :size 100, :repetition 2, :preparation-ms 1517.312873, :topology-before 1207, :validated true, :workload :duplicate, :topology-after 1207}
+{:p95-ms 35.186346, :reducer-invocations 0, :approximate-heap-change-bytes 373308240, :processing-ms 3168.261341, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 31.293769, :size 100, :repetition 3, :preparation-ms 1498.028955, :topology-before 1207, :validated true, :workload :duplicate, :topology-after 1207}
+{:reference-recomputation-ms nil, :p95-ms 34.872187, :warmup-runs 1, :compile-setup-ms 758.102029, :measured-runs 3, :median-ms 31.201497, :size 100, :status :complete, :validated true, :workload :duplicate, :processing-total-ms 9476.508694}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :recovery, :size 100, :phase :setup, :compile-setup-ms 758.533102, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :recovery, :size 100, :phase :warmup-complete}
+{:p95-ms 426.797567, :reducer-invocations 99, :approximate-heap-change-bytes 5045784, :processing-ms 844.772619, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 417.133836, :size 100, :repetition 1, :preparation-ms 1517.663345, :topology-before 1207, :validated true, :workload :recovery, :topology-after 1207}
+{:p95-ms 429.713025, :reducer-invocations 99, :approximate-heap-change-bytes -7282608, :processing-ms 853.5004, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 422.909791, :size 100, :repetition 2, :preparation-ms 1525.418503, :topology-before 1207, :validated true, :workload :recovery, :topology-after 1207}
+{:p95-ms 424.0116, :reducer-invocations 99, :approximate-heap-change-bytes -8221672, :processing-ms 848.349296, :retained {:retained-evidence 100, :derived-candidates 100, :cache-entries 100, :selection-references 5050, :premise-states 100, :replay-tombstones 0}, :median-ms 423.497791, :size 100, :repetition 3, :preparation-ms 1505.265492, :topology-before 1207, :validated true, :workload :recovery, :topology-after 1207}
+{:reference-recomputation-ms nil, :p95-ms 429.713025, :warmup-runs 1, :compile-setup-ms 758.533102, :measured-runs 3, :median-ms 423.497791, :size 100, :status :complete, :validated true, :workload :recovery, :processing-total-ms 2546.622315}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :window, :size 100, :phase :setup, :compile-setup-ms 810.27012, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :window, :size 100, :phase :warmup-complete}
+{:p95-ms 108.183874, :reducer-invocations 2331, :approximate-heap-change-bytes -3031264, :processing-ms 6056.116929, :retained {:retained-evidence 64, :derived-candidates 128, :cache-entries 64, :selection-references 2144, :premise-states 100, :replay-tombstones 36}, :median-ms 59.590035, :size 100, :repetition 1, :preparation-ms 0.001456, :topology-before 1309, :validated true, :workload :window, :topology-after 1309}
+{:p95-ms 107.758099, :reducer-invocations 2331, :approximate-heap-change-bytes -4513248, :processing-ms 6027.698248, :retained {:retained-evidence 64, :derived-candidates 128, :cache-entries 64, :selection-references 2144, :premise-states 100, :replay-tombstones 36}, :median-ms 60.168467, :size 100, :repetition 2, :preparation-ms 0.001776, :topology-before 1309, :validated true, :workload :window, :topology-after 1309}
+{:p95-ms 107.204963, :reducer-invocations 2331, :approximate-heap-change-bytes -4087088, :processing-ms 6001.8232, :retained {:retained-evidence 64, :derived-candidates 128, :cache-entries 64, :selection-references 2144, :premise-states 100, :replay-tombstones 36}, :median-ms 59.864467, :size 100, :repetition 3, :preparation-ms 0.00168, :topology-before 1309, :validated true, :workload :window, :topology-after 1309}
+{:reference-recomputation-ms nil, :p95-ms 107.842658, :warmup-runs 1, :compile-setup-ms 810.27012, :measured-runs 3, :median-ms 60.168467, :size 100, :status :complete, :validated true, :workload :window, :processing-total-ms 18085.638377}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :scan, :size 1000, :phase :setup, :compile-setup-ms 758.956011, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :scan :size 1000 :status :unfinished :exit 124}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :composed, :size 1000, :phase :setup, :compile-setup-ms 835.788017, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :composed :size 1000 :status :unfinished :exit 124}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :duplicate, :size 1000, :phase :setup, :compile-setup-ms 752.707796, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :duplicate :size 1000 :status :unfinished :exit 124}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :recovery, :size 1000, :phase :setup, :compile-setup-ms 791.263396, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :recovery :size 1000 :status :unfinished :exit 124}
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:workload :window, :size 1000, :phase :setup, :compile-setup-ms 825.250923, :reference-recomputation-ms nil, :environment {:java "21.0.12.1", :clojure "1.12.4", :os "Linux", :arch "aarch64", :max-heap-bytes 2147483648}}
+{:workload :window :size 1000 :status :unfinished :exit 124}

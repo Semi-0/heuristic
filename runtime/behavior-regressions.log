@@ -1,0 +1,45 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Testing propagators.reducer-cell-test
+
+Testing propagators.runner-test
+
+Testing propagators.experimental.runner-constructor-test
+
+Testing propagators.compiler-2.immutable-session-test
+
+Testing propagators.compiler-2-declaration-effects-test
+
+Testing propagators.experimental.ttms-compound-test
+
+Testing propagators.experimental.ttms-reducer-test
+
+Testing propagators.experimental.ttms-behavior-test
+
+Testing propagators.experimental.ttms-application-test
+
+FAIL in (returned-members-are-gated-without-wrapping-list-structure) (ttms_application_test.clj:102)
+expected: (= #{{:source source, :timestamp 3, :premises-status :active}} (datum/support-of (net/network-cell-strongest recovered member)))
+  actual: (not (= #{{:source #propagators.ids.NodeId{:uuid #uuid "01a1a815-910c-7ec2-a10d-f80ddd01c48d"}, :timestamp 3, :premises-status :active}} #{}))
+
+FAIL in (returned-members-are-gated-without-wrapping-list-structure) (ttms_application_test.clj:102)
+expected: (= #{{:source source, :timestamp 3, :premises-status :active}} (datum/support-of (net/network-cell-strongest recovered member)))
+  actual: (not (= #{{:source #propagators.ids.NodeId{:uuid #uuid "01a1a815-910c-7ec2-a10d-f80ddd01c48d"}, :timestamp 3, :premises-status :active}} #{}))
+
+FAIL in (nested-returned-lists-gate-leaf-members) (ttms_application_test.clj:276)
+expected: (not (:ready? (observation/list-snapshot withdrawn nested)))
+  actual: (not (not true))
+
+FAIL in (changing-return-interface-is-rejected-before-merging-structure) (ttms_application_test.clj:238)
+expected: (thrown-with-msg? clojure.lang.ExceptionInfo #"Supported candidates have incompatible return interfaces" (publish network owner 2 :active 1))
+  actual: nil
+
+Testing propagators.ttms-primitives-test
+
+Testing propagators.ttms-publication-test
+
+Testing propagators.ttms-branching-test
+
+Ran 110 tests containing 742 assertions.
+4 failures, 0 errors.

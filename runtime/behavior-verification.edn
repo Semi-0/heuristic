@@ -1,0 +1,686 @@
+{:benchmark-100
+ {:summaries
+  [{:reference-recomputation-ms 43.457548,
+    :p95-ms 340.090431,
+    :warmup-runs 1,
+    :compile-setup-ms 798.083411,
+    :measured-runs 3,
+    :median-ms 99.916162,
+    :size 100,
+    :status :complete,
+    :validated true,
+    :workload :scan,
+    :processing-total-ms 39039.528247}
+   {:reference-recomputation-ms nil,
+    :p95-ms 583.717752,
+    :warmup-runs 1,
+    :compile-setup-ms 852.922994,
+    :measured-runs 3,
+    :median-ms 167.302287,
+    :size 100,
+    :status :complete,
+    :validated true,
+    :workload :composed,
+    :processing-total-ms 66930.989371}
+   {:reference-recomputation-ms nil,
+    :p95-ms 35.226407,
+    :warmup-runs 1,
+    :compile-setup-ms 776.398733,
+    :measured-runs 3,
+    :median-ms 30.970133,
+    :size 100,
+    :status :complete,
+    :validated true,
+    :workload :duplicate,
+    :processing-total-ms 9430.98851}
+   {:reference-recomputation-ms nil,
+    :p95-ms 430.000196,
+    :warmup-runs 1,
+    :compile-setup-ms 785.501542,
+    :measured-runs 3,
+    :median-ms 425.015874,
+    :size 100,
+    :status :complete,
+    :validated true,
+    :workload :recovery,
+    :processing-total-ms 2557.794991}
+   {:reference-recomputation-ms nil,
+    :p95-ms 106.901641,
+    :warmup-runs 1,
+    :compile-setup-ms 774.880593,
+    :measured-runs 3,
+    :median-ms 59.519961,
+    :size 100,
+    :status :complete,
+    :validated true,
+    :workload :window,
+    :processing-total-ms 17901.775719}],
+  :repetitions
+  [{:p95-ms 338.333821,
+    :reducer-invocations 99,
+    :approximate-heap-change-bytes -47059088,
+    :processing-ms 13004.418216,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 99.569217,
+    :size 100,
+    :repetition 1,
+    :preparation-ms 0.001648,
+    :topology-before 1207,
+    :validated true,
+    :workload :scan,
+    :topology-after 1207}
+   {:p95-ms 338.501502,
+    :reducer-invocations 99,
+    :approximate-heap-change-bytes -48584432,
+    :processing-ms 13028.149356,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 99.440705,
+    :size 100,
+    :repetition 2,
+    :preparation-ms 0.001264,
+    :topology-before 1207,
+    :validated true,
+    :workload :scan,
+    :topology-after 1207}
+   {:p95-ms 340.090431,
+    :reducer-invocations 99,
+    :approximate-heap-change-bytes 598705488,
+    :processing-ms 13006.960675,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 99.916162,
+    :size 100,
+    :repetition 3,
+    :preparation-ms 0.00104,
+    :topology-before 1207,
+    :validated true,
+    :workload :scan,
+    :topology-after 1207}
+   {:p95-ms 579.577811,
+    :reducer-invocations 199,
+    :approximate-heap-change-bytes -328203064,
+    :processing-ms 22224.763037,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 201,
+     :cache-entries 200,
+     :selection-references 10200,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 162.145996,
+    :size 100,
+    :repetition 1,
+    :preparation-ms 0.001552,
+    :topology-before 1473,
+    :validated true,
+    :workload :composed,
+    :topology-after 1473}
+   {:p95-ms 583.717752,
+    :reducer-invocations 199,
+    :approximate-heap-change-bytes 330777928,
+    :processing-ms 22312.854902,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 201,
+     :cache-entries 200,
+     :selection-references 10200,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 167.302287,
+    :size 100,
+    :repetition 2,
+    :preparation-ms 0.001424,
+    :topology-before 1473,
+    :validated true,
+    :workload :composed,
+    :topology-after 1473}
+   {:p95-ms 583.463082,
+    :reducer-invocations 199,
+    :approximate-heap-change-bytes -328247584,
+    :processing-ms 22393.371432,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 201,
+     :cache-entries 200,
+     :selection-references 10200,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 161.839309,
+    :size 100,
+    :repetition 3,
+    :preparation-ms 0.00168,
+    :topology-before 1473,
+    :validated true,
+    :workload :composed,
+    :topology-after 1473}
+   {:p95-ms 34.993928,
+    :reducer-invocations 0,
+    :approximate-heap-change-bytes -275243176,
+    :processing-ms 3139.155647,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 30.898597,
+    :size 100,
+    :repetition 1,
+    :preparation-ms 1532.088126,
+    :topology-before 1207,
+    :validated true,
+    :workload :duplicate,
+    :topology-after 1207}
+   {:p95-ms 34.792024,
+    :reducer-invocations 0,
+    :approximate-heap-change-bytes -275065808,
+    :processing-ms 3143.006308,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 30.991381,
+    :size 100,
+    :repetition 2,
+    :preparation-ms 1507.367182,
+    :topology-before 1207,
+    :validated true,
+    :workload :duplicate,
+    :topology-after 1207}
+   {:p95-ms 35.347192,
+    :reducer-invocations 0,
+    :approximate-heap-change-bytes 374905664,
+    :processing-ms 3148.826555,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 31.040709,
+    :size 100,
+    :repetition 3,
+    :preparation-ms 1502.038859,
+    :topology-before 1207,
+    :validated true,
+    :workload :duplicate,
+    :topology-after 1207}
+   {:p95-ms 430.000196,
+    :reducer-invocations 99,
+    :approximate-heap-change-bytes 3919144,
+    :processing-ms 854.80631,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 423.897009,
+    :size 100,
+    :repetition 1,
+    :preparation-ms 1537.485862,
+    :topology-before 1207,
+    :validated true,
+    :workload :recovery,
+    :topology-after 1207}
+   {:p95-ms 425.119794,
+    :reducer-invocations 99,
+    :approximate-heap-change-bytes -5675024,
+    :processing-ms 847.88333,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 421.795776,
+    :size 100,
+    :repetition 2,
+    :preparation-ms 1514.36812,
+    :topology-before 1207,
+    :validated true,
+    :workload :recovery,
+    :topology-after 1207}
+   {:p95-ms 429.235524,
+    :reducer-invocations 99,
+    :approximate-heap-change-bytes -7279232,
+    :processing-ms 855.105351,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :median-ms 425.015874,
+    :size 100,
+    :repetition 3,
+    :preparation-ms 1501.345776,
+    :topology-before 1207,
+    :validated true,
+    :workload :recovery,
+    :topology-after 1207}
+   {:p95-ms 107.803226,
+    :reducer-invocations 2331,
+    :approximate-heap-change-bytes -69438056,
+    :processing-ms 6006.679709,
+    :retained
+    {:retained-evidence 64,
+     :derived-candidates 128,
+     :cache-entries 64,
+     :selection-references 2144,
+     :premise-states 100,
+     :replay-tombstones 36},
+    :median-ms 59.519961,
+    :size 100,
+    :repetition 1,
+    :preparation-ms 0.00184,
+    :topology-before 1309,
+    :validated true,
+    :workload :window,
+    :topology-after 1309}
+   {:p95-ms 106.553737,
+    :reducer-invocations 2331,
+    :approximate-heap-change-bytes 580376984,
+    :processing-ms 5989.858951,
+    :retained
+    {:retained-evidence 64,
+     :derived-candidates 128,
+     :cache-entries 64,
+     :selection-references 2144,
+     :premise-states 100,
+     :replay-tombstones 36},
+    :median-ms 58.07532,
+    :size 100,
+    :repetition 2,
+    :preparation-ms 0.002832,
+    :topology-before 1309,
+    :validated true,
+    :workload :window,
+    :topology-after 1309}
+   {:p95-ms 106.472777,
+    :reducer-invocations 2331,
+    :approximate-heap-change-bytes -71022392,
+    :processing-ms 5905.237059,
+    :retained
+    {:retained-evidence 64,
+     :derived-candidates 128,
+     :cache-entries 64,
+     :selection-references 2144,
+     :premise-states 100,
+     :replay-tombstones 36},
+    :median-ms 55.861302,
+    :size 100,
+    :repetition 3,
+    :preparation-ms 0.001616,
+    :topology-before 1309,
+    :validated true,
+    :workload :window,
+    :topology-after 1309}],
+  :warmups
+  [{:workload :scan,
+    :size 100,
+    :phase :warmup-complete,
+    :validated true,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :topology-before 1207,
+    :topology-after 1207}
+   {:workload :composed,
+    :size 100,
+    :phase :warmup-complete,
+    :validated true,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 201,
+     :cache-entries 200,
+     :selection-references 10200,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :topology-before 1473,
+    :topology-after 1473}
+   {:workload :duplicate,
+    :size 100,
+    :phase :warmup-complete,
+    :validated true,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :topology-before 1207,
+    :topology-after 1207}
+   {:workload :recovery,
+    :size 100,
+    :phase :warmup-complete,
+    :validated true,
+    :retained
+    {:retained-evidence 100,
+     :derived-candidates 100,
+     :cache-entries 100,
+     :selection-references 5050,
+     :premise-states 100,
+     :replay-tombstones 0},
+    :topology-before 1207,
+    :topology-after 1207}
+   {:workload :window,
+    :size 100,
+    :phase :warmup-complete,
+    :validated true,
+    :retained
+    {:retained-evidence 64,
+     :derived-candidates 128,
+     :cache-entries 64,
+     :selection-references 2144,
+     :premise-states 100,
+     :replay-tombstones 36},
+    :topology-before 1309,
+    :topology-after 1309}],
+  :log "runtime/behavior-benchmark-final-100.log"},
+ :boundaries
+ {:soul-lain :unchanged,
+  :model-orchestration :unchanged,
+  :deployed-runtime :unchanged,
+  :deployment false,
+  :service-restart false,
+  :live-provider-calls false,
+  :preexisting-ttms-behavior-experiment :preserved,
+  :protected-hashes
+  {"soul.lain"
+   "80d45ed3e81c8f11014a61d0b4bafa1306370ae1456c725294f0f12ccbe5750f",
+   "lib/model.lain"
+   "36fccff6053294c4c98962fa1da71132914feb121281b4076e14a234c671df0e"}},
+ :semantics
+ {:inputs
+  "TTMS base occurrences contain :id, :time, :revision, :temporal/type and :value; intervals also contain :end.",
+  :evaluation
+  "The local runner uses network-iterator-constructor with a temporal patch evaluator. Session ingress selects the same cell evaluator. The default cell-merge dispatcher is unchanged.",
+  :reduction
+  "User functions use the same Compiler-2 callable path as builtins; temporary immutable invocation networks are discarded. Generic reducer-cell merge computes candidates; strongest only performs ordinary TTMS projection.",
+  :support
+  "Each region retains original alternatives and explicit selection evidence, including absence/withdrawal dependencies. No activation counter supplies semantic provenance.",
+  :recovery
+  "Premise-only belief recovery reuses retained occurrence evidence; current justification names the new belief revision while selection retains the original observation.",
+  :initial
+  "No timestamp or domain is invented by an initial accumulator. Empty results have :status :unknown.",
+  :window
+  "Opt-in behavior:source 64 prunes payloads, derived candidates and caches. Scan covers the retained domain and restarts at its first occurrence. :unavailable-before and :unavailable-ids report discarded query/recovery regions. No forgotten-prefix checkpoint is claimed."},
+ :tests
+ {:behavior
+  {:tests 14,
+   :assertions 274,
+   :failures 0,
+   :errors 0,
+   :log "runtime/behavior-tests.log",
+   :coverage
+   [:compiled-scan
+    :explicit-initial
+    :compiler-2-user-network
+    :order-sensitive-reduction
+    :premise-only-withdrawal-recovery
+    :alternative-justifications
+    :conflicts
+    :partial-information
+    :permutations
+    :batching
+    :regrouping
+    :duplicates
+    :semantic-order
+    :simultaneous-occurrences
+    :map
+    :lift
+    :sample
+    :hold
+    :filter
+    :history
+    :filo
+    :last
+    :history-map
+    :half-open-intervals
+    :normalization
+    :cutoffs
+    :stale-replay
+    :actual-cache-payload-retention
+    :stable-topology
+    :independent-instances
+    :merge-time-reduction
+    :pure-reference-comparison
+    :aci-evidence-join
+    :cached-versus-pure-recomputation]},
+  :runtime-regressions
+  {:tests 110,
+   :assertions 742,
+   :failures 4,
+   :errors 0,
+   :baseline {:tests 110, :assertions 742, :failures 4, :errors 0},
+   :new-failures 0,
+   :existing-failure-vars
+   ["returned-members-are-gated-without-wrapping-list-structure (2 assertions)"
+    "nested-returned-lists-gate-leaf-members"
+    "changing-return-interface-is-rejected-before-merging-structure"],
+   :logs
+   ["runtime/behavior-regressions.log"
+    "runtime/behavior-regressions-baseline.log"]},
+  :foundation
+  {:tests 48,
+   :assertions 533,
+   :failures 0,
+   :errors 8,
+   :baseline {:tests 48, :assertions 533, :failures 0, :errors 8},
+   :cause
+   "Existing modified lib/model.lain has EOF while reading. Preserved unchanged.",
+   :logs
+   ["runtime/behavior-foundation.log"
+    "runtime/behavior-foundation-baseline.log"
+    "runtime/behavior-source-diagnostics.log"]},
+  :quality
+  {:errors 0,
+   :format :pass,
+   :diff-whitespace :pass,
+   :warnings 2,
+   :warnings-existing
+   ["session.clj unused scope" "session.clj unused content"],
+   :checked-files 13,
+   :log "runtime/behavior-quality.log",
+   :clj-kondo "2026.08.04",
+   :cljfmt "0.16.6",
+   :shell-syntax :pass},
+  :lain-compilation
+  {:status :pass,
+   :sources
+   ["lib/behavior.lain"
+    "test/fixtures/behavior/minimal.lain"
+    "test/fixtures/behavior/scan.lain"
+    "test/fixtures/behavior/intervals.lain"
+    "test/fixtures/behavior/window.lain"
+    "test/fixtures/behavior/benchmark.lain"],
+   :method
+   "Actual immutable Compiler-2 sessions in tests and the final compiled benchmark."}},
+ :limitations
+ ["All 1000-occurrence cases exceeded 120 seconds before completing warm-up; no large-case acceptance claim."
+  "Retained scan prefix support/selection references grow quadratically: 5050 references for 100 scan occurrences. Numeric reductions are reused (99 invocations), but projection, comparison and provenance work remain expensive."
+  "The 64-occurrence window retained 64 evidence payloads and 64 cache entries at N=100, but still had 100 premise states and 36 replay tombstones. Replay rejection metadata is intentionally not a fixed-size payload cache."
+  "A window bounds occurrence identities, not the number of conflicting/alternative justifications for one identity; no adversarial byte bound is claimed."
+  "Callables must be pure and closed over immutable bindings. Operator controls and lexical bindings are snapshotted at installation, not dynamically switched. Invocation templates retain the initial lexical network as setup state; fixtures install before publishing events."
+  "Occurrence identities and semantic extents are stable in this experiment. Retiming an already discarded identity is outside the validated window contract."
+  "Points and half-open constant intervals are supported. Only hold adds continuation. Continuous function segments and dynamic switching remain deferred."
+  "Existing runtime return-interface regressions and the unrelated model source parse failure remain; neither was modified to obtain passing behavior results."],
+ :source-sha256
+ {:runtime
+  {"propagators/cell_evaluator.clj"
+   "d4143b0d73373b6f71c6dfd9000ba059f7f31237543b0ba2ba2181573e333d1c",
+   "propagators/compiler_2/session.clj"
+   "14ae453de531332f770306becad99a0b18bc5062bd8a359b308f5fcda50c5fdc",
+   "propagators/datastructures/reducer_cell.clj"
+   "9111b313a5921acbb874a941f07fe1e141a13682c71bf8720570fa6cbeb2cda5",
+   "propagators/experimental/temporal_behavior.clj"
+   "3ec518b6faee99fdf811255c2f4c4f0e4b8e963c8aa77334fd6c07f6f2524d7e",
+   "propagators/experimental/temporal_runner.clj"
+   "caab70c565c1ad474ecdc4e0632cf1fb4737fcde35385e89346709babbb67219",
+   "propagators/propagator.clj"
+   "ee79db96df179b48fd421983964a214a93c25cfa282cdea4363b33339c337b54",
+   "propagators/runner.clj"
+   "c248470e90364aa852124f7c4c3d05bc84ed042c7fa46dd366ae12a64092a816",
+   "test/propagators/experimental/temporal_behavior_test.clj"
+   "0043a8eb39a8f4f7cb606e41ccf6737e9bf8530c214a2198f413fe4fc0d2ff8d"},
+  :harness
+  {"README.md"
+   "d92a4e2151ea4bb41d5aec997f8c8854702f6ab76b71deb77a4fb6e5afb93cbd",
+   "lib/behavior.lain"
+   "e898b1c19848236f417de6e46b64cab4ae8eca321d14322e9543180222053e86",
+   "src/lain_harness/behavior.clj"
+   "3c480b11b19d38ffd8b1d016e179704d4ad7acc7d8b3c5ba8d79b25304d6aaab",
+   "test/fixtures/behavior/benchmark.lain"
+   "3fe25c1b44b974b06ab1573f5440def63473eaa3e7bda421708d90871d63dc7f",
+   "test/fixtures/behavior/intervals.lain"
+   "849c7065188c0db3953fedb2f8f709d9e59573a1fb5837f20222637b9f266921",
+   "test/fixtures/behavior/minimal.lain"
+   "416065e09839bff4bf089971ab27a347850a8814d6a5b492ec3f4c368178fe7e",
+   "test/fixtures/behavior/scan.lain"
+   "5df15b98549c88ad8e0e11f92415ce398dd323734af6c913a3b13944fa724b52",
+   "test/fixtures/behavior/window.lain"
+   "9d85141eabe164b3efbf8413b8d5b266483b078f96c87222cadc0153c73607eb",
+   "test/lain_harness/behavior_benchmark.clj"
+   "6dc6c93da235d56c729f70f08aa35b5bb8078e7706db1f6129170399f5a31bbc",
+   "test/lain_harness/behavior_test.clj"
+   "ffa2597ec482838619c2bfbe22b5b235b8f624cc9bfaabe5fa1cc6d40a13f6c3",
+   "test/modules.edn"
+   "5669766af695da3c2114a0c9c08d99f747f8aef245007f27901255fd8e750967",
+   "tools/bench_behavior.clj"
+   "0d393bff3e9a2074b52915705b67e872f3f96ac21a86b04e946e89ee944c85ac",
+   "tools/bench_behavior.sh"
+   "018431e5bb41104e9b2b902842c9efaafbc466d68cea7092a3413a0f0a7e911e",
+   "tools/check_behavior_quality.sh"
+   "7ddd032f6cbdc343a8db5d376065b5e15d9a447b76f5d1d5194badb743d6619e",
+   "tools/test_module.sh"
+   "ca9023c4ef578ebbb8ddd8cb10c89a2a5fbf9f11045917f0d7193ed9ee77f9d1"}},
+ :future-model-integration
+ {:status :not-migrated,
+  :prerequisites
+  ["Reduce projection/provenance overhead and verify 1000-event cases."
+   "Resolve pre-existing model/source and return-interface failures independently."],
+  :candidate-experiments-after-gates
+  ["Supported stream-chunk histories"
+   "Per-turn cumulative usage"
+   "Sampled model status"]},
+ :recorded-at "2026-11-04T20:03:21.977797250Z",
+ :commands
+ {:reference-driver
+  "(load-file (str (System/getenv \"LAIN_HARNESS_ROOT\") \"/tools/offline_uuid.clj\"))\n(require '[lain-harness.behavior-test :as f])\n(let [size 1000 events (mapv #(f/point % % (inc (mod % 7))) (range 1 (inc size)))\n      run (fn [validate?]\n            (let [start (System/nanoTime)]\n              (doseq [n (range 1 (inc size))]\n                (let [result (f/reference-scan (subvec events 0 n))]\n                  (when validate?\n                    (assert (= (reduce + (map #(inc (mod % 7)) (range 1 (inc n)))) (last result))))))\n              (/ (- (System/nanoTime) start) 1e6)))]\n  (run true)\n  (prn {:size size :contextual-only true :warmup-runs 1 :measured-runs 3\n        :validation :all-warmup-prefixes :assertions-in-measured-time false\n        :incremental-pure-reference-ms (mapv (fn [_] (run false)) (range 3))}))\n(shutdown-agents)\n",
+  :runtime-regression-driver
+  "(load-file \"/home/lain/projects/lain-workspace/tools/offline_uuid.clj\")\n(require '[clojure.test :as t])\n(def suites '[propagators.reducer-cell-test propagators.runner-test\n              propagators.experimental.runner-constructor-test\n              propagators.compiler-2.immutable-session-test\n              propagators.compiler-2-declaration-effects-test\n              propagators.experimental.ttms-compound-test\n              propagators.experimental.ttms-reducer-test\n              propagators.experimental.ttms-behavior-test\n              propagators.experimental.ttms-application-test\n              propagators.ttms-primitives-test propagators.ttms-publication-test\n              propagators.ttms-branching-test])\n(doseq [suite suites] (require suite))\n(let [result (apply t/run-tests suites)]\n  (shutdown-agents)\n  (System/exit (if (zero? (+ (:fail result) (:error result))) 0 1)))\n",
+  :baseline-foundation
+  "LAIN_RUNTIME_ROOT=/tmp/lain-behavior-baseline LAIN_OFFLINE_UUID=1 tools/test_module.sh foundation",
+  :runtime-regression-command
+  "LAIN_OFFLINE_UUID=1 clojure -J-Xmx2g -Sdeps '{:aliases {:local-tests {:extra-paths [\"test\" \"editor/test\"]}}}' -M:local-tests /tmp/behavior_regressions.clj",
+  :behavior "tools/test_module.sh behavior",
+  :final-benchmark-repeat "BEHAVIOR_SIZES=100 tools/bench_behavior.sh",
+  :quality "tools/check_behavior_quality.sh",
+  :patch-check
+  "git apply --check /home/lain/projects/lain-workspace/runtime/behavior-runtime.patch (in the unchanged runtime archive)",
+  :benchmark-matrix "tools/bench_behavior.sh",
+  :foundation "LAIN_OFFLINE_UUID=1 tools/test_module.sh foundation"},
+ :benchmark-1000
+ {:cases
+  [{:workload :scan, :size 1000, :status :unfinished, :exit 124}
+   {:workload :composed, :size 1000, :status :unfinished, :exit 124}
+   {:workload :duplicate, :size 1000, :status :unfinished, :exit 124}
+   {:workload :recovery, :size 1000, :status :unfinished, :exit 124}
+   {:workload :window, :size 1000, :status :unfinished, :exit 124}],
+  :completed-warmups 0,
+  :completed-measured-repetitions 0,
+  :status :unfinished-all-five,
+  :log "runtime/behavior-benchmark.log",
+  :reference
+  {:size 1000,
+   :contextual-only true,
+   :warmup-runs 1,
+   :measured-runs 3,
+   :validation :all-warmup-prefixes,
+   :assertions-in-measured-time false,
+   :incremental-pure-reference-ms
+   [4184.728279 4229.975545 4224.355895]}},
+ :environment
+ {:cpu-models ["ARM Cortex-X925" "ARM Cortex-A725"],
+  :architecture "aarch64",
+  :clojure "1.12.4",
+  :harness "/home/lain/projects/lain-workspace",
+  :maximum-case-heap-bytes 2147483648,
+  :note
+  "Local development measurements; short verification jobs also ran on the machine. No dedicated CPU isolation.",
+  :java "21.0.12.1",
+  :runtime-base "6f147518dde882d027682fc0323f6ef0477d9441",
+  :runtime "/home/lain/projects/lain-harness-runtime",
+  :harness-base "b954b14134fac5dc4f6256f52c33358c308943ed",
+  :offline-uuid true,
+  :cpus-online 20,
+  :os "Linux 7.0.0-1019-nvidia",
+  :live-provider-calls 0},
+ :model-integration :deferred-practicality-gate-not-passed,
+ :benchmark-method
+ {:sizes [100 1000],
+  :counts
+  "Unique semantic reducer identities and evidence across active cell contents and transported input snapshots; static invocation-template topology excluded. Selection references and replay metadata reported separately.",
+  :warmup-runs 1,
+  :publication-latency-ms
+  "session/advance call to settled immutable session; excludes later validation.",
+  :processing-ms
+  "Wall time over the publication loop, including loop overhead and recovery's intermediate validation.",
+  :measured-repetitions 3,
+  :snapshot-note
+  "The full matrix includes earlier 100-event runs. All 100-event workloads were repeated after the final boundary/conflict refinements; the final-repeat log is authoritative for completed timings. Unfinished 1000-event runs establish no final correctness/timing result.",
+  :case-time-limit-seconds 120,
+  :heap
+  "Runtime.totalMemory - freeMemory before/after publications; allocation/GC-sensitive, not retained heap or retained-data counts.",
+  :reference
+  "Independent scalar full-prefix recomputation; contextual baseline, not an equivalent-runtime comparison.",
+  :preparation-ms
+  "Prepopulation for duplicate and recovery workloads, outside timed publications.",
+  :setup-ms
+  "Compilation and query configuration; excludes JVM startup.",
+  :percentiles
+  "Nearest-rank, pooled publication latencies over the three repetitions. Recovery has six samples.",
+  :timeout-includes
+  [:jvm-startup :compilation :warmup :measurements :validation],
+  :topology
+  "Actual set of active network cell/propagator IDs, asserted unchanged.",
+  :data
+  "Stable source/occurrence identities 1..N, semantic time = identity, payload = 1 + (identity mod 7)."},
+ :implementation :complete-local-experiment,
+ :runtime-patch
+ {:path "runtime/behavior-runtime.patch",
+  :apply-check :pass,
+  :base "6f147518dde882d027682fc0323f6ef0477d9441",
+  :sha256
+  "4c448fd1deb70ab5c23d5489eccd9fd2adc9cafb242bf68eeb4c6fff1127005e"}}

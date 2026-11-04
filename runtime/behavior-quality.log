@@ -1,0 +1,3 @@
+{:end-row 253, :type :unused-binding, :level :warning, :filename "propagators/compiler_2/session.clj", :col 46, :end-col 51, :langs (), :message "unused binding scope", :row 253}
+{:end-row 309, :type :unused-binding, :level :warning, :filename "propagators/compiler_2/session.clj", :col 44, :end-col 51, :langs (), :message "unused binding content", :row 309}
+{:error 0, :warning 2, :info 0, :type :summary, :duration 493, :files 13}

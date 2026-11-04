@@ -1,0 +1,44 @@
+;; Temporal behavior experiment: opt in with the behavior session evaluator and
+;; (load-lain "lib/behavior.lain"). It does not install model orchestration.
+;;
+;; (define input-cell)
+;; (define sums (scan input-cell +))
+;; (define with-initial (scan input-cell + 0))
+;; (define digits (scan input-cell (network [acc next] (+ (* acc 10) next))))
+;; (define doubled (map sums (network [x] (* x 2))))
+;; (define at-three (sample doubled 3))
+;; (define continuous (hold sums))
+;; (define combined (lift sums doubled +))
+;; (define selected (event-filter input-cell (network [x] (> x 0))))
+;; (define newest-first (history sums :filo))
+;; (define latest-region (last sums))
+;; (define mapped-past (history-map sums (network [x] (+ x 1))))
+;;
+;; Results are supported histories, including last/sample (zero or one region).
+;; An empty history has status :unknown. Initial accumulators create no region.
+;; Points cover only their exact semantic time; intervals cover [start,end).
+;; Only hold creates continuation. Simultaneous points are processed by stable
+;; identity; FIFO/FILO only changes presentation. Sampling overlapping disagreeing
+;; regions exposes a contradiction with its alternative justifications.
+;;
+;; For an explicit bounded domain:
+;; (define window-input (behavior:source 64))
+;; (define window-sums (scan window-input +))
+;; This is a scan OF the retained window, recomputed from its current first event,
+;; not a checkpoint claiming knowledge of forgotten prefixes. Older samples and
+;; recovery are :unavailable; payloads/caches are pruned, while replay tombstones
+;; and premise frontier metadata remain. Default inputs retain exact evidence.
+;;
+;; Reducer networks must be pure; captured bindings and operator parameters are
+;; snapshotted when installed. Dynamic switching and function segments are deferred.
+;; Explicitly imported, input-first temporal relationships. Aliases retain
+;; Compiler-2 callability, including scan's two- and three-argument forms.
+(define scan behavior:scan)
+(define hold behavior:hold)
+(define sample behavior:sample)
+(define map behavior:map)
+(define lift behavior:lift)
+(define event-filter behavior:event-filter)
+(define history behavior:history)
+(define last behavior:last)
+(define history-map behavior:history-map)

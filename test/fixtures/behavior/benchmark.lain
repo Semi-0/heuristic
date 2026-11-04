@@ -1,0 +1,6 @@
+(load-lain "lib/behavior.lain")
+(define input-cell)
+(define sums (scan input-cell +))
+(define doubled (map sums (network [x] (* x 2))))
+(define query-time)
+(define sampled (sample doubled query-time))

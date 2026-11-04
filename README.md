@@ -65,3 +65,25 @@ The [runtime patch](runtime/streaming-extension.patch) targets `5b5e4809c67902fd
 The archived Blazux configuration was checked on 2026-11-04. Access outside the restricted tool sandbox returned `qwen3.8-flash-next` from `http://127.0.0.1:18320/v1/models`. A live coded conversation has not been attempted because the deterministic harness path is not passing.
 
 Remaining work includes the integrated propagation failure, model/round/consumed-context admission premises, Lain-owned diagnostic feedback, ingress/output backpressure, failure/resume and cancellation correctness, complete per-turn budget coverage, selective feedback acceptance, and full conversation preservation across editor attachments. The obsolete `resource_*` adapters remain unreferenced pending passing replacements; they are not an alternate canonical runner.
+
+## Opt-in temporal behavior experiment
+
+`tools/test_module.sh behavior` compiles actual Lain fixtures and advances immutable sessions with supported temporal occurrences. Import `lib/behavior.lain` in a session created by `lain-harness.behavior/create-session`; the extension provides `scan`, `map`, `lift`, `hold`, `sample`, `event-filter`, `history`, `last`, and `history-map`. The library comments document signatures, support, interval boundaries, and window semantics.
+
+The experiment uses the existing reducer-cell and Compiler-2 callable path. Reduction runs during merge. Its local runner is assembled with `network-iterator-constructor`; both session ingress and propagator messages use the selected evaluator. Default sessions retain their existing evaluation policy. No model orchestration or deployed runtime is changed.
+
+Run the separate local benchmark with `tools/bench_behavior.sh`. It uses fixed evidence identities, 100 and 1,000 occurrences, one warm-up and three measured repetitions, with a two-minute limit per workload/size. Outputs are validated before timings are reported; unfinished cases are explicit. Results, environment details, commands, and limitations are recorded in `runtime/behavior-verification.edn` and the adjacent behavior logs. The experiment is not yet suitable for model integration: retained prefix provenance grows quadratically, and large cases can exceed the benchmark limit. A 64-occurrence window bounds payloads and caches, but replay-rejection metadata still grows. Window scans cover only the retained domain.
+
+Final local verification: the behavior module passes 14 tests / 274 assertions. `tools/check_behavior_quality.sh` passes pinned cljfmt and clj-kondo checks with zero errors and two existing session warnings. Runtime regressions reproduce the baseline's four failing assertions; foundation tests reproduce eight errors from the existing, unchanged `lib/model.lain` parse failure.
+
+The final 100-occurrence run produced these publication-to-settlement latencies (milliseconds, pooled over three repetitions):
+
+| Workload | Median | p95 | Mean processing per repetition |
+| --- | ---: | ---: | ---: |
+| Incremental scan | 99.9 | 340.1 | 13.01 s |
+| Scan → map → sample | 167.3 | 583.7 | 22.31 s |
+| Duplicate replay | 31.0 | 35.2 | 3.14 s |
+| Middle withdrawal + recovery | 425.0 | 430.0 | 0.85 s for the pair |
+| 64-occurrence window | 59.5 | 106.9 | 5.97 s |
+
+All five 1,000-occurrence cases in the full matrix were unfinished at 120 seconds, without completing warm-up. They establish no large-case correctness or timing result. The window case at 100 occurrences retained 64 evidence payloads and 64 cache entries; its 100 premise states and 36 replay tombstones are separate metadata. Scan retained 5,050 prefix-selection references for 100 occurrences. These measured limitations keep model integration deferred.

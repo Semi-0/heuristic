@@ -1,0 +1,27 @@
+{:behavior {:description "Compiled Lain temporal behaviors, immutable evidence, composition and bounded retention"
+            :namespaces [lain-harness.behavior-test
+                         propagators.experimental.temporal-behavior-test]}
+ :transport {:description "Stream framing and native transport contracts"
+             :vars [lain-harness.streaming-test/sse-contract]}
+ :model {:description "Connected Lain model with controlled context and a test output consumer"
+         :namespaces [lain-harness.model-test]}
+ :model-live {:description "Three bounded rounds against the configured Blazux model"
+              :live true
+              :namespaces [lain-harness.model-live-test]}
+ :user-io {:description "User ingress, acknowledged delivery, ownership and view attachment"
+           :namespaces [lain-harness.interface-test]}
+ :compiler {:description "Reader, immutable admission and connected feedback"
+            :vars [lain-harness.immutable-test/immutable-reader-preserves-prefix
+                   lain-harness.immutable-test/admission-through-immutable-session
+                   lain-harness.connected-test/selected-lain-feedback-stops-without-a-host
+                   lain-harness.connected-test/immutable-compare-and-advance-receipts]}
+ :observation {:description "Independent environment descriptions and support changes"
+               :vars [lain-harness.immutable-test/connected-lain-observation-contribution]}
+ :foundation {:description "Runtime and harness foundations; no live requests"
+              :namespaces [propagators.compiler-2.stream-extension-test
+                           propagators.compiler-2.immutable-session-test
+                           lain-harness.immutable-test
+                           lain-harness.connected-test
+                           lain-harness.interface-test]}
+ :integration {:description "Actual soul-refined composition: generated code, replies and reuse"
+               :vars [lain-harness.streaming-test/canonical-coded-conversation]}}
