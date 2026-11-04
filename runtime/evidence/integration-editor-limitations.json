@@ -1,0 +1,12 @@
+{
+  "initial_bundle_display_error": {
+    "ok": false,
+    "error": "Compound projection found ambiguous slot parents"
+  },
+  "resolution": "Default result now reads the actual model-state cell; browser value inspection passes.",
+  "full_topology_probe": {
+    "binding": "model-session",
+    "timeout_seconds": 30,
+    "status": "HTTP inspection timed out; full topology rendering not verified."
+  }
+}

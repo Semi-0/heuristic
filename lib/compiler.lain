@@ -58,11 +58,11 @@
 
 (define incremental-compile
   (network [actions target]
-           (let [state (cell:value (data:get :state-cell actions))
+           (let [state (cell:value ((slot :state-cell) actions))
                  parser (data:get :parser state)
                  parsed (data:snapshot (source:read-next (data:get :buffer parser) (data:get :finish parser)))
-                 declaration (data:snapshot (compiler:declaration state parsed target (data:get :premise actions)))
+                 declaration (data:snapshot (compiler:declaration state parsed target ((slot :premise) actions)))
                  receipt (data:snapshot (session:admit declaration (data:snapshot (str (data:get :model-id state) "/" (data:get :serial state)))))
                  next (compiler:step state parsed declaration receipt)]
-             (session:feedback (data:get :state-cell actions) (data:get :version state) next)
+             (session:feedback ((slot :state-cell) actions) (data:get :version state) next)
              :connected)))

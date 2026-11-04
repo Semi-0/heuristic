@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:4790",
+  "sessionId": "57684512-8c9d-4926-854c-0ccefdf967dc",
+  "stateVisible": true,
+  "topology": "Full topology probe exceeded 30 seconds; not verified",
+  "errors": [],
+  "attached": {
+    "pane": "aacc133a-9ff8-47ef-b472-d5c5c77de982",
+    "generation": "eae15f78-5d6e-4b63-a3a9-62493f09c9c2"
+  },
+  "passed": true
+}

@@ -1,0 +1,4 @@
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_lain/6 because it is locked by another process (errno = 11)
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+PASS: actual source and native import compiled; interfaces inspectable; optional instances remain pending; no inference or effects launched.

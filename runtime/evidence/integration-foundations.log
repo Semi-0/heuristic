@@ -1,0 +1,15 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Testing propagators.compiler-2.stream-extension-test
+
+Testing propagators.compiler-2.immutable-session-test
+
+Testing lain-harness.immutable-test
+
+Testing lain-harness.connected-test
+
+Testing lain-harness.interface-test
+
+Ran 48 tests containing 601 assertions.
+0 failures, 0 errors.

@@ -2,7 +2,7 @@
 
 This is an unfinished Lain-first migration. The immutable foundations pass their focused tests, but the canonical coded-conversation test does not yet deliver its first reply. Do not treat this checkout as acceptance of the orchestration plan. Current results and remaining work are recorded in [runtime/verification.json](runtime/verification.json) and [runtime/verification.log](runtime/verification.log).
 
-The companion runtime snapshot is [datalog-research at `1d584e5`](https://github.com/Semi-0/datalog-research/commit/1d584e5509280bc07a3ebf5276dc5f5f10f615b1). Both repositories use the branch `wip/lain-open-sessions-20261104` for this incomplete snapshot.
+The companion runtime snapshot is [datalog-research at `6f14751`](https://github.com/Semi-0/datalog-research/commit/6f147518dde882d027682fc0323f6ef0477d9441). Both repositories use the branch `wip/lain-open-sessions-20261104` for this incomplete snapshot.
 
 [soul-refined.lain](soul-refined.lain) imports the executable policies. The original [soul.lain](soul.lain) is unchanged. The orchestration observes the parent and targets its lexical child:
 
@@ -14,21 +14,23 @@ The companion runtime snapshot is [datalog-research at `1d584e5`](https://github
 
 `lib/observations.lain` implements lexical traversal, shadowing, selection and rendering. Native metadata describes one lexical frame or one compound's immediate fields. It has no native depth limit or domain-specific rendering schema. An additional contribution is implemented in `lib/observation-example.lain`.
 
-Model and user sources are declared in `.lain`: `source:new` in `lib/ports.lain` declares a cell and wires `source:initialize` directly to it; `model:new` in `lib/model.lain` constructs each model's ports and state. Harness extensions contain primitive/effectful propagators, source files, interface declarations and external dependencies. They contain no preseeded cells or binding aliases to host-allocated model cells. Interfaces resolve references exported by the compiled Lain network.
+Model and user sources are declared in `.lain`: `source:new` in `lib/ports.lain` declares a cell and wires `source:initialize` directly to it; `model:new` in `lib/model.lain` constructs each model's ports and state and exposes its live endpoints as a `struct`. Native harness extensions supply primitive/effectful propagators and external dependencies; the session file loader supplies Lain libraries. They contain no preseeded cells or binding aliases to host-allocated model cells. The host model/user extension factories are removed. Lain exports cell references with `session:export`; the host resolves those declarations without constructing instances.
 
 Custom records and lists travel as TTMS base values; scalar constants use primitive values. There is no `Frozen` datatype. Data lists use `:lain.data/empty`, distinct from the compiler's open-list topology marker. Observation metadata uses `:premises` so inspecting a withdrawn premise does not itself retract the observation.
+
+`integration.lain` imports dependencies, declares optional endpoints, and owns the queue capacity (256) and per-turn inference budget (8). `soul-refined.lain` imports that file. `integration:model` constructs a model from a user source and a capability `struct`; `integration:launch` mounts one conversation into the editor endpoints. Native `transport:stream` and `message:deliver` supply only external effects.
 
 `lib/model.lain` uses `lib/queue.lain` and `lib/rounds.lain` to select requests, build prompts, maintain history and advance versioned model state. `lib/compiler.lain` buffers source and selects one admission at a time, waiting for its connected receipt. Resume is an ingress command interpreted by `model:command`; it preserves the current turn and inference budget. These are connected to the current execution path; the former host model coordinator and shared model/stream registries are no longer used.
 
 `and` and `or` are primitive Boolean propagators; `not` is the existing builtin. A deciding operand can produce a result while other inputs are pending. Value support follows the deciding operand; premise-state updates from every watched input invalidate withdrawn evidence. Multiway policies use Compiler-2’s `(cond [test result ... else fallback])`; guarded operations still use conditional selection.
 
-The latest bounded probe accepts and queues a user message but leaves the model context uninitialized: zero transport requests and zero delivered replies. The parent-description connection remains unresolved. The earlier snapshot reached transport output and exhausted its propagation budget; that earlier evidence is retained separately. The refactor passes 46 focused tests with 563 assertions, but successful admission and acknowledged reply delivery through the full composition have not been established.
+The latest bounded probe accepts and queues a user message but leaves the model context uninitialized: zero transport requests and zero delivered replies. The parent-description connection remains unresolved. The earlier snapshot reached transport output and exhausted its propagation budget; that earlier evidence is retained separately. The refactor passes 48 focused tests with 601 assertions, but successful admission and acknowledged reply delivery through the full composition have not been established.
 
 ## Open-session interfaces
 
 The isolated runtime adds immutable connected declarations and declared interfaces to the existing session API. The authoritative host publishes user messages with stable identities and a current run token. Identical replay is harmless; conflicting identity reuse is rejected.
 
-The editor commands `user-message` and `conversation-status` use the same owner and ingress operation as headless tooling. Existing owner discovery, generation checks, external-owner mutation restrictions and attachment mechanisms remain in force. Detaching a view does not close its owner.
+The editor commands `user-message` and `conversation-status` use the same owner and ingress operation as headless tooling. Existing owner discovery, generation checks, external-owner mutation restrictions and attachment mechanisms remain in force. Browser verification attaches the existing owner and displays its current model state; the full topology probe exceeded a 30-second request bound and remains unverified. Detaching a view does not close its owner.
 
 Trusted experimental preparation is available through:
 

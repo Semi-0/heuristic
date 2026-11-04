@@ -11,6 +11,32 @@
   (connected/freeze (session/network s) (net/network-cell-strongest (session/network s) id)))
 (defn primitive [f] (connected/primitive :test/primitive f))
 
+(deftest lain-exports-and-directed-input-ports
+  (let [s (session/extend-session
+           (session/create-session)
+           (session/session-extension
+            {:id :ports
+             :primitives {'export (connected/export-operator)
+                          'reference (data/reference-operator)
+                          'input (data/input-operator)}
+             :files {"ports.lain"
+                     "(define target) (define later)
+                      (export :example \"ready\" :observation (reference target))
+                      (export :example later :observation (reference target))
+                      (-> 17 (input (reference target)))"}}))
+        target (session/binding-cell s 'target)
+        ready (:session (session/advance s [(session/cell-input (session/binding-cell s 'later) "late")]))]
+    (is (= 17 (observed s target)))
+    (is (= #{[:example "ready"]} (set (keys (session/interfaces s)))))
+    (is (= target (session/interface-cell ready [:example "late"])))
+    (is (= #{[:example "ready"] [:example "late"]} (set (keys (session/interfaces ready)))))
+    (is (empty? (session/connected-inputs ready)))
+    (let [conflicting (session/extend-session ready
+                                              (session/session-extension
+                                               {:id :conflict :files {"conflict.lain"
+                                                                      "(define other) (export :example \"ready\" :observation (reference other))"}}))]
+      (is (thrown? Exception (session/interfaces conflicting))))))
+
 (deftest selected-lain-feedback-stops-without-a-host
   (let [declared (session/extend-session
                   (session/create-session)

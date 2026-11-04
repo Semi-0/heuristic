@@ -147,7 +147,7 @@
       (try
         (let [initial (host/current-session owner)
               source (str "(define admission-child (lexical-child (empty-env)))\n"
-                          "(define admission-plan (incremental-compile-form :generated \"(define result 42)\" admission-child nil))\n"
+                          "(define admission-plan (incremental-compile-form :generated \"(define admitted-result 42)\" admission-child nil))\n"
                           "(define declaration (data:get :declaration admission-plan))\n(define admission-receipt)")
               prepared (session/extend-session initial
                                                (session/session-extension {:id :plan :files {"plan.lain" source}}))
@@ -156,8 +156,8 @@
               admitted (:session (session/advance prepared [(session/admission-input declaration receipt :actual)]))
               target (:target declaration)]
           (is (= 42 (data/payload (net/network-cell-strongest (session/network admitted)
-                                                              (session/scoped-binding-cell admitted target 'result)))))
-          (is (thrown? Exception (session/binding-cell admitted 'result)))
+                                                              (session/scoped-binding-cell admitted target 'admitted-result)))))
+          (is (thrown? Exception (session/binding-cell admitted 'admitted-result)))
           (is (= :admitted (:status (data/payload (net/network-cell-strongest (session/network admitted) receipt))))))
         (finally (host/close! owner))))))
 
@@ -233,14 +233,13 @@
         services (harness/services owner)]
     (try
       (doseq [extension (concat (harness/facility-extensions services)
-                                [(harness/model-extension services {:id "one" :transport (fn [& _])})
-                                 (harness/model-extension services {:id "two" :name 'second-model :transport (fn [& _])})
-                                 (harness/user-extension "user")
-                                 (harness/message-extension services "one")])]
+                                [(harness/transport-extension services (fn [& _]))
+                                 (harness/message-extension services)])]
         (let [parts (session/extension-parts extension)]
           (is (empty? (:cells parts)))
           (is (empty? (:frames parts)))
-          (is (empty? (:derivations parts)))))
+          (is (empty? (:derivations parts)))
+          (is (empty? (:interfaces parts)))))
       (doseq [file ["runtime" "connected_data" "environment" "lexical_observation" "value_metadata" "admission" "source_reader"]]
         (let [source (slurp (str root "/src/lain_harness/" file ".clj"))]
           (is (not (re-find #"operator/operator-closure\s|:compiler-activate|:application-installer|connected/frozen" source)))))
@@ -251,8 +250,13 @@
         requests (atom [])
         transport (fn [request _emit!] (swap! requests conj request))]
     (try
-      (host/extend! owner (harness/model-extension services {:id "one" :transport transport}))
-      (host/extend! owner (harness/model-extension services {:id "two" :name 'second-model :transport transport}))
+      (host/extend! owner (harness/transport-extension services transport))
+      (host/extend-source! owner
+                           "(define first-user (integration:user \"user-one\"))
+         (define second-user (integration:user \"user-two\"))
+         (define capabilities (struct :request transport:stream))
+         (define model-session (integration:model \"one\" first-user capabilities))
+         (define second-model (integration:model \"two\" second-user capabilities))")
       (host/step! owner)
       (let [current (host/current-session owner)
             one (harness/model-state services "one")
@@ -260,6 +264,8 @@
         (is (= "one" (:model-id one)))
         (is (= "two" (:model-id two)))
         (is (= :idle (:active one) (:active two)))
+        (is (= 256 (:capacity (:inputs one)) (:capacity (:outputs two))))
+        (is (= 8 (:budget (:round one)) (:budget (:round two))))
         (doseq [part [:state :events :delivered :commands]]
           (is (not= (harness/model-cell current "one" part)
                     (harness/model-cell current "two" part))))

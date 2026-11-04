@@ -70,3 +70,37 @@ No recorded host failures; see wiring-conversation.log and .clj reproduction.
 This remains a harness wiring defect, not evidence of a provider failure.
 Earlier failure and timeout evidence is preserved. No live inference,
 deployment, merge or service restart performed.
+
+
+2026-11-04 — Lain integration and struct capability composition
+Runtime commit: 6f147518dde882d027682fc0323f6ef0477d9441
+soul-refined.lain imports integration.lain; original soul.lain remains unchanged.
+Dependency imports, optional endpoints and 256-event/8-inference defaults live
+in integration.lain. Host model-extension and user-extension are removed.
+Lain constructs independent model structs, selects capability slots and exports
+cell references through generic session:export. inputs-of is a Lain composition
+of slot access and cell:input. Native IO accepts explicitly wired references.
+Transport normal-completion cleanup no longer interrupts its own receipt wait.
+
+PASS combined runtime/harness/connected/interface: 48 tests, 601 assertions,
+0 failures, 0 errors (integration-foundations.log). Includes late/independent
+exports, conflicting exports, primitive capability invocation through struct,
+ordered source events, acknowledged delivery/deduplication, owner cleanup and
+independent Lain-created models. The lexical-target test uses a unique name
+because result is now an explicit editor endpoint.
+PASS actual source compilation, no-inference launch and model-state display,
+pinned Clojure/Lain formatting and lint (0 errors, 46 warnings), original soul
+hash, and runtime patch reverse application.
+
+EDITOR: isolated loopback preview launched on 4790. Browser attaches the existing
+owner, displays live model state, records no JavaScript errors, then detaches
+its test view without stopping the owner. Full model topology inspection timed
+out at the 30-second request bound and remains unverified. Initial projection
+of the entire integration bundle failed with ambiguous slot parents; the default
+display now reads the actual model-state cell. Evidence: integration-editor.json
+and integration-editor-limitations.json.
+
+NOT ACCEPTED: bounded canonical conversation still queues one user event with
+context uninitialized, 0 requests and 0 replies; no recorded host failures.
+See integration-conversation.log. Provider discovery rechecked successfully;
+no live inference attempted. Deployed editor and model service unchanged.

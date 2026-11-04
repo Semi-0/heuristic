@@ -120,7 +120,7 @@ index a6a824f..9b4dc52 100644
             "run" (let [result (editor/run! editors command)]
                     (development-runtime/close-pane! developments id)
 diff --git a/propagators/compiler_2/session.clj b/propagators/compiler_2/session.clj
-index 18c54c9..e2a8085 100644
+index 18c54c9..df1c8aa 100644
 --- a/propagators/compiler_2/session.clj
 +++ b/propagators/compiler_2/session.clj
 @@ -1,6 +1,9 @@
@@ -433,7 +433,7 @@ index 18c54c9..e2a8085 100644
                       effects/record-boundary-effects)
          current (cond-> prepared
                    (get-in (session-declarations session) [:options :record-inputs?])
-@@ -299,6 +449,127 @@
+@@ -299,6 +449,136 @@
                                   (session-declarations session) current)
            [] (effects/outbox-effects (:program/net current)))))
  
@@ -488,10 +488,19 @@ index 18c54c9..e2a8085 100644
 +(defn publication-input [cell-id base]
 +  {:runtime/input :publication :cell-id cell-id :base base})
 +
++(defn interfaces
++  "Read static and Lain-connected interface declarations without advancing a session."
++  [session]
++  (merge-with (fn [a b]
++                (when-not (= a b) (throw (ex-info "Conflicting session interface declarations" {})))
++                a)
++              (:interfaces (session-declarations session))
++              (connected/interfaces (network session))))
++
 +(defn interface-cell
 +  "Resolve a declared interface against compiled Lain topology. No cells are created."
 +  [session interface]
-+  (let [{:keys [cell binding field reference?]} (get-in (session-declarations session) [:interfaces interface])
++  (let [{:keys [cell binding field reference?]} (get (interfaces session) interface)
 +        v (when binding (connected/freeze (network session) (binding-value session binding)))
 +        resolved (cond cell cell field (get v field) reference? v binding (binding-cell session binding))]
 +    (when-not (and (ids/node-id? resolved) (contains? (net/net-env (network session)) resolved))
@@ -561,7 +570,7 @@ index 18c54c9..e2a8085 100644
  (declare create-session)
  
  (extend-type ImmutableLainSession
-@@ -321,11 +592,11 @@
+@@ -321,11 +601,11 @@
        (throw (ex-info "Rerun requires a fresh run identity" {})))
      (let [identity (assoc (session-identity session) :run-id fresh-run-id)
            fresh (create-session
@@ -578,7 +587,7 @@ index 18c54c9..e2a8085 100644
        (extend-session fresh (session-extension (assoc parts :id ::rerun))))))
  
  (defn create-session
-@@ -347,9 +618,9 @@
+@@ -347,9 +627,9 @@
                               current extension {:outbox-id (runtime-ids/boundary-outbox-id)}))
                            initial bootstrap)]
       (ImmutableLainSession. (select-keys options [:id :run-id])
@@ -593,10 +602,10 @@ index 18c54c9..e2a8085 100644
    "Host inspection/boundary adapter. Domain state remains an immutable value."
 diff --git a/propagators/compiler_2/session/connected.clj b/propagators/compiler_2/session/connected.clj
 new file mode 100644
-index 0000000..fa70381
+index 0000000..cad7ae0
 --- /dev/null
 +++ b/propagators/compiler_2/session/connected.clj
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,109 @@
 +(ns propagators.compiler-2.session.connected
 +  "Connected immutable declarations. No resource, worker, or host dependency."
 +  (:require [propagators.cells.value :as value]
@@ -644,6 +653,7 @@ index 0000000..fa70381
 +              (activate network context inputs output)))})))
 +
 +(def declarations-key ::declarations)
++(def interfaces-key ::interfaces)
 +(def pending ::pending)
 +
 +(defn freeze
@@ -672,6 +682,30 @@ index 0000000..fa70381
 +    (fn [_ arguments [output] _context]
 +      {:effects [(gur/bind-name [declarations-key] output
 +                                {:kind kind :arguments arguments :receipt output})]})}))
++
++(defn export-operator
++  "Declare a named external interface to a cell reference supplied by Lain.
++  Registration retains argument identities; unresolved exports remain pending."
++  []
++  (operator/propagator-operator
++   {:name 'session:export
++    :activate
++    (fn [_ arguments [output] _context]
++      (when-not (= 4 (count arguments))
++        (throw (ex-info "session:export expects family, identity, kind and cell reference" {})))
++      {:effects [(gur/bind-name [interfaces-key] output arguments)]})}))
++
++(defn interfaces [network]
++  (reduce
++   (fn [exports arguments]
++     (let [[family identity kind cell :as values]
++           (mapv #(freeze network (net/network-cell-strongest network %)) arguments)]
++       (if (some #{pending} values) exports
++           (let [key [family identity] descriptor {:kind kind :cell cell}]
++             (when (and (contains? exports key) (not= descriptor (get exports key)))
++               (throw (ex-info "Conflicting connected session interface" {:interface key})))
++             (assoc exports key descriptor)))))
++   {} (vals (get (net/network-dict-entry network [:network :name-bindings]) [interfaces-key]))))
 +
 +(defn declarations [network]
 +  (->> (get (net/network-dict-entry network [:network :name-bindings]) [declarations-key])
@@ -728,7 +762,7 @@ index b1e4633..4f48df1 100644
 +      :primitives (:primitives prepared) :dependencies dependencies
        :files (:files prepared) :imports (:imports prepared)})))
 diff --git a/propagators/compiler_2/session/host.clj b/propagators/compiler_2/session/host.clj
-index 84c8847..924e775 100644
+index 84c8847..f05bf21 100644
 --- a/propagators/compiler_2/session/host.clj
 +++ b/propagators/compiler_2/session/host.clj
 @@ -4,13 +4,15 @@
@@ -1001,7 +1035,7 @@ index 84c8847..924e775 100644
 +    (into {} (map (fn [[id {:keys [kind]}]]
 +                    [id {:kind kind :value (connected/freeze (session/network s)
 +                                                             (net/network-cell-strongest (session/network s) (session/interface-cell s id)))}]))
-+          (:interfaces (session/session-declarations s)))))
++          (session/interfaces s))))
 +
 +(defn publish-user-message!
 +  "The sole public conversational ingress: exported user cells, stable identity,
@@ -1013,7 +1047,7 @@ index 84c8847..924e775 100644
 +                  (fn [s]
 +                    (when-not (= (str run-id) (str (:run-id (session/session-identity s))))
 +                      (throw (ex-info "Stale session run" {:stale true})))
-+                    (let [{:keys [kind]} (get-in (session/session-declarations s) [:interfaces interface])
++                    (let [{:keys [kind]} (get (session/interfaces s) interface)
 +                          cell (session/interface-cell s interface)]
 +                      (when-not (= :user-message kind)
 +                        (throw (ex-info "Session does not expose this user ingress" {:interface interface})))

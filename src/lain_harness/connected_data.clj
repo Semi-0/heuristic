@@ -74,6 +74,17 @@
                                          :cell-value [source] [output]
                                          (fn [_ _ current] (basis/mono-sync-messages current source output)))]})))}))
 
+(defn input-operator []
+  (operator/propagator-operator
+   {:name 'cell:input
+    :activate
+    (fn [network [reference] [output] _context]
+      (let [target (data/payload (net/network-cell-strongest network reference))]
+        (if (value/unusable? target) []
+            {:effects [(gur/declare-prop (basis/stable-node-id :cell-input output target)
+                                         :cell-input [output] [target]
+                                         (fn [_ _ current] (basis/mono-sync-messages current output target)))]})))}))
+
 (defn initialize-operator []
   (operator/propagator-operator
    {:name 'source:initialize

@@ -1,13 +1,13 @@
 {
   "date": "2026-11-04",
-  "status": "Direct Lain wiring, Boolean primitives and cond policies verified; coded conversation incomplete (parent description pending)",
+  "status": "Lain integration and struct capability composition verified; editor state view running; coded conversation incomplete (parent description pending)",
   "entry_point": "soul-refined.lain",
   "runtime_base": "5b5e4809c67902fd890d1d5ebc4f02ae19a55a2a",
   "runtime_checkout": "/home/lain/projects/lain-harness-runtime",
   "deterministic": {
     "foundations": {
-      "tests": 46,
-      "assertions": 563,
+      "tests": 48,
+      "assertions": 601,
       "failures": 0,
       "errors": 0,
       "suites": [
@@ -19,20 +19,15 @@
       ],
       "runs": [
         {
-          "tests": 29,
-          "assertions": 188,
-          "evidence": "runtime/evidence/wiring-runtime.log"
-        },
-        {
-          "tests": 17,
-          "assertions": 375,
-          "evidence": "runtime/evidence/wiring-harness.log"
+          "tests": 48,
+          "assertions": 601,
+          "evidence": "runtime/evidence/integration-foundations.log"
         }
       ]
     },
     "source_check": {
       "status": "passed; actual entry point and imported Lain libraries compiled with Compiler-2; no inference on load",
-      "evidence": "runtime/evidence/wiring-source.log"
+      "evidence": "runtime/evidence/integration-source.log"
     },
     "architecture": {
       "preseeded_harness_extension_cells": false,
@@ -47,7 +42,14 @@
       "source_initialization": "source:initialize primitive wired by lib/ports.lain",
       "resume_policy": "model:command in lib/model.lain; host publishes identified control events only",
       "boolean_primitives": "and/or with decisive value support and all watched premise states; existing builtin not",
-      "multiway_policy": "Compiler-2 cond vector syntax"
+      "multiway_policy": "Compiler-2 cond vector syntax",
+      "native_model_extension": false,
+      "native_user_extension": false,
+      "model_bundle": "live struct in lib/model.lain; slot access preserves independent endpoints",
+      "integration": "integration.lain imports dependencies, declares endpoints and owns 256-event/8-inference defaults",
+      "session_exports": "generic session:export primitive; interfaces declared by Lain",
+      "model_input": "inputs-of is Lain composition over generic cell:input",
+      "external_capabilities": "transport:stream and message:deliver receive explicitly wired event/delivery cell references"
     },
     "bounded_first_reply_reproduction": {
       "status": "failed to deliver; not acceptance",
@@ -60,9 +62,13 @@
       "poll_bound_seconds": 20,
       "process_bound_seconds": 130,
       "propagation_timeout_ms": 30000,
-      "evidence": "runtime/evidence/wiring-conversation.log",
-      "reproduction": "runtime/evidence/wiring-conversation.clj",
+      "evidence": "runtime/evidence/integration-conversation.log",
+      "reproduction": "runtime/evidence/integration-conversation.clj",
       "note": "The diagnostic script exits normally after recording state. Its exit code does not indicate conversation acceptance. Earlier canonical and propagation-budget failures remain in historical_deterministic."
+    },
+    "integration_launch": {
+      "status": "passed; editor result equals current model state and launch makes zero inference requests",
+      "evidence": "runtime/evidence/integration-launch.log"
     }
   },
   "quality": {
@@ -71,7 +77,8 @@
     "format_check": "passed",
     "lint_errors": 0,
     "lint_warnings": 46,
-    "evidence": "runtime/evidence/wiring-quality.log"
+    "evidence": "runtime/evidence/integration-quality.log",
+    "lain_format_evidence": "runtime/evidence/integration-lain-format.log"
   },
   "patch_reverse_application_check": "passed",
   "original_soul_unchanged": true,
@@ -107,12 +114,12 @@
   ],
   "sha256": {
     "soul.lain": "80d45ed3e81c8f11014a61d0b4bafa1306370ae1456c725294f0f12ccbe5750f",
-    "soul-refined.lain": "01723985d12ba2de548d0c125a4bb53f948707634c0b16ab2dbb1f695540fcd9",
-    "README.md": "386abcfd3a525b8658c174530d1cf3ab50bbec0a8a4f69519ec520da968c04b5",
-    "docs/native-boundaries.md": "ecbac597ae3da12165aedb6ea6ef400767db7acecc9d090df4b4810ca1a37c62",
-    "runtime/streaming-extension.patch": "552c783fc07f22a7608db7ead9e7b30921f7384fdfebc8a44b710b90426be68e",
+    "soul-refined.lain": "d678e8afbc369d46ebcc90238ed7d3bf55830dcba870d5c77ca74b9935d5a090",
+    "README.md": "e629283f3061265acdc417476a6528b3704b6407918a1776d1675e061134cbe4",
+    "docs/native-boundaries.md": "62e3a8ff5e9f48961bfe66a8c99c366565df59d3e677fb21dc678b8218cc5e63",
+    "runtime/streaming-extension.patch": "f84808c0d8fdf3e0d058d2ad59bf70498955143a38c3494ed1a1254437142364",
     "src/lain_harness/admission.clj": "430322f429ea5b79b72884e0ad1df49e29cfb208d2a4ed22b0121f84d0cc48be",
-    "src/lain_harness/connected_data.clj": "e6ed0995227bcf39791b8cb0edeb3fba74388a7ef3dfaf51113e54faaed69937",
+    "src/lain_harness/connected_data.clj": "4388aac6da33f68ae13bb8d4821e6ebd052b6df33ac81ca14db30bd77d8f9178",
     "src/lain_harness/environment.clj": "a148d19636b0697b073d97bf8893db1c9a69b6005695304c0137ab3f38abf47b",
     "src/lain_harness/lexical_observation.clj": "34786de1f12dd60c83c9bd8dd6fa2b2103f4c456552c756f67da0c177f54c2b3",
     "src/lain_harness/premises.clj": "3a89d26339975ee105c6226ff7803a805c3b6d548f178b5c5193e4755a06650e",
@@ -120,28 +127,29 @@
     "src/lain_harness/resource_environment.clj": "121820782e0e181c89c01acddde20e0f515547f6ad480907acc552565d7bc1d5",
     "src/lain_harness/resource_queue.clj": "fe92b638e450a24ef4e3c07117a6a856809f1a160fbec8a5d4687d54d6918bd9",
     "src/lain_harness/resource_stream.clj": "558a3c963a930a4080aad8a29e4a7b82744e63ecb578d2759f790712f3d56098",
-    "src/lain_harness/runtime.clj": "dc2a8636d72b13ee57868a83387198e1d8f26be8d250a37d1087bf4fd9365235",
+    "src/lain_harness/runtime.clj": "4ca1d64f90efc90ec7295c2424710224d9a53f572e43d466e82386286cfdb920",
     "src/lain_harness/source_parser.clj": "2ca7cc9391e3457a6dc6d92d7ef0fc1fb342b766770b1d76a4927e12b64960d2",
     "src/lain_harness/source_reader.clj": "e73bc0b57e5470ab421bc472136fb8bf56cb7637d2ba2c866cf08671f58c9e8e",
     "src/lain_harness/stream.clj": "3fcd8562e45c05673db22e083412673cbe02dc492ae90844f7a952b415bf9300",
     "src/lain_harness/transport.clj": "a2692671088a8d44a56c19f2e3f24ca8f8742a5802515170737bc3c6bbbf1cd5",
     "src/lain_harness/value_metadata.clj": "527a413adbaa89fa8d02215675adc7e38542be156b0aa5bc8892fbeed9d62af8",
-    "lib/compiler.lain": "08c6da3886bfef5065dd9ff7845fdf0b38c5a0f91c8fbdb2548bee640505d60f",
+    "lib/compiler.lain": "23644cc19f69da75ada291680632494a2800c965932c7021d4fe4945be55a7bd",
     "lib/data.lain": "026c8feca82f3f184f4dff0b5af03077e9b1b1738608f645673ff695d366d12f",
-    "lib/model.lain": "1342940519827836978dba358623e7a908029191c3f575bb74a96a6be73f2f57",
+    "lib/model.lain": "c12aaac8e006c417f63146725ffbee664c47a59c5865df700584a93a7b17a34f",
     "lib/observation-example.lain": "9c95350904de044ef236db6aa742f09ba3088795c71d365914981161f9fc3beb",
     "lib/observations.lain": "3a52c69933016eaf66e21d06ae974b9990df18ad07cf5211a6ccc5f53eae2e0e",
     "lib/queue.lain": "8f56956cf6efa96fd09ce4121ee56cf5d8f0f40fbd560e44a9b596100f007323",
     "lib/rounds.lain": "099fea0c0c8d7af6b6ae996ea2a4bd5f170a1a5a80baf2d1368ccdbe28936755",
-    "test/lain_harness/connected_test.clj": "80d283b602404df5be18328be438f1e0f281a7205999b9334e8e2cb83b393275",
-    "test/lain_harness/immutable_test.clj": "6a6270885c3f058842f9e8e94048271014adf390deed4e507ca182b73ceca3d5",
-    "test/lain_harness/interface_test.clj": "972ce77ffd9353e056cae6fb20444eb5a331d4617d3667a0c42732e00d5f791e",
+    "test/lain_harness/connected_test.clj": "18e286ea3429969ac7dca22f1f49f3dcc55febeb85763da5bcbb1fa9bb67ad07",
+    "test/lain_harness/immutable_test.clj": "ff5ccca14e7bf64bd1835879dfaba13990479f0b7e498bd68a52c33c36a15853",
+    "test/lain_harness/interface_test.clj": "11198334fc1be7c3f3955407c71cfbccc7b7cfc3635aaa323dff0993db6ae025",
     "test/lain_harness/streaming_test.clj": "f884695b738d7a08d14e69de8bc36d7e97547f5327192feefb550bb611a4577b",
-    "lib/ports.lain": "159864a0a9620f3bd9a60d8090a73ecfb706243a2d9002e8722511198c3f3c38"
+    "lib/ports.lain": "159864a0a9620f3bd9a60d8090a73ecfb706243a2d9002e8722511198c3f3c38",
+    "integration.lain": "cc804ae0a29ff8c9adc197ffe4f81c0fb670bd4660ec0b196f97a5f4169afc13"
   },
-  "runtime_commit": "1d584e5509280bc07a3ebf5276dc5f5f10f615b1",
+  "runtime_commit": "6f147518dde882d027682fc0323f6ef0477d9441",
   "review_branch": "wip/lain-open-sessions-20261104",
-  "previous_runtime_commit": "1ca0b5c9b64ea18383741ff1caafc17259f91783",
+  "previous_runtime_commit": "1d584e5509280bc07a3ebf5276dc5f5f10f615b1",
   "historical_deterministic": {
     "foundations": {
       "tests": 40,
@@ -242,5 +250,75 @@
       "reproduction": "runtime/evidence/ttms-conversation.clj",
       "note": "The diagnostic script exits normally after recording state. Its exit code does not indicate conversation acceptance. Earlier canonical and propagation-budget failures remain in historical_deterministic."
     }
+  },
+  "historical_wiring_deterministic": {
+    "foundations": {
+      "tests": 46,
+      "assertions": 563,
+      "failures": 0,
+      "errors": 0,
+      "suites": [
+        "propagators.compiler-2.stream-extension-test",
+        "propagators.compiler-2.immutable-session-test",
+        "lain-harness.immutable-test",
+        "lain-harness.connected-test",
+        "lain-harness.interface-test"
+      ],
+      "runs": [
+        {
+          "tests": 29,
+          "assertions": 188,
+          "evidence": "runtime/evidence/wiring-runtime.log"
+        },
+        {
+          "tests": 17,
+          "assertions": 375,
+          "evidence": "runtime/evidence/wiring-harness.log"
+        }
+      ]
+    },
+    "source_check": {
+      "status": "passed; actual entry point and imported Lain libraries compiled with Compiler-2; no inference on load",
+      "evidence": "runtime/evidence/wiring-source.log"
+    },
+    "architecture": {
+      "preseeded_harness_extension_cells": false,
+      "custom_compiler_installation_hooks": false,
+      "frozen_payload_type": false,
+      "custom_values": "TTMS bases; scalar constants remain primitive",
+      "source_network": "lib/ports.lain",
+      "model_network": "lib/model.lain",
+      "two_model_sources_independent": true,
+      "host_source_initialization": false,
+      "admission_receipt_autoallocation": false,
+      "source_initialization": "source:initialize primitive wired by lib/ports.lain",
+      "resume_policy": "model:command in lib/model.lain; host publishes identified control events only",
+      "boolean_primitives": "and/or with decisive value support and all watched premise states; existing builtin not",
+      "multiway_policy": "Compiler-2 cond vector syntax"
+    },
+    "bounded_first_reply_reproduction": {
+      "status": "failed to deliver; not acceptance",
+      "transport_requests": 0,
+      "delivered_replies": 0,
+      "model_version": 1,
+      "pending_user_events": 1,
+      "context": "uninitialized",
+      "host_failures": 0,
+      "poll_bound_seconds": 20,
+      "process_bound_seconds": 130,
+      "propagation_timeout_ms": 30000,
+      "evidence": "runtime/evidence/wiring-conversation.log",
+      "reproduction": "runtime/evidence/wiring-conversation.clj",
+      "note": "The diagnostic script exits normally after recording state. Its exit code does not indicate conversation acceptance. Earlier canonical and propagation-budget failures remain in historical_deterministic."
+    }
+  },
+  "editor_preview": {
+    "url": "http://127.0.0.1:4790",
+    "entry": "soul-refined.lain -> integration.lain",
+    "browser_attachment_and_state_view": "passed; zero JavaScript errors; test view detached and owner retained",
+    "evidence": "runtime/evidence/integration-editor.json",
+    "topology": "full model topology inspection exceeded 30 seconds; not verified",
+    "limitations_evidence": "runtime/evidence/integration-editor-limitations.json",
+    "deployed_services_changed": false
   }
 }

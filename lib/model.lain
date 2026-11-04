@@ -99,18 +99,19 @@
 
 (define model:connect
   (network [model description user-cell]
-           (let [state (cell:value (data:get :state-cell model))
-                 next (model:step state (cell:value user-cell) (cell:value (data:get :events-cell model))
-                                  (cell:value (data:get :delivered-cell model))
-                                  (cell:value (data:get :commands-cell model)) (data:snapshot description))]
-             (session:feedback (data:get :state-cell model) (data:get :version state) next)
-             (transport:request (data:get :transport model) (data:snapshot (data:get :active state)))
+           (let [state (cell:value ((slot :state-cell) model))
+                 next (model:step state (cell:value user-cell) (cell:value ((slot :events-cell) model))
+                                  (cell:value ((slot :delivered-cell) model))
+                                  (cell:value ((slot :commands-cell) model)) (data:snapshot description))]
+             (session:feedback ((slot :state-cell) model) (data:get :version state) next)
+             (((slot :request) model) (data:snapshot (data:get :active state)) ((slot :events-cell) model))
              :connected)))
 (define actions-of (network [model] model))
+(define inputs-of (network [model] (cell:input ((slot :inlet) model))))
 
 ;; Model topology and initial values belong here, not in an extension's :cells.
 (define model:new
-  (network [identity transport capacity budget]
+  (network [identity request capacity budget user]
            (define inlet)
            (let [state (source:new (data:with (model:initial capacity budget)
                                               (data:record :model-id identity)))
@@ -118,8 +119,12 @@
                  delivered (source:new (data:list))
                  commands (source:new (data:list))
                  premise (source:new identity)
-                 instance (data:record :state-cell state :inlet (cell:reference inlet)
-                                       :events-cell events :delivered-cell delivered
-                                       :commands-cell commands :transport transport :premise premise)]
-             (model:connect instance inlet (cell:reference user-input))
+                 instance (struct :state-cell state :inlet (cell:reference inlet)
+                                  :events-cell events :delivered-cell delivered
+                                  :commands-cell commands :request request :premise premise)]
+             (session:export :model identity :model state)
+             (session:export :source identity :source events)
+             (session:export :messages identity :messages delivered)
+             (session:export :control identity :model-control commands)
+             (model:connect instance inlet user)
              instance)))
