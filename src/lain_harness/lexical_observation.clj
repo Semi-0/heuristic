@@ -22,6 +22,8 @@
         facts (mapv (fn [[name id]]
                       (let [v (net/network-cell-strongest network id)]
                         {:name (str name) :cell id :frame target
+                         :state (cond (value/contradiction? v) :contradictory
+                                      (value/nothing? v) :unknown :else :known)
                          :available (not (value/unusable? v))
                          :value (if (value/unusable? v) :unavailable (data/payload v)) :premises (datum/support-of v)}))
                     (sort-by (comp str key) (merge declared live)))]

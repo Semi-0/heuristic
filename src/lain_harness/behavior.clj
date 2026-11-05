@@ -7,8 +7,13 @@
             [propagators.compiler-2.runtime.application :as application]
             [propagators.compiler-2.runtime.declaration-effects :as declarations]
             [propagators.compiler-2.session :as session]
+            [propagators.compiler-2.session.files :as files]
             [propagators.compiler-2.session.connected :as connected]
             [propagators.datastructures.reducer-cell :as reducer]
+            [propagators.datastructures.layered-value :as datum]
+            [propagators.datastructures.support-collection :as collection]
+            [propagators.datastructures.support :as support]
+            [propagators.stdlib.premise-state :as premise-state]
             [propagators.experimental.temporal-behavior :as temporal]
             [propagators.experimental.temporal-runner :as temporal-runner]
             [propagators.message :refer [message]]
@@ -33,7 +38,12 @@
 (defn invoke
   "Evaluate immutable inputs and discard the temporary invocation."
   [{:keys [network tasks arguments output]} & values]
-  (let [seeded (reduce (fn [n [id v]] (net/assoc-net-cell n id (cell/cell v v)))
+  (let [seeded (reduce (fn [n [id v]]
+                         ;; Structured accumulators are TTMS bases, just like
+                         ;; primitive results, never host-preseeded cell domains.
+                         (let [content (collection/content {:base v :support #{}})
+                               strongest (collection/strongest-value content temporal/refine)]
+                           (net/assoc-net-cell n id (cell/cell content strongest))))
                        network (map vector arguments values))
         after (runner/completed-network (runner/run-network tasks seeded))]
     (connected/payload (net/network-cell-strongest after output))))
@@ -123,20 +133,99 @@
             [p installed] (initialize (declarations/ensure-cell network output))]
         [installed [p] output]))}))
 
+(defn- event-list [xs]
+  (loop [xs xs events []]
+    (cond
+      (= connected/empty-list xs) events
+      (and (map? xs) (contains? xs :car) (contains? xs :cdr))
+      (let [event (:car xs)]
+        (recur (:cdr xs)
+               (conj events (temporal/occurrence (:id event) (:time event)
+                                                 (get event :revision 0) (:value event)))))
+      :else (throw (ex-info "Expected an immutable list of explicit temporal events" {})))))
+
+(defn- merge-snapshot [content update]
+  (let [snapshot (collection/merge-content (:snapshot content value/nothing)
+                                           (:snapshot update value/nothing))]
+    (if (= snapshot (:snapshot content)) content
+        (let [projected (collection/strongest-value snapshot temporal/refine)
+              payload (connected/payload projected)
+              proof (datum/support-of projected)
+              ready? (not (value/unusable? payload))
+              evidence {:support/observations
+                        (if ready? (into #{} (map #(hash-map :base % :support proof))
+                                         (event-list payload)) #{})
+                        :support/states (premise-state/states-of projected)}]
+          {:snapshot snapshot :evidence evidence
+           :result {:records (temporal/source-records evidence)
+                    :domain-ready? ready? :domain-support proof
+                    :domain-states (:support/states evidence)}}))))
+
+(defn snapshot-operator
+  "Adapt an authoritative supported snapshot of explicit events. No clock, IDs,
+  or model policy are invented; an empty snapshot still has domain support."
+  []
+  (operator/operator-closure
+   {:name 'behavior:from-events
+    :application-installer
+    (fn [network arguments output _]
+      (when-not (= 1 (count arguments))
+        (throw (ex-info "behavior:from-events expects one event-list snapshot" {})))
+      (let [networks (temporal/networks merge-snapshot false)
+            install (reducer/p:reducer-slot
+                     output (:merge-net networks) (:strongest-net networks)
+                     :snapshot (first arguments) output
+                     (fn [current id]
+                       (let [v (net/network-cell-strongest current id)]
+                         (if (value/nothing? v) value/nothing
+                             (collection/content
+                              {:base (connected/payload v) :support (datum/support-of v)
+                               :premise-state (premise-state/states-of v)})))))
+            [p installed] (install (declarations/ensure-cell network output))]
+        [installed [p] output]))}))
+
+(defn current-operator
+  "Project a snapshot-backed behavior's last value, or its explicit initial value.
+  The ordinary TTMS output retains the domain and selected record's premises."
+  []
+  (operator/propagator-operator
+   {:name 'behavior:current
+    :activate
+    (fn [network [input initial] [output] _]
+      (let [content (net/network-cell-content network input)
+            result (:result (reducer/reducer-slots content))
+            fallback (net/network-cell-strongest network initial)
+            record (peek (:records result))]
+        (if (and (:domain-ready? result) (not (value/unusable? fallback)))
+          [(message output
+                    {:support/observations
+                     (into #{} (map #(update % :support support/combine (:domain-support result)))
+                           (if record (:candidates record)
+                               #{{:base (connected/payload fallback)
+                                  :support (datum/support-of fallback)}}))
+                     :support/states (support/join (:domain-states result)
+                                                   (premise-state/states-of fallback))})]
+          (if (seq (:domain-states result))
+            [(message output (collection/content {:premise-state (:domain-states result)}))]
+            []))))}))
+
+(defn primitive-bindings
+  "Source-imported operators and the local evaluator needed by their evidence."
+  []
+  {:bindings (into [['behavior:source (source-operator)]
+                    ['behavior:from-events (snapshot-operator)]
+                    ['behavior:current (current-operator)]]
+                   (map (fn [operation] [(symbol (str "behavior:" (name operation)))
+                                         (behavior-operator operation)]))
+                   [:scan :map :lift :hold :sample :event-filter :history :last :history-map])
+   :evaluation temporal-runner/evaluation-options})
+
 (defn extension [root fixture]
-  (session/session-extension
-   {:id [:behavior fixture]
-    :primitives (into {'behavior:source (source-operator)}
-                      (map (fn [operation] [(symbol (str "behavior:" (name operation)))
-                                            (behavior-operator operation)]))
-                      [:scan :map :lift :hold :sample :event-filter :history :last :history-map])
-    :files {"lib/behavior.lain" (slurp (str root "/lib/behavior.lain"))
-            fixture (slurp (str root "/" fixture))}}))
+  (files/prepare-extension! {:id [:behavior fixture] :root root :read-files [fixture]}))
 
 (defn observed [s binding]
   (let [v (session/binding-value s binding)]
     (if (reducer/reduced-value? v) (reducer/reduced-result v) v)))
 
 (defn create-session []
-  (session/create-session {:id (random-uuid) :run-id (random-uuid)
-                           :runtime-options {:evaluation temporal-runner/evaluation-options}}))
+  (session/create-session {:id (random-uuid) :run-id (random-uuid)}))

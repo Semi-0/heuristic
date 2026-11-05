@@ -1,0 +1,15 @@
+{:date "2026-11-04"
+ :session-id "aee47896-2c79-4584-93e9-547d19b2beae"
+ :pane "2147122a-1ea1-4dbc-8e33-7f4765669882"
+ :model "qwen3.8-flash-next"
+ :input "hi"
+ :status :ready
+ :reply "Hi! How can I help you today?"
+ :finish-reason "stop"
+ :truncated? false
+ :session-left-active true
+ :service-restarted false
+ :native-files ["lain_harness/model_io.clj" "lain_harness/blazux.clj"]
+ :import-file "lib/model-io.lain"
+ :verified-binding "model-reply"
+ :whole-record-inspection-error "Compound projection found ambiguous slot parents"}

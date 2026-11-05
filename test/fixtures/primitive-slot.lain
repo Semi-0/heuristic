@@ -1,0 +1,7 @@
+(load-primitive-environment "src/lain_harness/primitive_slot.clj"
+  :lain-harness.primitive-slot/primitive-bindings 1)
+
+(define reply)
+(define thinking (prim-slot :thinking reply))
+(define answer (prim-slot :text reply))
+(define missing (prim-slot :absent reply))

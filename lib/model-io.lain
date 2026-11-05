@@ -1,0 +1,8 @@
+;; Import in a host with lain-harness.model-io on its native classpath.
+;; Workers are allocated after commit and owned by the session run.
+(load-primitive-environment "src/lain_harness/model_io.clj"
+  :lain-harness.model-io/primitive-bindings 1)
+(load-primitive-environment "src/lain_harness/primitive_slot.clj"
+  :lain-harness.primitive-slot/primitive-bindings 1)
+
+;; io-model:output connects its second argument as an output, never a readiness gate.

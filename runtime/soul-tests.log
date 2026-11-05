@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE soul — Environment bootstrap, qualified reducers and completed admission
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 9 tests containing 46 assertions.
+0 failures, 0 errors.
+MODULE-RESULT soul {:test 9, :pass 46, :fail 0, :error 0}

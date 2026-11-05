@@ -1,0 +1,99 @@
+[
+{:operators ["define" "network" "let" "if"] :source "(define doc:increment (network [x] (let [next (+ x 1)] (if (> next 0) next 0))))\n(define doc:incremented (doc:increment 4))" :checks [{:binding "doc:incremented" :kind :value :expected 5}]}
+
+{:operators ["->" "def-cells"] :source "(def-cells doc:raw doc:forwarded)\n(-> 7 doc:raw)\n(-> doc:raw doc:forwarded)" :checks [{:binding "doc:forwarded" :kind :value :expected 7}]}
+
+{:operators ["|>" "compose"] :source "(define doc:plus-one (network [x] (+ x 1)))\n(define doc:twice (network [x] (* x 2)))\n(define doc:piped (|> 3 doc:plus-one doc:twice))\n(define doc:composed ((compose doc:plus-one doc:twice) 3))" :checks [{:binding "doc:piped" :kind :value :expected 8} {:binding "doc:composed" :kind :value :expected 7}]}
+
+{:operators ["struct" "slot"] :source "(define doc:port)\n(define doc:object (struct :nested (struct :value doc:port)))\n(-> 42 (|> doc:object (slot :nested) (slot :value)))" :checks [{:binding "doc:port" :kind :value :expected 42}]}
+
+{:operators ["<->"] :source "(def-cells doc:left doc:right)\n(<-> doc:left doc:right)\n(-> 9 doc:right)" :checks [{:binding "doc:left" :kind :value :expected 9}]}
+
+{:operators ["let-cell" "constraint:+"] :source "(define doc:average (network [a b] (let-cell [total] (constraint:+ a b total) (/ total 2))))\n(define doc:average-value (doc:average 3 7))" :checks [{:binding "doc:average-value" :kind :value :expected 5}]}
+
+{:operators ["cond"] :source "(define doc:classification (cond [(< 0 0) :negative (= 0 0) :zero else :positive]))" :checks [{:binding "doc:classification" :kind :value :expected :zero}]}
+
+{:operators ["list" "car" "cdr"] :source "(define doc:list-first (car (list 4 5)))\n(define doc:list-second (car (cdr (list 4 5))))" :checks [{:binding "doc:list-first" :kind :value :expected 4} {:binding "doc:list-second" :kind :value :expected 5}]}
+
+{:operators ["+" "-" "*" "/" ">" "<" "="] :source "(define doc:arithmetic (+ (* 2 3) (- 8 5) (/ 4 2)))\n(define doc:comparison (if (> 3 2) (< 1 2) (= 0 1)))" :checks [{:binding "doc:arithmetic" :kind :value :expected 11} {:binding "doc:comparison" :kind :value :expected true}]}
+
+{:operators ["data:record"] :source "(define doc:record (data:record :score 7 :label \"north\"))" :checks [{:binding "doc:record" :kind :value :expected {:score 7 :label "north"}}]}
+
+{:operators ["data:get"] :source "(define doc:field (data:get :score (data:record :score 7)))" :checks [{:binding "doc:field" :kind :value :expected 7}]}
+
+{:operators ["data:equal?"] :source "(define doc:equal (data:equal? (data:record :score 7) (data:record :score 7)))" :checks [{:binding "doc:equal" :kind :value :expected true}]}
+
+{:operators ["data:merge"] :source "(define doc:merged (data:merge (data:record :a 1) (data:record :b 2)))" :checks [{:binding "doc:merged" :kind :value :expected {:a 1 :b 2}}]}
+
+{:operators ["data:snapshot"] :source "(define doc:snapshot (data:snapshot (struct :score 7)))" :checks [{:binding "doc:snapshot" :kind :value :expected {:score 7}}]}
+
+{:operators ["seq:empty"] :source "(define doc:empty (seq:empty))" :checks [{:binding "doc:empty" :kind :value :expected []}]}
+
+{:operators ["seq:append"] :source "(define doc:appended (seq:append (seq:empty) 7))" :checks [{:binding "doc:appended" :kind :value :expected [7]}]}
+
+{:operators ["seq:concat"] :source "(define doc:concatenated (seq:concat (seq:append (seq:empty) 1) (seq:append (seq:empty) 2)))" :checks [{:binding "doc:concatenated" :kind :value :expected [1 2]}]}
+
+{:operators ["seq:last"] :source "(define doc:last (seq:last (seq:append (seq:append (seq:empty) 5) 9)))" :checks [{:binding "doc:last" :kind :value :expected 9}]}
+
+{:operators ["seq:project"] :source "(define doc:labels (seq:project :label (seq:append (seq:append (seq:empty) (data:record :label \"north\")) (data:record :label \"south\"))))" :checks [{:binding "doc:labels" :kind :value :expected ["north" "south"]}]}
+
+{:operators ["seq:count"] :source "(define doc:count (seq:count (seq:append (seq:empty) 7)))" :checks [{:binding "doc:count" :kind :value :expected 1}]}
+
+{:operators ["text:format"] :source "(define doc:formatted (text:format \"item %s\" 7))" :checks [{:binding "doc:formatted" :kind :value :expected "item 7"}]}
+
+{:operators ["event:point"] :source "(define doc:event (event:point \"sample-event\" 1 7))" :checks [{:binding "doc:event" :kind :value :expected {:temporal/type :point :id "sample-event" :time 1 :revision 0 :value 7}}]}
+
+{:operators ["behavior:source"] :source "(define doc:source (behavior:source))\n(-> (event:point \"source-event\" 1 7) doc:source)\n(define doc:source-value (behavior:latest-value doc:source))" :checks [{:binding "doc:source-value" :kind :value :expected 7}]}
+
+{:operators ["behavior:scan"] :source "(define doc:scan-input (behavior:source))\n(-> (event:point \"scan-a\" 1 1) doc:scan-input)\n(-> (event:point \"scan-b\" 2 2) doc:scan-input)\n(define doc:scan (behavior:scan doc:scan-input + 0))" :checks [{:binding "doc:scan" :kind :behavior-values :expected [1 3]}]}
+
+{:operators ["behavior:map"] :source "(define doc:map-input (behavior:source))\n(-> (event:point \"map-event\" 1 7) doc:map-input)\n(define doc:mapped (behavior:map doc:map-input (network [x] (* x 2))))" :checks [{:binding "doc:mapped" :kind :behavior-values :expected [14]}]}
+
+{:operators ["behavior:event-filter"] :source "(define doc:filter-input (behavior:source))\n(-> (event:point \"filter-a\" 1 1) doc:filter-input)\n(-> (event:point \"filter-b\" 2 2) doc:filter-input)\n(-> (event:point \"filter-c\" 3 0) doc:filter-input)\n(define doc:filtered (behavior:event-filter doc:filter-input (network [x] (> x 1))))\n(define doc:filtered-latest (behavior:latest-value doc:filtered))" :checks [{:binding "doc:filtered" :kind :behavior-values :expected [2]} {:binding "doc:filtered-latest" :kind :value :expected 2}]}
+
+{:operators ["behavior:latest-value"] :source "(define doc:empty-behavior (behavior:source))\n(define doc:fallback (behavior:latest-value doc:empty-behavior 42))\n(define doc:latest-input (behavior:source))\n(-> (event:point \"latest-event\" 1 7) doc:latest-input)\n(define doc:latest (behavior:latest-value doc:latest-input))" :checks [{:binding "doc:fallback" :kind :value :expected 42} {:binding "doc:latest" :kind :value :expected 7}]}
+
+{:operators ["cell:reference"] :source "(define doc:referenced 7)\n(define doc:reference (cell:reference doc:referenced))" :checks [{:binding "doc:reference" :kind :reference-of :target "doc:referenced"}]}
+
+{:operators ["inspect:cell"] :source "(define doc:inspected-value 7)\n(define doc:inspection (inspect:cell (cell:reference doc:inspected-value)))" :checks [{:binding "doc:inspection" :kind :cell-view :expected 7}]}
+
+{:operators ["empty-env"] :source "(define doc:empty-environment (empty-env))" :checks [{:binding "doc:empty-environment" :kind :environment}]}
+
+{:operators ["lexical-child"] :source "(define doc:parent (empty-env))\n(define doc:child (lexical-child doc:parent))" :checks [{:binding "doc:child" :kind :child-of :parent "doc:parent"}]}
+
+{:operators ["env:slot"] :source "(define doc:binding-value 7)\n(define doc:contribution (env:slot \"score\" doc:binding-value))" :checks [{:binding "doc:contribution" :kind :contribution :name "score" :expected 7}]}
+
+{:operators ["extend-env" "environment:overview"] :source "(define doc:extended (extend-env (empty-env) (env:slot \"doc-score\" 7)))\n(define doc:overview (environment:overview doc:extended))" :checks [{:binding "doc:overview" :kind :overview-has :title "doc-score" :headline "7"}]}
+
+{:operators ["model:request"] :source "(define doc:model-receipt (model:request (data:record :id \"doc-model-probe\" :messages (seq:append (seq:empty) (data:record :role \"user\" :content \"Return only (define doc-model-generated 42)\")))))" :checks [{:binding "doc:model-receipt" :kind :value :expected :completed} {:binding "model-result" :kind :model-response :request "doc-model-probe"}]}
+
+{:operators ["message-to-user"] :source "(define doc:delivery (message-to-user (data:record :id \"doc-delivery\" :time 1 :role \"assistant\" :content \"operator probe\")))" :checks [{:binding "doc:delivery" :kind :acknowledgement :content "operator probe"}]}
+
+{:operators ["source:admit"] :source "(define doc:admission-target (lexical-child (empty-env)))\n(define doc:complete-response (data:record :request-id \"doc-admission\" :kind :reply :text \"(define doc-admitted-value 42)\" :thinking \"\" :finish-reason \"stop\" :truncated? false))\n(define doc:admission (source:admit doc:complete-response doc:admission-target (cell:reference doc:complete-response)))" :checks [{:binding "doc:admission" :kind :admission :target "doc:admission-target" :name "doc-admitted-value" :expected 42}]}
+
+
+{:operators ["cell:value"] :source "(define doc:strongest-input 7)\n(define doc:strongest (cell:value (cell:reference doc:strongest-input)))" :checks [{:binding "doc:strongest" :kind :value :expected 7}]}
+
+{:operators ["memory-cell"] :source "(define doc:memory-source 7)\n(-> (cell:value (cell:reference doc:memory-source)) (cell:input (data:get :feedback-value memory-cell)))\n(define doc:remembered (cell:value (data:get :feedback-value memory-cell)))\n(define doc:memory-feedback (model:request (data:record :id \"doc-memory-probe\" :text (text:format \"memory-score=%s\" doc:remembered))))" :checks [{:binding "doc:remembered" :kind :value :expected 7} {:binding "doc:memory-feedback" :kind :value :expected :completed}]}
+
+
+{:operators ["construct-concept-of"] :source "(define doc:concept-env ((construct-concept-of \"doc-concept\" (cell:reference 7)) (empty-env)))\n(define doc:concept-description (environment:overview doc:concept-env))" :checks [{:binding "doc:concept-description" :kind :overview-has :title "doc-concept" :headline "7"}]}
+
+{:operators ["history"] :source "(define doc:written-code (cell:value (data:get :code-history memory-cell)))" :checks [{:binding "doc:written-code" :kind :code-history}]}
+
+
+{:operators ["env:reference-slot"] :source "(define doc:reference-binding 7)\n(define doc:reference-contribution (env:reference-slot \"score\" (cell:reference doc:reference-binding)))" :checks [{:binding "doc:reference-contribution" :kind :contribution :name "score" :expected 7}]}
+
+
+{:operators ["cell:input"] :source "(define doc:input-target)\n(-> 7 (cell:input (cell:reference doc:input-target)))" :checks [{:binding "doc:input-target" :kind :value :expected 7}]}
+
+
+{:operators ["switch"] :source "(define doc:switched (switch 12 true))" :checks [{:binding "doc:switched" :kind :value :expected 12}]}
+
+
+{:operators ["event:point"] :source "(define doc:record-event (event:point \"record-example\" 1 (data:record :label \"north\")))" :checks [{:binding "doc:record-event" :kind :value :expected {:temporal/type :point :id "record-example" :time 1 :revision 0 :value {:label "north"}}}]}
+
+{:operators ["behavior:scan"] :source "(define doc:record-source (behavior:source))\n(-> (event:point \"record-prefix\" 1 (data:record :label \"north\")) doc:record-source)\n(define doc:record-prefixes (behavior:scan doc:record-source seq:append (seq:empty)))" :checks [{:binding "doc:record-prefixes" :kind :behavior-values :expected [[{:label "north"}]]}]}
+
+{:operators ["event:point" "data:get"] :source "(define doc:changing-reading)\n(define doc:changing-source (behavior:source))\n(-> (event:point (data:get :id doc:changing-reading) (data:get :time doc:changing-reading) (data:get :value doc:changing-reading)) doc:changing-source)\n(define doc:changing-prefixes (behavior:scan doc:changing-source seq:append (seq:empty)))\n(define doc:changing-values (behavior:latest-value doc:changing-prefixes (seq:empty)))" :checks [{:binding "doc:changing-values" :kind :value :expected [7 11]}] :publications [{:binding "doc:changing-reading" :value {:id "reading-1" :time 1 :value 7} :observed "doc:changing-values" :expected [7]} {:binding "doc:changing-reading" :value {:id "reading-2" :time 2 :value 11} :observed "doc:changing-values" :expected [7 11]}]}
+]

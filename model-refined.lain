@@ -1,0 +1,19 @@
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+(load-lain "lib/model-io.lain")
+(load-lain "propagators/compiler_2/runtime/lain/tracers.lain")
+
+(define model
+  (network []
+    (let-cell [input output worker]
+      (-> (io-model:worker) worker)
+      (io-model:input worker input)
+      (io-model:output worker output)
+      (struct :worker worker :input input
+              :output output
+              :thinking (prim-slot :thinking output)
+              :actions (prim-slot :text output)))))
+
+(define model:input (slot :input))
+(define model:output (slot :output))
+(define model:thinking (slot :thinking))
+(define model:action (slot :actions))

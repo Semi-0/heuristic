@@ -5,6 +5,7 @@
             [propagators.cells.value :as value]
             [propagators.compiler-2.compiler.basis :as basis]
             [propagators.compiler-2.session :as session]
+            [propagators.compiler-2.session.connected :as connected]
             [propagators.datastructures.reducer-cell :as reducer]
             [propagators.datastructures.support-collection :as collection]
             [propagators.experimental.temporal-behavior :as temporal]
@@ -221,3 +222,59 @@
     (is (= [11 23 44 66] (values settled 'lifted-scan)))
     (is (value/contradiction? (first (values settled 'at-boundary))))
     (is (= :unknown (:status (behavior/observed initial 'at-start))))))
+
+(deftest source-import-selects-local-evaluation
+  (let [plain (session/create-session)
+        imported (session/extend-session plain
+                                         (behavior/extension root "test/fixtures/behavior/minimal.lain"))
+        replayed (session/extend-session imported
+                                         (behavior/extension root "test/fixtures/behavior/minimal.lain"))]
+    (is (nil? (:evaluation (session/session-declarations plain))))
+    (is (= #{:cell-evaluator :iterator-factory}
+           (set (keys (:evaluation (session/session-declarations imported))))))
+    (is (identical? imported replayed))
+    (is (= [1 3 6] (values (publish imported points) 'sums)))
+    (is (= [1 3 6] (values (publish (session/rerun imported (random-uuid)) points) 'sums)))
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Conflicting monotone extension"
+                          (session/extend-session imported
+                                                  (session/session-extension {:id :incompatible-evaluator
+                                                                              :evaluation {:cell-evaluator identity}}))))))
+
+(deftest authoritative-snapshot-adapter
+  (let [initial (open "snapshot")
+        list-of (fn [xs] (reduce (fn [tail v] {:car v :cdr tail}) :lain.data/empty (reverse xs)))
+        snapshot (fn [revision xs]
+                   (collection/content {:base (list-of xs)
+                                        :support #{(premise :snapshot revision :active)}}))
+        empty-state (publish initial 'event-list [(snapshot 0 [])])
+        events [{:id :a :time 1 :value 1} {:id :b :time 2 :value 2}]
+        settled (publish empty-state 'event-list [(snapshot 1 events)])
+        removed (publish settled 'event-list [(snapshot 2 [(first events)])])
+        recovered (publish removed 'event-list [(snapshot 3 events)])]
+    (is (= 0 (connected/payload (session/binding-value empty-state 'current))))
+    (is (= [1 3] (values settled 'states)))
+    (is (= [1] (values removed 'states)))
+    (is (= [1 3] (values recovered 'states)))
+    (is (= 3 (connected/payload (session/binding-value recovered 'current))))
+    (is (= 3 (connected/payload (session/binding-value recovered 'nested-current))))
+    (is (= (topology empty-state) (topology recovered)))))
+
+(deftest snapshot-proof-changes-reuse-values-and-withdraw-current
+  (let [initial (open "snapshot")
+        entries {:car {:id :one :time 1 :value 1}
+                 :cdr {:car {:id :two :time 2 :value 2} :cdr :lain.data/empty}}
+        snapshot (fn [revision]
+                   (collection/content {:base entries :support #{(premise :snapshot revision :active)}}))
+        settled (publish initial 'event-list [(snapshot 0)])
+        counters (atom {})
+        justified (binding [temporal/*instrument* counters]
+                    (publish settled 'event-list [(snapshot 1)]))
+        withdrawn (publish justified 'event-list [(belief :snapshot 2 :retracted)])
+        recovered (publish withdrawn 'event-list [(snapshot 3)])]
+    (is (= [1 3] (values justified 'states)))
+    (is (= 0 (get @counters :reducer-invocations 0)))
+    (is (= #{(premise :snapshot 1 :active)} (:support (last (records justified 'states)))))
+    (is (value/nothing? (connected/payload
+                         (session/binding-value withdrawn 'current))))
+    (is (= 3 (connected/payload
+              (session/binding-value recovered 'current))))))
