@@ -21,6 +21,31 @@ def build():
     examples = sections(ROOT / "docs/how-to-think-in-lain-examples.md", {1, 2, 4, 7, 8, 11, 12, 13})
     catalog = (ROOT / "docs/operator-examples.edn").read_text()
     matches = list(re.finditer(r':operators (\[[^\]]*\]) :source ("(?:\\.|[^"\\])*") :checks ', catalog))
+    descriptions = {
+        "define": "Bind cells and define a callable network; invoke the callable with connected arguments.",
+        "->": "Connect a source value to a target cell. This propagates values; it does not call a function.",
+        "event:point": "Convert connected identity, time and payload inputs into retained temporal occurrences. Arguments may change reactively.",
+        "behavior:source": "Create one independent temporal source that receives explicit occurrences.",
+        "behavior:scan": "Reduce ordered occurrences into accumulated prefixes, using a pure two-argument function and initial value.",
+        "behavior:map": "Transform each temporal value with a pure function; the result remains a behavior.",
+        "behavior:event-filter": "Keep temporal occurrences whose values satisfy a pure predicate.",
+        "behavior:latest-value": "Project the latest behavior value into an ordinary cell, with an optional fallback for an empty behavior.",
+        "seq:append": "Append one element to a vector; appending a vector creates a nested vector.",
+        "seq:concat": "Concatenate vectors into one flat vector.",
+        "seq:project": "Extract one field from each record in a vector.",
+        "data:record": "Construct a plain immutable record from key/value pairs.",
+        "data:get": "Read a field from a record; the result updates when the record changes.",
+        "model:request": "Invoke the existing model with text or a flat vector of role/content records. Defining a wrapper does not invoke it.",
+        "message-to-user": "Deliver a message record and obtain its delivery acknowledgement.",
+        "memory-cell": "Write a strongest value through a parent memory port, read it back, and use it in a model request.",
+        "history": "Read the parent journal of generated source; this is distinct from conversation messages.",
+        "cell:value": "Observe the strongest value at a referenced cell.",
+        "cell:input": "Resolve a cell reference into a writable port.",
+        "cell:reference": "Obtain a cell reference without waiting for its value.",
+        "inspect:cell": "Inspect an edge's value and its producing and consuming connections.",
+        "source:admit": "Admit a completed source response into a lexical target, retaining receipts and successful prefix forms.",
+    }
+    descriptions.update({'|>': 'Pipe a value through callables; compose creates a reusable composition.', 'struct': 'Construct a compound with named slots and connect through its slot projections.', '<->': 'Connect two cells bidirectionally so either can supply information.', 'let-cell': 'Declare local cells and relate them with arithmetic constraints.', 'cond': 'Choose a result from condition/value pairs, with an else fallback.', 'list': 'Construct a linked list and access its first element or remaining tail.', '+': 'Compute arithmetic values and comparisons from connected operands.', 'data:equal?': 'Compare two ordinary values for equality.', 'data:merge': 'Merge plain records into a new record.', 'data:snapshot': 'Resolve the slots of a finite compound into an ordinary record.', 'seq:empty': 'Create an empty vector to seed ordinary sequence operations.', 'seq:last': 'Read the final element of an ordinary vector, not a behavior.', 'seq:count': 'Count elements in an ordinary vector.', 'text:format': 'Format text using a template and connected values.', 'empty-env': 'Create an empty lexical environment.', 'lexical-child': 'Create an independent lexical child that inherits parent bindings.', 'env:slot': 'Create a binding contribution for an argument cell.', 'extend-env': 'Extend a lexical environment with a contribution; overview returns structured binding descriptions.', 'construct-concept-of': 'Contribute a named cell reference to an environment while preserving the original cell identity.', 'env:reference-slot': 'Create a named contribution from an explicit cell reference.', 'switch': 'Allow a value to propagate when its boolean control is true.'})
     rendered = []
     for index, match in enumerate(matches):
         operators = ", ".join(re.findall(r'"([^"\n]+)"', match[1]))
@@ -29,7 +54,8 @@ def build():
         observations = catalog[match.end():end if end >= 0 else len(catalog)].rstrip()
         observations = observations.removesuffix("]").rstrip() if end < 0 else observations
         observations = observations.removesuffix("}")
-        rendered.append(f"Operators: {operators}\nLain source:\n{source}\nExpected observations (test metadata):\n{observations}\n")
+        description = descriptions[operators.split(", ")[0]]
+        rendered.append(f"Operators: {operators}\nPurpose: {description}\nLain source:\n{source}\nExpected observations (test metadata):\n{observations}\n")
     assert len(rendered) == catalog.count(":operators "), "Operator catalog parser lost an example"
     note = ("These are language documentation excerpts, not source to admit verbatim. "
             "The early guide's schematic helpers are not additional capabilities. "

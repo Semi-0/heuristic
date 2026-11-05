@@ -155,3 +155,13 @@ delivered, so the three-round acceptance remains unmet. Source and request
 records are under `runtime/soul-attempt-13/`, including the readable generated
 `soul-response-2.lain`. The orientation and construction used the same live
 worker and lexical child; examples stayed literal documentation.
+
+The current description redesign uses `environment:describe` for model requests.
+It renders the selection order declared by Lain as readable sections, followed by
+a compact binding directory. `environment:overview` remains the structured
+inspection interface. Role assignment is supplied by `role-cell`; the renderer
+contains no role or task instructions. Construction includes the full operator
+catalog, with a natural-language purpose beside each verified example. Unknown
+unavailable values are explicitly marked unknown. Context previews under
+`runtime/context-redesign-*.txt` apply this renderer to the recorded attempt-13
+state with current documentation; they are previews, not new provider requests.
