@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE staged-context — One live child and model across environment-only contextualization stages
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 1 tests containing 11 assertions.
+0 failures, 0 errors.
+MODULE-RESULT staged-context {:test 1, :pass 11, :fail 0, :error 0}

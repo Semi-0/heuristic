@@ -1,0 +1,291 @@
+Request ID: setup
+Transport: one user-role message containing the environment description
+
+BINDING: environment-cell
+State: :known
+Headline: lexical environment propagators.ids.NodeId@d75478fd
+Reference: #propagators.ids.NodeId {:uuid #uuid "2a2ade35-628f-3a7b-99ed-27a5992ca48e"}
+
+BINDING: inspect:cell
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "a290dc25-dbce-33c9-8b02-386113df0be1"}
+
+BINDING: environment:overview
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "f6447fc1-043e-3703-86bb-53fcd51311de"}
+
+BINDING: source:admit
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "7d4bb5a9-3bbd-38c0-be55-50657d4ca26b"}
+
+BINDING: seq:project
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "489d5148-9d16-3851-83a4-dac6b9c3572e"}
+
+BINDING: seq:last
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "52a7fa53-ca37-3645-9714-dd6e60ae4e3b"}
+
+BINDING: seq:concat
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "f401e978-dd87-3b7e-b86a-a51b608039b4"}
+
+BINDING: seq:append
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "3629a480-3e46-355c-a089-5cbff246973a"}
+
+BINDING: seq:empty
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "de767f48-f66d-34e1-95e9-148486ade195"}
+
+BINDING: data:equal?
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "a9523676-aafe-3f7c-9849-b5728162c859"}
+
+BINDING: data:get
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "fad5b0dd-29d2-36a3-bb97-6ae0f24d0417"}
+
+BINDING: data:record
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "d9af271a-1c9f-380b-b048-316880bc952c"}
+
+BINDING: text:format
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "53c7bab5-b607-318a-9102-f0f4e161096e"}
+
+BINDING: event:point
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "befecaa3-c31d-36c6-9b70-91a8e3dcdf39"}
+
+BINDING: behavior:latest-value
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "052ea26a-b20d-3fc5-9990-41a4f5eeeba0"}
+
+BINDING: behavior:event-filter
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "a98b5d3c-2caa-3f66-a74c-6a3504c005ab"}
+
+BINDING: behavior:map
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "3d5cece5-1125-31d2-8e3c-be6f46c3e433"}
+
+BINDING: behavior:scan
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "9f79275d-0f28-3ce5-b7db-7222a006f235"}
+
+BINDING: behavior:source
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "4dfc432a-698d-3ab2-b613-4ada5a3d4f7c"}
+
+BINDING: message-to-user
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "2a5777b1-f6b8-323f-a791-c0f900215f9b"}
+
+BINDING: model:request
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "72062235-08de-3825-aa0c-11c3a76b03a1"}
+
+BINDING: user-ingress
+State: :known
+Headline: unknown
+Reference: #propagators.ids.NodeId {:uuid #uuid "fb8d16a3-39e3-3a26-9db8-a75c8feb05fc"}
+
+BINDING: data:snapshot
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "ec25db7d-f7a1-3f6c-95aa-a591226ceec6"}
+
+BINDING: cell:reference
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+
+BINDING: cell:input
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "e59010c5-1d4c-3330-b531-44153cca6234"}
+
+BINDING: cell:value
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "0cba5a31-c624-33eb-9c0f-7a27b60d7966"}
+
+BINDING: history
+State: :known
+Headline: vector with 0 elements
+Reference: #propagators.ids.NodeId {:uuid #uuid "611c2821-f80e-34e8-8aa4-a0a33647784d"}
+
+BINDING: memory-cell
+State: :known
+Headline: record with keys [:code-history :deliveries :diagnostics :feedback-edge :feedback-value :model-output :orientation-edge :orientation-value :user]
+Reference: #propagators.ids.NodeId {:uuid #uuid "89d8b657-fde9-3df0-aca3-e9c81caff703"}
+
+BINDING: experiment-diagnostic-cell
+State: :known
+Headline: :not-started
+Reference: #propagators.ids.NodeId {:uuid #uuid "0d406be6-7550-3360-8d8c-e461c8c8de61"}
+
+BINDING: observe-cell
+State: :unknown
+Headline: unknown
+Reference: #propagators.ids.NodeId {:uuid #uuid "d121b8b8-5500-3dec-a1a8-814ae2197811"}
+
+BINDING: language-introduction-cell
+State: :known
+Headline: Lain is a connected dataflow language, not Clojure. Return raw parenthesized forms only; triple-backtick fences are invalid source. A callable is invoked as (f
+Reference: #propagators.ids.NodeId {:uuid #uuid "2552d884-03a1-3631-a5ef-35e404f19d4c"}
+
+BINDING: reducer-verification-cell
+State: :known
+Headline: Verified through compiled Lain, not a simulated conversation: a numeric source with occurrences 1@1 and 2@2, scanned with seq:append and an empty vector seed, e
+Reference: #propagators.ids.NodeId {:uuid #uuid "b9082fb3-5b7d-383e-a340-f3d8d53f0ee1"}
+
+BINDING: construction-review-cell
+State: :known
+Headline: A previous generated setup compiled but did not connect requests or history. Diagnostic review: each call to behavior:source creates a DISTINCT source, so writi
+Reference: #propagators.ids.NodeId {:uuid #uuid "217b13c4-262e-3410-8bf0-e01c38ce94b3"}
+
+BINDING: operator-examples-cell
+State: :known
+Headline: Concrete executable examples and expected results for the advertised operators. Each example is independent and uses doc:* names. Core libraries and experiment
+Reference: #propagators.ids.NodeId {:uuid #uuid "c3ba0b52-ba56-32dc-a545-ad742207b5aa"}
+
+BINDING: guide-examples-cell
+State: :known
+Headline: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc
+Reference: #propagators.ids.NodeId {:uuid #uuid "e232ef20-5930-3c0f-a172-d14fd31ad0e9"}
+
+BINDING: dynamic-expressions-cell
+State: :known
+Headline: Every expression builds connected propagators. A function call whose operands are cells is reactive: it recomputes when their strongest values change. event:poi
+Reference: #propagators.ids.NodeId {:uuid #uuid "15834226-70b3-3d71-8d95-0e84c0a65f12"}
+
+BINDING: context-selection-cell
+State: :known
+Headline: vector with 3 elements
+Reference: #propagators.ids.NodeId {:uuid #uuid "c73fdb68-bd68-3c91-9dfc-48b55106b41d"}
+
+BINDING: orientation-result-cell
+State: :unknown
+Headline: unknown
+Reference: #propagators.ids.NodeId {:uuid #uuid "869d3cc6-3856-3a99-b56e-1b4dd237e3c8"}
+
+BINDING: construction-examples-cell
+State: :known
+Headline: Operators: data:record
+Lain source:
+(define doc:record (data:record :score 7 :label "north"))
+Expected observations (test metadata):
+[{:binding "doc:record" :ki
+Reference: #propagators.ids.NodeId {:uuid #uuid "b75107ca-ad9b-3b55-9499-655f0a1635ac"}
+
+BINDING: orientation-example-cell
+State: :known
+Headline: This is code to read, not a running example. Numeric occurrences become a behavior, a scan emits numeric prefixes, and latest-value projects an ordinary number.
+Reference: #propagators.ids.NodeId {:uuid #uuid "5de0e974-a361-35db-807f-0433ae2ba711"}
+FULL CONTENT:
+This is code to read, not a running example. Numeric occurrences become a behavior, a scan emits numeric prefixes, and latest-value projects an ordinary number. Memory is a plain record of explicit cell references. Write through cell:input.
+(define demo:source (behavior:source))
+(-> (event:point "a" 1 2) demo:source)
+(-> (event:point "b" 2 3) demo:source)
+(define demo:sum (behavior:scan demo:source + 0))
+(define demo:reading (behavior:latest-value demo:sum 0))
+(-> (cell:value (cell:reference demo:reading)) (cell:input (data:get :orientation-value memory-cell)))
+(-> (inspect:cell (cell:reference demo:reading)) (cell:input (data:get :orientation-edge memory-cell)))
+Expected: memory orientation-value port = 5; memory orientation-edge port has edge/reference, value=5, inputs, outputs.
+
+
+BINDING: guide-principles-cell
+State: :known
+Headline: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc
+Reference: #propagators.ids.NodeId {:uuid #uuid "67264fed-3ce9-3850-8e1f-8cf4a78f2baa"}
+FULL CONTENT:
+These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduction use the qualified behavior:* APIs documented in operator-examples-cell; the guide's bounded visualization history is a separate operator. The combinator library is already loaded. Return executable Lain only, without Markdown fences.
+
+Source: docs/how-to-think-in-lain.md; SHA256 af917bbd5450ab475b5179ad5be60f1ba2c5e72966f0b3d00d9686eeabd9eb94.
+## 1. Core Philosophy: Compose Relationships into Expressions
+Lain is a Lisp-like, propagator-based coordination language for describing high-level interactions between components.
+Its central programming abstraction is the composition of transformations and relationships. Drawing on lambda calculus and functional composition, Lain allows programmers to construct, connect, and transform propagator networks through reusable abstractions.
+Compose verbs into sentences. Do not concatenate nouns into names.
+A Lain program should read like a meaningful expression describing how components relate, constrain, coordinate, and transform one another.
+Think of a synthesizer, an electrical circuit, or a chemical reaction. The essential structure emerges from how components interact and what relationships their interactions maintain.
+Cells provide the medium through which information propagates. They support the network’s operation, while the program’s primary expression concerns the relationships between its components.
+This philosophy is related to Alan Kay’s emphasis on messaging and interaction in object-oriented programming. Lain extends this perspective through compositional network transformations and multidirectional information propagation.
+Fundamental principles:
+* Think in transformations, connections, constraints, and coordination.
+* Express complex behavior by composing smaller relationships.
+* Treat network topology as part of the program’s meaning.
+* Preserve the distinction between a relationship and a particular procedure for evaluating it.
+* Use cells and internal machinery when their semantics require them.
+* Prefer reusable relational abstractions over specialized containers.
+The ideal Lain program communicates what relationships hold, how they compose, and what information can propagate through them.
+
+⸻
+
+
+## 4. Declare Relationships, Not Execution Sequences
+Lain networks describe concurrently existing relationships within activated topology. An unselected conditional body need not be expanded.
+The textual order of network declarations should not be interpreted as an imperative execution sequence. Lexical scope, name binding, library loading, and explicit effect boundaries still matter; dataflow does not erase those constraints.
+Consider:
+```clojure
+;; Schematic: f, g, and h must be defined by the application.
+(define e
+  (network [a b c]
+    (-> (f a) b)
+    (-> (g b) c)
+    (-> (h c) a)
+    (list a b c)))
+```
+These declarations describe network topology.
+They do not imply that the first relationship must finish before the second begins.
+Information propagates according to the dependencies and propagation semantics of the network.
+Reason about topology
+When reading or writing a network:
+* Treat declarations as simultaneously existing relationships.
+* Represent dependencies through connections.
+* Allow propagation to follow available information.
+* Avoid using source-code order to express control flow.
+* Make ordering, buffering, and timing explicit when necessary.
+* Consider feedback, convergence, and conflicting information.
+A network is a persistent organization of relationships whose information state may evolve.
+Anti-pattern: imperative thinking disguised as propagators
+An agent may translate each step of a procedural algorithm into a separate propagator while retaining the original execution sequence.
+This can produce syntactically valid Lain code with little benefit from the language’s relational capabilities.
+Correction: Reconsider the problem as a network of constraints and interactions. Determine which dependencies are intrinsic to the domain and which were introduced by the procedural decomposition.
+
+⸻
+
+
+
+BINDING: guide-core-cell
+State: :known
+Headline: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc
+Reference: #propagators.ids.NodeId {:uuid #uuid "c8af958a-e232-3609-a4a3-da895386ce9c"}
+
+BINDING: context-cell
+State: :known
+Headline: First orient yourself using the guide's relational view. Do not build the conversation yet. Return only executable Lain source that builds a small numeric tempo
+Reference: #propagators.ids.NodeId {:uuid #uuid "dea4d1a0-30ba-3165-8fbf-57ac1de92eaa"}
+FULL CONTENT:
+First orient yourself using the guide's relational view. Do not build the conversation yet. Return only executable Lain source that builds a small numeric temporal example from two explicit event:point occurrences, a behavior:source, and a behavior:scan with + and seed 0. Project its latest numeric result with behavior:latest-value, then connect that result's strongest value into memory-cell slot :orientation-value, and connects its inspect:cell result into memory-cell slot :orientation-edge. Use orient: names. The observed result will be supplied in the next task. Do not call model:request or message-to-user in this response. The example is documentation, not a preinstalled network. Your source is admitted into the lexical child and recorded in parent history. No explanation or Markdown fences.

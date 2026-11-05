@@ -1,0 +1,22 @@
+
+
+(define conv-source (behavior:source))
+(define conv-history (behavior:scan conv-source seq:append (seq:empty)))
+(define conv-latest (behavior:latest-value conv-history (seq:empty)))
+
+(define conv-reply (network [msg-record]
+  (let [ack (message-to-user msg-record)]
+    (-> (event:point (data:get :id ack) (data:get :time ack) (data:record :role "assistant" :content (data:get :content ack))) conv-source)
+    ack)))
+
+(-> (event:point (data:get :id user-ingress) (data:get :time user-ingress) (data:record :role "user" :content (data:get :content user-ingress))) conv-source)
+
+(define conv-request (network [user-record]
+  (let [prior (behavior:latest-value conv-history (seq:empty))
+        sys-msg (data:record :role "system" :content "To reply, emit executable Lain: (conv-reply (data:record :id \"assistant-N\" :time T :role \"assistant\" :content \"your reply text\")). T must be user time + 1. N must differ from the user id. Return only that form.")
+        msgs (seq:append (seq:append (seq:empty) sys-msg) (seq:append (seq:empty) (data:record :role "user" :content (data:get :content user-record))))
+        request (data:record :id (data:get :id user-record) :messages msgs)]
+    (model:request request))))
+
+(-> (cell:value (cell:reference conv-latest)) (cell:input (data:get :feedback-value memory-cell)))
+(-> (cell:reference conv-latest) (cell:input (data:get :feedback-edge memory-cell)))

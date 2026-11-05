@@ -1,0 +1,11 @@
+(load-lain "lib/behavior.lain")
+(define event-list)
+(define event-history (behavior:from-events event-list))
+(define states (scan event-history + 0))
+(define current (behavior:current states 0))
+(define make-current
+  (network [source]
+    (let [events (behavior:from-events source)
+          states (scan events + 0)]
+      (behavior:current states 0))))
+(define nested-current (make-current event-list))

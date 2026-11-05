@@ -1,5 +1,13 @@
 # Model IO experiment
 
+Current import behavior: `model-refined.lain` defines the existing model without
+instantiating or displaying it. The runnable demonstration moved to
+`examples/lain/model-refined-demo.lain`. The worker also accepts explicit
+role/content vectors in `:messages` and forwards them without adding instructions
+or history. Outputs include a per-worker `:response-sequence`. The environment-only
+conversation experiment is documented in `environment-conversation.md`; the notes
+below retain the earlier experiment's observations.
+
 `model-refined.lain` now owns the model definition and the shared worker wiring.
 The native implementation is `src/lain_harness/model_io.clj`; its effect
 interpreter uses Meander to match `:open`, `:enqueue`, and `:subscribe`.

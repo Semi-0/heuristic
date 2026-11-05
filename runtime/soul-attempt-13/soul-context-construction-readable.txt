@@ -1,0 +1,473 @@
+Request ID: construction
+Transport: one user-role message containing the environment description
+
+BINDING: environment-cell
+State: :known
+Headline: lexical environment propagators.ids.NodeId@d75478fd
+Reference: #propagators.ids.NodeId {:uuid #uuid "2a2ade35-628f-3a7b-99ed-27a5992ca48e"}
+
+BINDING: inspect:cell
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "a290dc25-dbce-33c9-8b02-386113df0be1"}
+
+BINDING: environment:overview
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "f6447fc1-043e-3703-86bb-53fcd51311de"}
+
+BINDING: source:admit
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "7d4bb5a9-3bbd-38c0-be55-50657d4ca26b"}
+
+BINDING: seq:project
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "489d5148-9d16-3851-83a4-dac6b9c3572e"}
+
+BINDING: seq:last
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "52a7fa53-ca37-3645-9714-dd6e60ae4e3b"}
+
+BINDING: seq:concat
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "f401e978-dd87-3b7e-b86a-a51b608039b4"}
+
+BINDING: seq:append
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "3629a480-3e46-355c-a089-5cbff246973a"}
+
+BINDING: seq:empty
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "de767f48-f66d-34e1-95e9-148486ade195"}
+
+BINDING: data:equal?
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "a9523676-aafe-3f7c-9849-b5728162c859"}
+
+BINDING: data:get
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "fad5b0dd-29d2-36a3-bb97-6ae0f24d0417"}
+
+BINDING: data:record
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "d9af271a-1c9f-380b-b048-316880bc952c"}
+
+BINDING: text:format
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "53c7bab5-b607-318a-9102-f0f4e161096e"}
+
+BINDING: event:point
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "befecaa3-c31d-36c6-9b70-91a8e3dcdf39"}
+
+BINDING: behavior:latest-value
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "052ea26a-b20d-3fc5-9990-41a4f5eeeba0"}
+
+BINDING: behavior:event-filter
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "a98b5d3c-2caa-3f66-a74c-6a3504c005ab"}
+
+BINDING: behavior:map
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "3d5cece5-1125-31d2-8e3c-be6f46c3e433"}
+
+BINDING: behavior:scan
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "9f79275d-0f28-3ce5-b7db-7222a006f235"}
+
+BINDING: behavior:source
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "4dfc432a-698d-3ab2-b613-4ada5a3d4f7c"}
+
+BINDING: message-to-user
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "2a5777b1-f6b8-323f-a791-c0f900215f9b"}
+
+BINDING: model:request
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "72062235-08de-3825-aa0c-11c3a76b03a1"}
+
+BINDING: user-ingress
+State: :known
+Headline: unknown
+Reference: #propagators.ids.NodeId {:uuid #uuid "fb8d16a3-39e3-3a26-9db8-a75c8feb05fc"}
+
+BINDING: data:snapshot
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "ec25db7d-f7a1-3f6c-95aa-a591226ceec6"}
+
+BINDING: cell:reference
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+
+BINDING: cell:input
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "e59010c5-1d4c-3330-b531-44153cca6234"}
+
+BINDING: cell:value
+State: :known
+Headline: callable; inspect the binding and language-introduction-cell
+Reference: #propagators.ids.NodeId {:uuid #uuid "0cba5a31-c624-33eb-9c0f-7a27b60d7966"}
+
+BINDING: history
+State: :known
+Headline: vector with 1 elements
+Reference: #propagators.ids.NodeId {:uuid #uuid "611c2821-f80e-34e8-8aa4-a0a33647784d"}
+FULL CONTENT:
+[{:sequence 1, :request-id "setup", :source "\n\n(define orient:source (behavior:source))\n(-> (event:point \"a\" 1 2) orient:source)\n(-> (event:point \"b\" 2 3) orient:source)\n(define orient:sum (behavior:scan orient:source + 0))\n(define orient:reading (behavior:latest-value orient:sum 0))\n(-> (cell:value (cell:reference orient:reading)) (cell:input (data:get :orientation-value memory-cell)))\n(-> (inspect:cell (cell:reference orient:reading)) (cell:input (data:get :orientation-edge memory-cell)))", :kind :reply}]
+
+BINDING: memory-cell
+State: :known
+Headline: record with keys [:code-history :deliveries :diagnostics :feedback-edge :feedback-value :model-output :orientation-edge :orientation-value :user]
+Reference: #propagators.ids.NodeId {:uuid #uuid "89d8b657-fde9-3df0-aca3-e9c81caff703"}
+
+BINDING: experiment-diagnostic-cell
+State: :known
+Headline: :not-started
+Reference: #propagators.ids.NodeId {:uuid #uuid "0d406be6-7550-3360-8d8c-e461c8c8de61"}
+
+BINDING: observe-cell
+State: :known
+Headline: record with keys [:forms :receipts :response :status]
+Reference: #propagators.ids.NodeId {:uuid #uuid "d121b8b8-5500-3dec-a1a8-814ae2197811"}
+
+BINDING: language-introduction-cell
+State: :known
+Headline: Lain is a connected dataflow language, not Clojure. Return raw parenthesized forms only; triple-backtick fences are invalid source. A callable is invoked as (f
+Reference: #propagators.ids.NodeId {:uuid #uuid "2552d884-03a1-3631-a5ef-35e404f19d4c"}
+FULL CONTENT:
+Lain is a connected dataflow language, not Clojure. Return raw parenthesized forms only; triple-backtick fences are invalid source. A callable is invoked as (f x); (-> x f) writes to the callable cell and does NOT call f. Only binding/argument vectors use literal brackets; construct data vectors with seq:empty and seq:append. Temporal sources accept occurrences from event:point, never bare message records or other behavior objects. A scan takes its source as its first argument; do not write events to the scan result. behavior:scan, map, and event-filter produce behavior objects, not ordinary records or vectors. Use behavior:latest-value to project a selected behavior value before passing to ordinary primitives. An optional fallback makes an empty behavior usable without inventing an occurrence. seq:project projects one key, so (seq:project :role xs) returns role strings, not message records. Model messages must be records with string :role and :content. System instructions must be first. The user ingress is a message RECORD, not a behavior or callable. You must capture its occurrences with event:point if you need a temporal source. (define name expression) binds a cell. (define pending) declares an unknown cell. (network [x y] expression) defines a callable. (let [x expression y expression] body) binds locals. (-> value target-cell) connects cells. (if condition yes no) selects a branch. Qualified names avoid editor collisions. Use data:record for immutable plain records, NOT struct, when passing data to primitives. (data:record :key value) constructs a record; (data:get :key record) reads it. seq:empty [] returns an empty vector; seq:append [vector element] appends one element; seq:concat [vector ...] concatenates vectors into one flat vector; for example (seq:concat (seq:append (seq:empty) 1) (seq:append (seq:empty) 2)) returns a vector containing 1 and 2; seq:last [vector] reads the last element. seq:project [key vector] projects a key over a vector. data:equal? [a b] compares values. event:point [id numeric-time value] captures a retained temporal occurrence. Each identity is immutable: later changes at its input do not withdraw earlier occurrences; connect its output to a behavior:source or scan. text:format [template & values] formats %s placeholders; for example (text:format "item %s" 7). Example individual operations: (define values (behavior:source)); (-> (event:point "sample" 1 7) values); (define sums (behavior:scan values + 0)). behavior:source [] creates a reducer cell; connect supported event:point results to it with ->. behavior:scan [source reducer initial] emits a state at EVERY ordered occurrence: each state is the corresponding accumulated prefix, not merely the final state. It uses a pure two-argument Lain callable; maps, filters, and reducers construct values and must not perform IO. Callback invocation uses a frozen temporary network, so callbacks must use their explicit arguments and immutable constants; reading changing external cells does not read the live network. behavior:event-filter [behavior predicate] keeps matching historical occurrences and their values. If a new occurrence is rejected, the last previously accepted occurrence remains available: latest-value of the filtered behavior stays unchanged. The predicate receives each behavior VALUE, which may itself be a vector or record. behavior:map [behavior callable] maps values. behavior:latest-value [behavior optional-fallback] projects its most recent value to an ordinary supported cell; before the first occurrence it returns the optional fallback, or remains unknown if no fallback was supplied. For example (behavior:latest-value values 0). Repeated identical events are suppressed; sources and scans are independent. model:request [record] submits { :id string :messages vector-of-role-content-records } to the existing model. Roles are strings system/user/assistant; content is a string. user-ingress publishes a record with :id, :time (odd integer), :role user, :content. Assistant time should be user time + 1 and assistant id must differ from user id. message-to-user [record] acknowledges a record containing :id :time :role assistant :content and returns that record with :acknowledged true. Its output, not generated source, is the delivered message. source:admit [complete-reply lexical-target support-cell-reference] admits complete forms sequentially, preserving earlier forms if a later one fails. environment:overview [environment optional-name-vector] lists visible binding titles, short headlines and references, including unknowns. The optional vector selects which bindings also include their full content; it does not recursively expand values. cell:reference [cell] yields an inspectable reference without waiting for its value. inspect:cell [reference] exposes only :edge, :value (strongest value), :inputs (producing connections), and :outputs (consuming connections). cell:value [reference] connects that edge's strongest value directly to an ordinary cell. cell:input [reference] returns a writable port for the referenced edge. Memory record fields contain references, so write through cell:input, not into a slot read projection. data:snapshot [compound] resolves a finite compound into a plain record; unknown slots remain pending. Use inspect:cell for edge/value/input/output inspection.
+
+BINDING: reducer-verification-cell
+State: :known
+Headline: Verified through compiled Lain, not a simulated conversation: a numeric source with occurrences 1@1 and 2@2, scanned with seq:append and an empty vector seed, e
+Reference: #propagators.ids.NodeId {:uuid #uuid "b9082fb3-5b7d-383e-a340-f3d8d53f0ee1"}
+FULL CONTENT:
+Verified through compiled Lain, not a simulated conversation: a numeric source with occurrences 1@1 and 2@2, scanned with seq:append and an empty vector seed, emits prefix values [1] and [1,2]. Filtering those prefix values by whether their last number is greater than 1 keeps [1,2]. A later 0@3 is rejected by that predicate, leaving the filtered latest value [1,2]. The unfiltered scan advances to [1,2,0]. Exact replay produces no new values, and another source remains independent. Each call to behavior:source creates a new independent instance. A scan compiled into the lexical admission target also reduced an occurrence 5@1 with + and seed 0 to 5.
+
+BINDING: construction-review-cell
+State: :known
+Headline: A previous generated setup compiled but did not connect requests or history. Diagnostic review: each call to behavior:source creates a DISTINCT source, so writi
+Reference: #propagators.ids.NodeId {:uuid #uuid "217b13c4-262e-3410-8bf0-e01c38ce94b3"}
+FULL CONTENT:
+A previous generated setup compiled but did not connect requests or history. Diagnostic review: each call to behavior:source creates a DISTINCT source, so writing to another unnamed instance does not feed a previously created scan. Event identity and time must vary with actual events; constants user/1 and assistant/2 cannot identify three turns. A bare acknowledged record must be converted to a temporal occurrence before feeding a temporal source. A callable inside behavior:map or scan is evaluated as a pure transformation; model:request and message-to-user must run in the live network, never inside a temporal transformation callback. seq:project with key :role returns strings and therefore is unsuitable as the request messages vector. No generated definitions from previous attempts exist in this fresh child.
+
+BINDING: operator-examples-cell
+State: :known
+Headline: Concrete executable examples and expected results for the advertised operators. Each example is independent and uses doc:* names. Core libraries and experiment
+Reference: #propagators.ids.NodeId {:uuid #uuid "c3ba0b52-ba56-32dc-a545-ad742207b5aa"}
+
+BINDING: guide-examples-cell
+State: :known
+Headline: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc
+Reference: #propagators.ids.NodeId {:uuid #uuid "e232ef20-5930-3c0f-a172-d14fd31ad0e9"}
+
+BINDING: dynamic-expressions-cell
+State: :known
+Headline: Every expression builds connected propagators. A function call whose operands are cells is reactive: it recomputes when their strongest values change. event:poi
+Reference: #propagators.ids.NodeId {:uuid #uuid "15834226-70b3-3d71-8d95-0e84c0a65f12"}
+FULL CONTENT:
+Every expression builds connected propagators. A function call whose operands are cells is reactive: it recomputes when their strongest values change. event:point is NOT limited to literal IDs and times. data:get extracts fields reactively. No callback, listener or new source compilation is needed for each input. Never bypass event:point to make inputs dynamic.
+Operators: event:point, data:get
+Lain source:
+(define doc:changing-reading)
+(define doc:changing-source (behavior:source))
+(-> (event:point (data:get :id doc:changing-reading) (data:get :time doc:changing-reading) (data:get :value doc:changing-reading)) doc:changing-source)
+(define doc:changing-prefixes (behavior:scan doc:changing-source seq:append (seq:empty)))
+(define doc:changing-values (behavior:latest-value doc:changing-prefixes (seq:empty)))
+Expected observations (test metadata):
+[{:binding "doc:changing-values" :kind :value :expected [7 11]}] :publications [{:binding "doc:changing-reading" :value {:id "reading-1" :time 1 :value 7} :observed "doc:changing-values" :expected [7]} {:binding "doc:changing-reading" :value {:id "reading-2" :time 2 :value 11} :observed "doc:changing-values" :expected [7 11]}]
+Verification publishes reading-1/time=1/value=7, then replaces the same input cell with reading-2/time=2/value=11. Without recompilation the projected vector changes from [7] to [7 11]. These publications are test metadata; this is documentation, not an installed running example.
+
+
+BINDING: context-selection-cell
+State: :known
+Headline: vector with 9 elements
+Reference: #propagators.ids.NodeId {:uuid #uuid "c73fdb68-bd68-3c91-9dfc-48b55106b41d"}
+
+BINDING: orientation-result-cell
+State: :known
+Headline: record with keys [:edge :value]
+Reference: #propagators.ids.NodeId {:uuid #uuid "869d3cc6-3856-3a99-b56e-1b4dd237e3c8"}
+FULL CONTENT:
+{:value 5, :edge {:edge #propagators.ids.NodeId {:uuid #uuid "3b0b8c77-e4ca-372c-a1d7-da4cbfd41972"}, :value 5, :inputs #{#propagators.ids.NodeId {:uuid #uuid "50b411a6-8719-3f66-8122-1060b3745496"} #propagators.ids.NodeId {:uuid #uuid "01a1a96e-01c2-7578-8e60-fba254d409ca"} #propagators.ids.NodeId {:uuid #uuid "01a1a96e-026a-7ca2-8485-776af6d7dddc"} #propagators.ids.NodeId {:uuid #uuid "8c2638c3-c0c0-3009-9d32-f1716452a516"} #propagators.ids.NodeId {:uuid #uuid "8f0d5808-d588-3d6c-9c85-18308e4feac1"}}, :outputs #{#propagators.ids.NodeId {:uuid #uuid "50b411a6-8719-3f66-8122-1060b3745496"} #propagators.ids.NodeId {:uuid #uuid "01a1a96e-01c2-7578-8e60-fba254d409c9"} #propagators.ids.NodeId {:uuid #uuid "01a1a96e-026a-7ca2-8485-776af6d7dddb"} #propagators.ids.NodeId {:uuid #uuid "c5354ab7-4da0-374e-bac9-a5cdf7d5c048"} #propagators.ids.NodeId {:uuid #uuid "01a1a96e-01c2-7578-8e60-fba254d409cb"} #propagators.ids.NodeId {:uuid #uuid "01a1a96e-026a-7ca2-8485-776af6d7dddd"} #propagators.ids.NodeId {:uuid #uuid "197364e2-55c7-30e7-a8bb-f03b69fb80bc"} #propagators.ids.NodeId {:uuid #uuid "8f0d5808-d588-3d6c-9c85-18308e4feac1"}}}}
+
+BINDING: construction-examples-cell
+State: :known
+Headline: Operators: data:record
+Lain source:
+(define doc:record (data:record :score 7 :label "north"))
+Expected observations (test metadata):
+[{:binding "doc:record" :ki
+Reference: #propagators.ids.NodeId {:uuid #uuid "b75107ca-ad9b-3b55-9499-655f0a1635ac"}
+FULL CONTENT:
+Operators: data:record
+Lain source:
+(define doc:record (data:record :score 7 :label "north"))
+Expected observations (test metadata):
+[{:binding "doc:record" :kind :value :expected {:score 7 :label "north"}}]
+
+Operators: data:get
+Lain source:
+(define doc:field (data:get :score (data:record :score 7)))
+Expected observations (test metadata):
+[{:binding "doc:field" :kind :value :expected 7}]
+
+Operators: data:equal?
+Lain source:
+(define doc:equal (data:equal? (data:record :score 7) (data:record :score 7)))
+Expected observations (test metadata):
+[{:binding "doc:equal" :kind :value :expected true}]
+
+Operators: data:merge
+Lain source:
+(define doc:merged (data:merge (data:record :a 1) (data:record :b 2)))
+Expected observations (test metadata):
+[{:binding "doc:merged" :kind :value :expected {:a 1 :b 2}}]
+
+Operators: data:snapshot
+Lain source:
+(define doc:snapshot (data:snapshot (struct :score 7)))
+Expected observations (test metadata):
+[{:binding "doc:snapshot" :kind :value :expected {:score 7}}]
+
+Operators: seq:empty
+Lain source:
+(define doc:empty (seq:empty))
+Expected observations (test metadata):
+[{:binding "doc:empty" :kind :value :expected []}]
+
+Operators: seq:append
+Lain source:
+(define doc:appended (seq:append (seq:empty) 7))
+Expected observations (test metadata):
+[{:binding "doc:appended" :kind :value :expected [7]}]
+
+Operators: seq:concat
+Lain source:
+(define doc:concatenated (seq:concat (seq:append (seq:empty) 1) (seq:append (seq:empty) 2)))
+Expected observations (test metadata):
+[{:binding "doc:concatenated" :kind :value :expected [1 2]}]
+
+Operators: seq:last
+Lain source:
+(define doc:last (seq:last (seq:append (seq:append (seq:empty) 5) 9)))
+Expected observations (test metadata):
+[{:binding "doc:last" :kind :value :expected 9}]
+
+Operators: seq:project
+Lain source:
+(define doc:labels (seq:project :label (seq:append (seq:append (seq:empty) (data:record :label "north")) (data:record :label "south"))))
+Expected observations (test metadata):
+[{:binding "doc:labels" :kind :value :expected ["north" "south"]}]
+
+Operators: seq:count
+Lain source:
+(define doc:count (seq:count (seq:append (seq:empty) 7)))
+Expected observations (test metadata):
+[{:binding "doc:count" :kind :value :expected 1}]
+
+Operators: text:format
+Lain source:
+(define doc:formatted (text:format "item %s" 7))
+Expected observations (test metadata):
+[{:binding "doc:formatted" :kind :value :expected "item 7"}]
+
+Operators: event:point
+Lain source:
+(define doc:event (event:point "sample-event" 1 7))
+Expected observations (test metadata):
+[{:binding "doc:event" :kind :value :expected {:temporal/type :point :id "sample-event" :time 1 :revision 0 :value 7}}]
+
+Operators: behavior:source
+Lain source:
+(define doc:source (behavior:source))
+(-> (event:point "source-event" 1 7) doc:source)
+(define doc:source-value (behavior:latest-value doc:source))
+Expected observations (test metadata):
+[{:binding "doc:source-value" :kind :value :expected 7}]
+
+Operators: behavior:scan
+Lain source:
+(define doc:scan-input (behavior:source))
+(-> (event:point "scan-a" 1 1) doc:scan-input)
+(-> (event:point "scan-b" 2 2) doc:scan-input)
+(define doc:scan (behavior:scan doc:scan-input + 0))
+Expected observations (test metadata):
+[{:binding "doc:scan" :kind :behavior-values :expected [1 3]}]
+
+Operators: behavior:map
+Lain source:
+(define doc:map-input (behavior:source))
+(-> (event:point "map-event" 1 7) doc:map-input)
+(define doc:mapped (behavior:map doc:map-input (network [x] (* x 2))))
+Expected observations (test metadata):
+[{:binding "doc:mapped" :kind :behavior-values :expected [14]}]
+
+Operators: behavior:event-filter
+Lain source:
+(define doc:filter-input (behavior:source))
+(-> (event:point "filter-a" 1 1) doc:filter-input)
+(-> (event:point "filter-b" 2 2) doc:filter-input)
+(-> (event:point "filter-c" 3 0) doc:filter-input)
+(define doc:filtered (behavior:event-filter doc:filter-input (network [x] (> x 1))))
+(define doc:filtered-latest (behavior:latest-value doc:filtered))
+Expected observations (test metadata):
+[{:binding "doc:filtered" :kind :behavior-values :expected [2]} {:binding "doc:filtered-latest" :kind :value :expected 2}]
+
+Operators: behavior:latest-value
+Lain source:
+(define doc:empty-behavior (behavior:source))
+(define doc:fallback (behavior:latest-value doc:empty-behavior 42))
+(define doc:latest-input (behavior:source))
+(-> (event:point "latest-event" 1 7) doc:latest-input)
+(define doc:latest (behavior:latest-value doc:latest-input))
+Expected observations (test metadata):
+[{:binding "doc:fallback" :kind :value :expected 42} {:binding "doc:latest" :kind :value :expected 7}]
+
+Operators: model:request
+Lain source:
+(define doc:model-receipt (model:request (data:record :id "doc-model-probe" :messages (seq:append (seq:empty) (data:record :role "user" :content "Return only (define doc-model-generated 42)")))))
+Expected observations (test metadata):
+[{:binding "doc:model-receipt" :kind :value :expected :completed} {:binding "model-result" :kind :model-response :request "doc-model-probe"}]
+
+Operators: message-to-user
+Lain source:
+(define doc:delivery (message-to-user (data:record :id "doc-delivery" :time 1 :role "assistant" :content "operator probe")))
+Expected observations (test metadata):
+[{:binding "doc:delivery" :kind :acknowledgement :content "operator probe"}]
+
+Operators: memory-cell
+Lain source:
+(define doc:memory-source 7)
+(-> (cell:value (cell:reference doc:memory-source)) (cell:input (data:get :feedback-value memory-cell)))
+(define doc:remembered (cell:value (data:get :feedback-value memory-cell)))
+(define doc:memory-feedback (model:request (data:record :id "doc-memory-probe" :text (text:format "memory-score=%s" doc:remembered))))
+Expected observations (test metadata):
+[{:binding "doc:remembered" :kind :value :expected 7} {:binding "doc:memory-feedback" :kind :value :expected :completed}]
+
+Operators: event:point
+Lain source:
+(define doc:record-event (event:point "record-example" 1 (data:record :label "north")))
+Expected observations (test metadata):
+[{:binding "doc:record-event" :kind :value :expected {:temporal/type :point :id "record-example" :time 1 :revision 0 :value {:label "north"}}}]
+
+Operators: behavior:scan
+Lain source:
+(define doc:record-source (behavior:source))
+(-> (event:point "record-prefix" 1 (data:record :label "north")) doc:record-source)
+(define doc:record-prefixes (behavior:scan doc:record-source seq:append (seq:empty)))
+Expected observations (test metadata):
+[{:binding "doc:record-prefixes" :kind :behavior-values :expected [[{:label "north"}]]}]
+
+Operators: event:point, data:get
+Lain source:
+(define doc:changing-reading)
+(define doc:changing-source (behavior:source))
+(-> (event:point (data:get :id doc:changing-reading) (data:get :time doc:changing-reading) (data:get :value doc:changing-reading)) doc:changing-source)
+(define doc:changing-prefixes (behavior:scan doc:changing-source seq:append (seq:empty)))
+(define doc:changing-values (behavior:latest-value doc:changing-prefixes (seq:empty)))
+Expected observations (test metadata):
+[{:binding "doc:changing-values" :kind :value :expected [7 11]}] :publications [{:binding "doc:changing-reading" :value {:id "reading-1" :time 1 :value 7} :observed "doc:changing-values" :expected [7]} {:binding "doc:changing-reading" :value {:id "reading-2" :time 2 :value 11} :observed "doc:changing-values" :expected [7 11]}]
+
+
+BINDING: orientation-example-cell
+State: :known
+Headline: This is code to read, not a running example. Numeric occurrences become a behavior, a scan emits numeric prefixes, and latest-value projects an ordinary number.
+Reference: #propagators.ids.NodeId {:uuid #uuid "5de0e974-a361-35db-807f-0433ae2ba711"}
+
+BINDING: guide-principles-cell
+State: :known
+Headline: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc
+Reference: #propagators.ids.NodeId {:uuid #uuid "67264fed-3ce9-3850-8e1f-8cf4a78f2baa"}
+FULL CONTENT:
+These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduction use the qualified behavior:* APIs documented in operator-examples-cell; the guide's bounded visualization history is a separate operator. The combinator library is already loaded. Return executable Lain only, without Markdown fences.
+
+Source: docs/how-to-think-in-lain.md; SHA256 af917bbd5450ab475b5179ad5be60f1ba2c5e72966f0b3d00d9686eeabd9eb94.
+## 1. Core Philosophy: Compose Relationships into Expressions
+Lain is a Lisp-like, propagator-based coordination language for describing high-level interactions between components.
+Its central programming abstraction is the composition of transformations and relationships. Drawing on lambda calculus and functional composition, Lain allows programmers to construct, connect, and transform propagator networks through reusable abstractions.
+Compose verbs into sentences. Do not concatenate nouns into names.
+A Lain program should read like a meaningful expression describing how components relate, constrain, coordinate, and transform one another.
+Think of a synthesizer, an electrical circuit, or a chemical reaction. The essential structure emerges from how components interact and what relationships their interactions maintain.
+Cells provide the medium through which information propagates. They support the network’s operation, while the program’s primary expression concerns the relationships between its components.
+This philosophy is related to Alan Kay’s emphasis on messaging and interaction in object-oriented programming. Lain extends this perspective through compositional network transformations and multidirectional information propagation.
+Fundamental principles:
+* Think in transformations, connections, constraints, and coordination.
+* Express complex behavior by composing smaller relationships.
+* Treat network topology as part of the program’s meaning.
+* Preserve the distinction between a relationship and a particular procedure for evaluating it.
+* Use cells and internal machinery when their semantics require them.
+* Prefer reusable relational abstractions over specialized containers.
+The ideal Lain program communicates what relationships hold, how they compose, and what information can propagate through them.
+
+⸻
+
+
+## 4. Declare Relationships, Not Execution Sequences
+Lain networks describe concurrently existing relationships within activated topology. An unselected conditional body need not be expanded.
+The textual order of network declarations should not be interpreted as an imperative execution sequence. Lexical scope, name binding, library loading, and explicit effect boundaries still matter; dataflow does not erase those constraints.
+Consider:
+```clojure
+;; Schematic: f, g, and h must be defined by the application.
+(define e
+  (network [a b c]
+    (-> (f a) b)
+    (-> (g b) c)
+    (-> (h c) a)
+    (list a b c)))
+```
+These declarations describe network topology.
+They do not imply that the first relationship must finish before the second begins.
+Information propagates according to the dependencies and propagation semantics of the network.
+Reason about topology
+When reading or writing a network:
+* Treat declarations as simultaneously existing relationships.
+* Represent dependencies through connections.
+* Allow propagation to follow available information.
+* Avoid using source-code order to express control flow.
+* Make ordering, buffering, and timing explicit when necessary.
+* Consider feedback, convergence, and conflicting information.
+A network is a persistent organization of relationships whose information state may evolve.
+Anti-pattern: imperative thinking disguised as propagators
+An agent may translate each step of a procedural algorithm into a separate propagator while retaining the original execution sequence.
+This can produce syntactically valid Lain code with little benefit from the language’s relational capabilities.
+Correction: Reconsider the problem as a network of constraints and interactions. Determine which dependencies are intrinsic to the domain and which were introduced by the procedural decomposition.
+
+⸻
+
+
+
+BINDING: guide-core-cell
+State: :known
+Headline: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc
+Reference: #propagators.ids.NodeId {:uuid #uuid "c8af958a-e232-3609-a4a3-da895386ce9c"}
+
+BINDING: context-cell
+State: :known
+Headline: The orientation source is already admitted. orientation-result-cell contains the actual memory feedback, and parent history contains your written code. Read dyn
+Reference: #propagators.ids.NodeId {:uuid #uuid "dea4d1a0-30ba-3165-8fbf-57ac1de92eaa"}
+FULL CONTENT:
+The orientation source is already admitted. orientation-result-cell contains the actual memory feedback, and parent history contains your written code. Read dynamic-expressions-cell first: a call with cell-valued arguments is reactive, including event:point; literal operands are not required. Now construct a small live conversation network in Lain. Your numeric orientation demonstrated source/occurrence/scan/projection types. In this task, a message record is an occurrence payload; it is not itself a temporal occurrence. Keep reasoning brief. Return only executable Lain forms, without markdown. Read guide-core-cell and guide-examples-cell for the relational philosophy and operator-examples-cell for executable API examples with expected results. Apply that understanding to this task. Discover the environment bindings below. Your setup must build history with the supplied tested temporal reducers, preserving chronological user messages and acknowledged assistant replies. Connect user-ingress to model requests and define a reusable reply function that delivers to the user, then adds the acknowledged reply to history. Subsequent requests must contain actual prior user messages and delivered assistant replies as role-tagged messages. Provider thinking and generated source are never conversation replies. Each subsequent model response must be executable Lain calling your reply function with a new assistant message. Conversation requests should include an explicit system message containing the reply-function calling convention you have defined, so future requests know to produce executable source. Do not include setup code or provider thinking in conversation history. Use the same model throughout. The parent binding history retains your generated source code automatically; it is not conversation history. Use a different name for the conversation accumulator. memory-cell is a reference-valued plain record. Read its fields with data:get. Its :feedback-value and :feedback-edge slots hold writable cell references. Use cell:input on a memory reference to attach selected strongest values using the concrete memory feedback example in operator-examples-cell. Do not send a request until a user event arrives. Unknown inputs suspend a computation; avoid cycles requiring a future reply before the first request. model:request is a function and must be invoked, not used as a connection target. Inspect diagnostics if construction fails.

@@ -1,4 +1,4 @@
-(load-lain "model-refined.lain")
+(load-lain "examples/lain/model-refined-demo.lain")
 
 (define input)
 (-> input (model:input m))

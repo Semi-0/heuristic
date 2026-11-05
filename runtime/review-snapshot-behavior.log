@@ -1,0 +1,9 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-soul-review-lj0b_mrq/src
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-soul-review-lj0b_mrq/test
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE behavior — Compiled Lain temporal behaviors, immutable evidence, composition and bounded retention
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 17 tests containing 292 assertions.
+0 failures, 0 errors.
+MODULE-RESULT behavior {:test 17, :pass 292, :fail 0, :error 0}

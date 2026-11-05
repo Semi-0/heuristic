@@ -7,7 +7,7 @@
 (when-not (= ["--live"] (vec *command-line-args*))
   (throw (ex-info "Pass --live to send one bounded greeting to the local Blazux endpoint" {})))
 
-(let [owner (setup/open! (System/getenv "LAIN_HARNESS_ROOT") "model-refined.lain"
+(let [owner (setup/open! (System/getenv "LAIN_HARNESS_ROOT") "examples/lain/model-refined-demo.lain"
                          {:timeout-ms 30000 :max-tokens 128})
       started (System/nanoTime)]
   (try

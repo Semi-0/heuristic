@@ -25,13 +25,18 @@
   (let [[accepted selected] (async/alts!! [stop [channel item]] :priority true)]
     (and (= selected channel) accepted)))
 
-(defn- request-value [value]
+(defn request-value [value]
   (let [v (data/payload value)
-        request (if (string? v) {:text v} v)]
-    (when-not (and (map? request) (string? (:text request))
-                   (not (str/blank? (:text request))))
-      (throw (ex-info "Model input requires a nonempty string or a record with :text" {})))
-    (select-keys request [:id :text])))
+        request (if (string? v) {:text v} v)
+        messages (:messages request)]
+    (when-not (and (map? request)
+                   (if (some? messages)
+                     (and (vector? messages) (seq messages)
+                          (every? #(and (#{"system" "user" "assistant"} (:role %))
+                                        (string? (:content %))) messages))
+                     (and (string? (:text request)) (not (str/blank? (:text request))))))
+      (throw (ex-info "Model input requires text or explicit role-tagged messages" {})))
+    (select-keys request [:id :text :messages])))
 
 (defn- run-worker! [transport {:keys [stop stopping requests results done]}]
   (async/thread
@@ -51,7 +56,7 @@
                                          :error "Model request failed"}
                                   (:status (ex-data error))
                                   (assoc :http-status (:status (ex-data error))))))
-                      result (cond-> reply (:id request) (assoc :request-id (:id request)))
+                      result (cond-> (assoc reply :response-sequence (inc revision)) (:id request) (assoc :request-id (:id request)))
                       accepted? (and (not (cancelled?))
                                      (put-unless-stopped! stop results [(inc revision) result]))]
                   (when accepted? (acknowledge! :completed))

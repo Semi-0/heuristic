@@ -1,0 +1,7 @@
+(load-lain "model-refined.lain")
+(define m (model))
+(define model-struct-view
+  (struct :input (model:input m) :thinking (model:thinking m) :action (model:action m)))
+(define model-struct-trace ((tracer:semantic modifier:with-values) model-struct-view))
+(display model-struct-trace)
+;; Submit through the session extender: (-> "hi" (model:input m))

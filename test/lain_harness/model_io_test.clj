@@ -145,12 +145,12 @@
       (finally (when (= :active (host/lifecycle owner)) (host/close! owner))))))
 
 (deftest actual-http-contract
-  (let [received (promise)
+  (let [received (atom [])
         server (HttpServer/create (InetSocketAddress. "127.0.0.1" 0) 0)]
     (.createContext server "/v1/chat/completions"
                     (reify HttpHandler
                       (handle [_ exchange]
-                        (deliver received (json/read-json (slurp (.getRequestBody exchange))))
+                        (swap! received conj (json/read-json (slurp (.getRequestBody exchange))))
                         (let [body (.getBytes (json/write-json
                                                {:choices [{:message {:content "hello" :reasoning_content "considered"}
                                                            :finish_reason "stop"}]}) "UTF-8")]
@@ -160,13 +160,21 @@
     (try
       (let [transport (blazux/completion-transport
                        {:endpoint (str "http://127.0.0.1:" (.getPort (.getAddress server)) "/v1")
-                        :model "test-model" :max-tokens 32 :timeout-ms 2000})
+                        :model "test-model" :max-tokens 32 :timeout-ms 2000 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
             result (transport {:text "hi" :cancelled? (constantly false)})]
         (is (= {:kind :reply :text "hello" :thinking "considered"
                 :finish-reason "stop" :truncated? false} result))
-        (is (= [{:role "user" :content "hi"}] (:messages @received)))
-        (is (= false (:stream @received)))
-        (is (= 32 (:max_tokens @received))))
+        (is (= [{:role "user" :content "hi"}] (:messages (first @received))))
+        (is (= false (:stream (first @received))))
+        (is (= 2048 (:thinking_token_budget (first @received))))
+        (is (= {:enable_thinking true :reasoning_effort "medium"} (:chat_template_kwargs (first @received))))
+        (is (= 32 (:max_tokens (first @received))))
+        (let [messages [{:role "system" :content "instructions supplied by Lain"}
+                        {:role "user" :content "first"}
+                        {:role "assistant" :content "delivered"}
+                        {:role "user" :content "next"}]]
+          (transport {:messages messages :cancelled? (constantly false)})
+          (is (= messages (:messages (last @received))))))
       (finally (.stop server 0)))))
 
 (deftest bounded-queue-and-explicit-effect-matching

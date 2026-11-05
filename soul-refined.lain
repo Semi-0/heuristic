@@ -1,163 +1,153 @@
-(load-lain "integration.lain")
+(load-lain "model-refined.lain")
+(load-lain "lib/behavior-core.lain")
+(load-lain "lib/language-context.lain")
 
-;; Native module: src/lain_harness/runtime.clj. Prepare with an explicit owner.
-;; integration.lain supplies dependency composition and independent endpoints.
-;; Supply these endpoints through the existing open-session extension API:
-;; session/session-extension, host/open!, host/extend! and host/extend-source!.
-;; session.operators/prim-op builds primitive operators; async-op takes an
-;; injected EffectInterpreter and a pure cell-output/effect-output selector.
-;; Effects dispatch after commit, via next-round-input or dependency-input.
-;; Keep primitive facilities and external capabilities independently supplied.
-;; integration.lain constructs model/user networks with distinct source identities.
-;; Connecting them here must not make user publication invoke inference itself.
-;; No weather provider or message delivery is installed implicitly.
-
-;; empty-env [] -> environment; lexical-child [parent] -> lexical environment.
-;; extend-env [environment contribution] -> extended environment; env:slot
-;; [name value] -> binding contribution. Preserve cell identity, lexical capture,
-;; support and extension provenance. These are compiler environments, not maps.
-;; empty-env is supplied by the native facilities extension.
-;; lexical-child is supplied by the native facilities extension.
-;; extend-env is supplied by the native facilities extension.
-;; env:slot is supplied by the native facilities extension.
-
-;; describe-environment [e] -> connected relevant view of bindings, additions,
-;; results and diagnostics. Late additions and retractions update the view.
-;; Unknown unrelated fields cannot block available information. Preserve open
-;; compound accessors; no frozen list of names or fixed host description schema.
-;; describe-environment is composed in lib/observations.lain.
-
-;; incremental-compile [supported-source e] -> admission/result interface.
-;; Compile INTO the supplied e, preserving its lexical parent and captures.
-;; Use existing atomic CPS/session admission; identity/support prevent duplicate
-;; installation. Publish results, diagnostics and provenance into e. Replacement
-;; needs explicit version/retraction semantics, not incompatible plain writes.
-;; The scoped open-session extension carries target and support-cell explicitly.
-;; Each complete streamed form is an atomic monotone admission. A failed form
-;; stops that response; earlier admissions remain. Extension cells combine model,
-;; round and consumed-input premises using TTMS. Retraction withdraws availability,
-;; not topology; finishing a round does not retract its premise.
-;; incremental-compile is composed in lib/compiler.lain.
-
-;; inputs-of [model-session] -> connected input port; actions-of [model-session]
-;; -> supported generated-source publications. Lain selects prompts and budgets;
-;; the async effect boundary executes requests, publishes completion and cancels IO.
-;; A provider snapshot must not sever the upstream connected description.
-;; inputs-of and actions-of are composed in lib/model.lain.
-;; actions-of is composed in lib/model.lain.
-
-;; Independent supplied instances, not constructors coupled to one another.
-;; Model and user instances are declared by the integration network.
-;; message-to-user [content] -> acknowledged delivery; weather-at [place date timezone]
-;; -> supported observation with source, observed-at and validity information;
-;; umbrella-advice [observation] -> advice. IO requires async operators; pure
-;; advice uses a primitive operator or a Lain network. None is installed here.
-
+;; One model and one lexical child for the entire open session.
+(define m (model))
+(define model-result (model:output m))
+(define no-user-yet)
+(define raw-user-events)
+(source:initialize raw-user-events :lain.data/empty)
+(session:export :user "conversation" :user-message (cell:reference raw-user-events))
+(define user-records (list:vector raw-user-events))
+(define user-ingress
+  (if (> (seq:count user-records) 0)
+      (let [event (seq:last user-records)]
+        (data:record :id (data:get :id event)
+                     :time (- (* 2 (seq:count user-records)) 1)
+                     :role "user" :content (data:get :payload event)))
+      no-user-yet))
+(define delivered-events)
+(source:initialize delivered-events :lain.data/empty)
+(define conversation-context-cell
+  "The orientation source is already admitted. orientation-result-cell contains the actual memory feedback, and parent history contains your written code. Read dynamic-expressions-cell first: a call with cell-valued arguments is reactive, including event:point; literal operands are not required. Now construct a small live conversation network in Lain. Your numeric orientation demonstrated source/occurrence/scan/projection types. In this task, a message record is an occurrence payload; it is not itself a temporal occurrence. Keep reasoning brief. Return only executable Lain forms, without markdown. Read guide-core-cell and guide-examples-cell for the relational philosophy and operator-examples-cell for executable API examples with expected results. Apply that understanding to this task. Discover the environment bindings below. Your setup must build history with the supplied tested temporal reducers, preserving chronological user messages and acknowledged assistant replies. Connect user-ingress to model requests and define a reusable reply function that delivers to the user, then adds the acknowledged reply to history. Subsequent requests must contain actual prior user messages and delivered assistant replies as role-tagged messages. Provider thinking and generated source are never conversation replies. Each subsequent model response must be executable Lain calling your reply function with a new assistant message. Conversation requests should include an explicit system message containing the reply-function calling convention you have defined, so future requests know to produce executable source. Do not include setup code or provider thinking in conversation history. Use the same model throughout. The parent binding history retains your generated source code automatically; it is not conversation history. Use a different name for the conversation accumulator. memory-cell is a reference-valued plain record. Read its fields with data:get. Its :feedback-value and :feedback-edge slots hold writable cell references. Use cell:input on a memory reference to attach selected strongest values using the concrete memory feedback example in operator-examples-cell. Do not send a request until a user event arrives. Unknown inputs suspend a computation; avoid cycles requiring a future reply before the first request. model:request is a function and must be invoked, not used as a connection target. Inspect diagnostics if construction fails.")
+(define orientation-context-cell
+  "First orient yourself using the guide's relational view. Do not build the conversation yet. Return only executable Lain source that builds a small numeric temporal example from two explicit event:point occurrences, a behavior:source, and a behavior:scan with + and seed 0. Project its latest numeric result with behavior:latest-value, then connect that result's strongest value into memory-cell slot :orientation-value, and connects its inspect:cell result into memory-cell slot :orientation-edge. Use orient: names. The observed result will be supplied in the next task. Do not call model:request or message-to-user in this response. The example is documentation, not a preinstalled network. Your source is admitted into the lexical child and recorded in parent history. No explanation or Markdown fences.")
+(define context-cell)
+(source:initialize context-cell orientation-context-cell)
+(define context:include (network [name] (network [names] (seq:append names name))))
+(define orientation-selection
+  (|> (seq:empty)
+      (context:include "context-cell")
+      (context:include "guide-principles-cell")
+      (context:include "orientation-example-cell")))
+(define construction-selection
+  (|> (seq:empty)
+      (context:include "context-cell")
+      (context:include "dynamic-expressions-cell")
+      (context:include "orientation-result-cell")
+      (context:include "history")
+      (context:include "guide-principles-cell")
+      (context:include "construction-examples-cell")
+      (context:include "reducer-verification-cell")
+      (context:include "construction-review-cell")
+      (context:include "language-introduction-cell")))
+(define context-selection-cell)
+(source:initialize context-selection-cell orientation-selection)
+(define construction-trigger)
+(define language-introduction-cell
+  "Lain is a connected dataflow language, not Clojure. Return raw parenthesized forms only; triple-backtick fences are invalid source. A callable is invoked as (f x); (-> x f) writes to the callable cell and does NOT call f. Only binding/argument vectors use literal brackets; construct data vectors with seq:empty and seq:append. Temporal sources accept occurrences from event:point, never bare message records or other behavior objects. A scan takes its source as its first argument; do not write events to the scan result. behavior:scan, map, and event-filter produce behavior objects, not ordinary records or vectors. Use behavior:latest-value to project a selected behavior value before passing to ordinary primitives. An optional fallback makes an empty behavior usable without inventing an occurrence. seq:project projects one key, so (seq:project :role xs) returns role strings, not message records. Model messages must be records with string :role and :content. System instructions must be first. The user ingress is a message RECORD, not a behavior or callable. You must capture its occurrences with event:point if you need a temporal source. (define name expression) binds a cell. (define pending) declares an unknown cell. (network [x y] expression) defines a callable. (let [x expression y expression] body) binds locals. (-> value target-cell) connects cells. (if condition yes no) selects a branch. Qualified names avoid editor collisions. Use data:record for immutable plain records, NOT struct, when passing data to primitives. (data:record :key value) constructs a record; (data:get :key record) reads it. seq:empty [] returns an empty vector; seq:append [vector element] appends one element; seq:concat [vector ...] concatenates vectors into one flat vector; for example (seq:concat (seq:append (seq:empty) 1) (seq:append (seq:empty) 2)) returns a vector containing 1 and 2; seq:last [vector] reads the last element. seq:project [key vector] projects a key over a vector. data:equal? [a b] compares values. event:point [id numeric-time value] captures a retained temporal occurrence. Each identity is immutable: later changes at its input do not withdraw earlier occurrences; connect its output to a behavior:source or scan. text:format [template & values] formats %s placeholders; for example (text:format \"item %s\" 7). Example individual operations: (define values (behavior:source)); (-> (event:point \"sample\" 1 7) values); (define sums (behavior:scan values + 0)). behavior:source [] creates a reducer cell; connect supported event:point results to it with ->. behavior:scan [source reducer initial] emits a state at EVERY ordered occurrence: each state is the corresponding accumulated prefix, not merely the final state. It uses a pure two-argument Lain callable; maps, filters, and reducers construct values and must not perform IO. Callback invocation uses a frozen temporary network, so callbacks must use their explicit arguments and immutable constants; reading changing external cells does not read the live network. behavior:event-filter [behavior predicate] keeps matching historical occurrences and their values. If a new occurrence is rejected, the last previously accepted occurrence remains available: latest-value of the filtered behavior stays unchanged. The predicate receives each behavior VALUE, which may itself be a vector or record. behavior:map [behavior callable] maps values. behavior:latest-value [behavior optional-fallback] projects its most recent value to an ordinary supported cell; before the first occurrence it returns the optional fallback, or remains unknown if no fallback was supplied. For example (behavior:latest-value values 0). Repeated identical events are suppressed; sources and scans are independent. model:request [record] submits { :id string :messages vector-of-role-content-records } to the existing model. Roles are strings system/user/assistant; content is a string. user-ingress publishes a record with :id, :time (odd integer), :role user, :content. Assistant time should be user time + 1 and assistant id must differ from user id. message-to-user [record] acknowledges a record containing :id :time :role assistant :content and returns that record with :acknowledged true. Its output, not generated source, is the delivered message. source:admit [complete-reply lexical-target support-cell-reference] admits complete forms sequentially, preserving earlier forms if a later one fails. environment:overview [environment optional-name-vector] lists visible binding titles, short headlines and references, including unknowns. The optional vector selects which bindings also include their full content; it does not recursively expand values. cell:reference [cell] yields an inspectable reference without waiting for its value. inspect:cell [reference] exposes only :edge, :value (strongest value), :inputs (producing connections), and :outputs (consuming connections). cell:value [reference] connects that edge's strongest value directly to an ordinary cell. cell:input [reference] returns a writable port for the referenced edge. Memory record fields contain references, so write through cell:input, not into a slot read projection. data:snapshot [compound] resolves a finite compound into a plain record; unknown slots remain pending. Use inspect:cell for edge/value/input/output inspection.")
+(define model:request
+  (network [request] (io-model:input ((slot :worker) m) request)))
+(define message-to-user
+  (network [message]
+    (let [receipt (data:snapshot (message:deliver message (cell:reference delivered-events)))]
+      (if (data:equal? (data:get :status receipt) :delivered)
+          (data:merge message (data:record :acknowledged true))
+          no-user-yet))))
+(define observe-cell)
+(define construction-review-cell
+  "A previous generated setup compiled but did not connect requests or history. Diagnostic review: each call to behavior:source creates a DISTINCT source, so writing to another unnamed instance does not feed a previously created scan. Event identity and time must vary with actual events; constants user/1 and assistant/2 cannot identify three turns. A bare acknowledged record must be converted to a temporal occurrence before feeding a temporal source. A callable inside behavior:map or scan is evaluated as a pure transformation; model:request and message-to-user must run in the live network, never inside a temporal transformation callback. seq:project with key :role returns strings and therefore is unsuitable as the request messages vector. No generated definitions from previous attempts exist in this fresh child.")
+(define reducer-verification-cell
+  "Verified through compiled Lain, not a simulated conversation: a numeric source with occurrences 1@1 and 2@2, scanned with seq:append and an empty vector seed, emits prefix values [1] and [1,2]. Filtering those prefix values by whether their last number is greater than 1 keeps [1,2]. A later 0@3 is rejected by that predicate, leaving the filtered latest value [1,2]. The unfiltered scan advances to [1,2,0]. Exact replay produces no new values, and another source remains independent. Each call to behavior:source creates a new independent instance. A scan compiled into the lexical admission target also reduced an occurrence 5@1 with + and seed 0 to 5.")
+(define experiment-diagnostic-cell)
+(source:initialize experiment-diagnostic-cell :not-started)
+;; The parent history is generated source, distinct from conversation messages.
+(define written-code-events (behavior:source))
+(define written-code-prefixes (behavior:scan written-code-events seq:append (seq:empty)))
+(define code-history-cell (behavior:latest-value written-code-prefixes (seq:empty)))
+(-> (event:point (data:get :response-sequence model-result)
+                 (data:get :response-sequence model-result)
+                 (data:record :sequence (data:get :response-sequence model-result)
+                              :request-id (data:get :request-id model-result)
+                              :source (model:action m)
+                              :kind (data:get :kind model-result)))
+    written-code-events)
+(define orientation-value-cell)
+(define orientation-edge-cell)
+(define feedback-value-cell)
+(define feedback-edge-cell)
+(define memory-cell
+  (data:record :orientation-value (cell:reference orientation-value-cell)
+          :orientation-edge (cell:reference orientation-edge-cell)
+          :feedback-value (cell:reference feedback-value-cell)
+          :feedback-edge (cell:reference feedback-edge-cell)
+          :user (cell:reference user-ingress)
+               :model-output (cell:reference (model:output m))
+               :deliveries (cell:reference delivered-events)
+               :code-history (cell:reference code-history-cell)
+               :diagnostics (cell:reference observe-cell)))
+(define orientation-result-cell
+  (data:record :value orientation-value-cell
+               :edge orientation-edge-cell))
 (define construct-concept-of
-  (network [idea content]
-           (network [env]
-                    (extend-env env (env:slot idea content)))))
-
-;; Observe the parent; generated forms extend only its lexical child.
-(define runtime
-  (network [environment model]
-           (let [e (lexical-child environment)]
-             (-> (describe-environment environment) (inputs-of model))
-             (incremental-compile (actions-of model) e)
-             (list e model))))
-
-;; These are Lain environment contributions; the native adapter must not embed
-;; a fixed guide/request/capability schema. Paths are a guide index, not a claim
-;; that document contents have been loaded. Reading documents is a later supplied
-;; capability. Keep source identity/revision visible when contributing contents.
-(define language-guide-index
-  "Guides: docs/how-to-think-in-lain.md and docs/how-to-think-in-lain-examples.md. Use network, let, define, struct, slot and ->. Reply by calling message-to-user; raw source is never a user reply.")
-(define harness-context
-  "Source: soul-refined.lain. Describe this parent; compile generated forms into its lexical child. Reuse admitted definitions. Contribute selected results to independent named slots of model-feedback.")
+  (network [name reference]
+    (network [environment] (extend-env environment (env:reference-slot name reference)))))
+(define default-environment-base
+  (|> (empty-env)
+      (construct-concept-of "context-cell" (cell:reference context-cell))
+      (construct-concept-of "guide-core-cell" (cell:reference guide-core-cell))
+      (construct-concept-of "guide-principles-cell" (cell:reference guide-principles-cell))
+      (construct-concept-of "orientation-example-cell" (cell:reference orientation-example-cell))
+      (construct-concept-of "construction-examples-cell" (cell:reference construction-examples-cell))
+      (construct-concept-of "orientation-result-cell" (cell:reference orientation-result-cell))
+      (construct-concept-of "context-selection-cell" (cell:reference context-selection-cell))
+      (construct-concept-of "dynamic-expressions-cell" (cell:reference dynamic-expressions-cell))
+      (construct-concept-of "guide-examples-cell" (cell:reference guide-examples-cell))
+      (construct-concept-of "operator-examples-cell" (cell:reference operator-examples-cell))
+      (construct-concept-of "construction-review-cell" (cell:reference construction-review-cell))
+      (construct-concept-of "reducer-verification-cell" (cell:reference reducer-verification-cell))
+      (construct-concept-of "language-introduction-cell" (cell:reference language-introduction-cell))
+      (construct-concept-of "observe-cell" (cell:reference observe-cell))
+      (construct-concept-of "experiment-diagnostic-cell" (cell:reference experiment-diagnostic-cell))
+      (construct-concept-of "memory-cell" (cell:reference memory-cell))
+      (construct-concept-of "history" (cell:reference code-history-cell))
+      (construct-concept-of "cell:value" (cell:reference cell:value))
+      (construct-concept-of "cell:input" (cell:reference cell:input))
+      (construct-concept-of "cell:reference" (cell:reference cell:reference))
+      (construct-concept-of "data:snapshot" (cell:reference data:snapshot))
+      (construct-concept-of "user-ingress" (cell:reference user-ingress))
+      (construct-concept-of "model:request" (cell:reference model:request))
+      (construct-concept-of "message-to-user" (cell:reference message-to-user))
+      (construct-concept-of "behavior:source" (cell:reference behavior:source))
+      (construct-concept-of "behavior:scan" (cell:reference behavior:scan))
+      (construct-concept-of "behavior:map" (cell:reference behavior:map))
+      (construct-concept-of "behavior:event-filter" (cell:reference behavior:event-filter))
+      (construct-concept-of "behavior:latest-value" (cell:reference behavior:latest-value))
+      (construct-concept-of "event:point" (cell:reference event:point))
+      (construct-concept-of "text:format" (cell:reference text:format))
+      (construct-concept-of "data:record" (cell:reference data:record))
+      (construct-concept-of "data:get" (cell:reference data:get))
+      (construct-concept-of "data:equal?" (cell:reference data:equal?))
+      (construct-concept-of "seq:empty" (cell:reference seq:empty))
+      (construct-concept-of "seq:append" (cell:reference seq:append))
+      (construct-concept-of "seq:concat" (cell:reference seq:concat))
+      (construct-concept-of "seq:last" (cell:reference seq:last))
+      (construct-concept-of "seq:project" (cell:reference seq:project))
+      (construct-concept-of "source:admit" (cell:reference source:admit))
+      (construct-concept-of "environment:overview" (cell:reference environment:overview))
+      (construct-concept-of "inspect:cell" (cell:reference inspect:cell))))
 (define default-environment
-  (network [compile-source publish-message guides context]
-           (|> (empty-env)
-               (construct-concept-of "incremental-compile" compile-source)
-               (construct-concept-of "message-to-user" publish-message)
-               (construct-concept-of "language-guide-index" guides)
-               (construct-concept-of "harness-context" context)
-               (construct-concept-of "model-feedback" (struct)))))
-(define contribute-user-input
-  (network [input]
-           (construct-concept-of "user-input" input)))
-(define weather-environment
-  (network [base-env forecast advice]
-           (|> base-env
-               lexical-child
-               (construct-concept-of "weather-at" forecast)
-               (construct-concept-of "umbrella-advice" advice))))
+  (extend-env default-environment-base (env:slot "environment-cell" default-environment-base)))
+(define generated-environment (lexical-child default-environment))
+;; Bootstrap request contains exactly the environment description.
+(model:request (data:record :id "setup" :text (cell:first (environment:overview default-environment context-selection-cell))))
+(-> (source:admit (model:output m) generated-environment
+                  (cell:reference (model:output m))) observe-cell)
 
-;; Assembly stays in Lain. Defining this network does not invoke it.
-(define experiment
-  (network [model input forecast advice publish-message]
-           (let [base (default-environment incremental-compile publish-message
-                                           language-guide-index harness-context)
-                 capable (weather-environment base forecast advice)
-                 requested ((contribute-user-input input) capable)]
-             (runtime requested model))))
-
-;; Request data only: generating the reusable umbrella composition is the task.
-;; Resolve tomorrow from explicit request time and timezone, never host now.
-(define weather-request-example
-  (struct :text "Will I need an umbrella tomorrow in Amsterdam?"
-          :requested-at "2026-11-03T12:00:00+01:00"
-          :timezone "Europe/Amsterdam"
-          :recipient "review-user"))
-
-;; Inspectable implementation contracts; verification is recorded separately.
-;; Optional effect endpoints remain pending until explicitly supplied.
-(define implementation-obligations
-  (list
-   (struct :name "lexical-environment" :endpoint lexical-child
-           :requires "Native environments, inheritance, contributions and live discovery")
-   (struct :name "connected-description" :endpoint describe-environment
-           :requires "Relevant bindings, additions, results, diagnostics and support remain connected")
-   (struct :name "scoped-compilation" :endpoint incremental-compile
-           :requires "Atomic source admission into supplied child; identity, diagnostics and provenance")
-   (struct :name "model-interface" :endpoint inputs-of
-           :requires "Independent model session; connected inputs/actions; explicit async inference policy")
-   (struct :name "user-interface" :endpoint user-input
-           :requires "Independent user input dependency and publication lifecycle")
-   (struct :name "capability-effects" :endpoint weather-at
-           :requires "Independent forecast and message effects; supported observations and receipts")
-   (struct :name "native-extension-import"
-           :requires "Supply missing bindings through open-session extensions using prim-op and async-op; module supplied by open-session preparation")))
-(define acceptance-scenarios
-  (list
-   "Live updates: publish input, add relevant binding, retract support; existing model input follows without refresh; unrelated unknown does not block"
-   "Lexical child: shadow a parent binding, compile generated source into e, verify child capture and no parent/sibling pollution"
-   "Generated reuse: model generates umbrella composition; second place uses same definition with fresh forecast inputs"
-   "Diagnostic feedback: invalid generated source leaves no partial admission; diagnostics reach existing model input through parent feedback"
-   "Visible provenance: inspect source identity, extension origin, captured bindings, observation support and effect receipts"
-   "Independent extensions: model session and user input can be supplied separately in either order; user updates do not recreate model or compiler session"
-   "Effect boundary: pending inputs cause no inference; revisions and obsolete replies obey explicit async policy; replay does not duplicate effects"))
-(define experiment-interfaces
-  (struct :runtime runtime :assemble experiment
-          :empty-environment empty-env :lexical-child lexical-child
-          :extend-environment extend-env :binding-contribution env:slot
-          :description describe-environment :compile incremental-compile
-          :model-inputs inputs-of :model-actions actions-of
-          :model-session model-session :user-input user-input
-          :message-to-user message-to-user :weather-at weather-at
-          :umbrella-advice umbrella-advice))
-(define specification
-  (struct :entry-point "soul-refined.lain"
-          :status "unfinished connected Lain migration; canonical conversation acceptance failing"
-          :interfaces experiment-interfaces
-          :obligations implementation-obligations
-          :acceptance acceptance-scenarios
-          :guides language-guide-index :context harness-context
-          :request-example weather-request-example))
-specification
-
-;; Trusted preparation supplies independent IO capabilities before invoking this.
-(define conversation-experiment
-  (network [model input publish-message]
-           (let [parent ((contribute-user-input input)
-                         (default-environment incremental-compile publish-message language-guide-index harness-context))]
-             (runtime parent model))))
+(define construction-request
+  (cell:first
+    (switch (data:record :id "construction"
+                         :text (environment:overview default-environment context-selection-cell))
+            construction-trigger)))
+(model:request construction-request)

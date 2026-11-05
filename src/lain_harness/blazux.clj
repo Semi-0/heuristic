@@ -17,13 +17,16 @@
     (finally (.cancel pending true))))
 
 (defn completion-transport
-  [{:keys [endpoint model timeout-ms max-tokens api-key]
+  [{:keys [endpoint model timeout-ms max-tokens api-key enable-thinking reasoning-effort thinking-token-budget]
     :or {endpoint "http://127.0.0.1:18320/v1" model "qwen3.8-flash-next"
          timeout-ms 30000 max-tokens 512}}]
   (when-not (and (string? endpoint) (string? model)
-                 (pos-int? timeout-ms) (pos-int? max-tokens))
+                 (pos-int? timeout-ms) (pos-int? max-tokens)
+                 (or (nil? enable-thinking) (boolean? enable-thinking))
+                 (or (nil? reasoning-effort) (#{"medium" "low" "xhigh"} reasoning-effort))
+                 (or (nil? thinking-token-budget) (pos-int? thinking-token-budget)))
     (throw (ex-info "Invalid model transport configuration" {})))
-  (fn [{:keys [text cancelled?]}]
+  (fn [{:keys [text messages cancelled?]}]
     (when (cancelled?) (throw (InterruptedException. "Request cancelled")))
     (let [client (-> (HttpClient/newBuilder)
                      (.version HttpClient$Version/HTTP_1_1)
@@ -33,9 +36,15 @@
                       (.timeout (Duration/ofMillis timeout-ms))
                       (.header "Content-Type" "application/json")
                       (.POST (HttpRequest$BodyPublishers/ofString
-                              (json/write-json {:model model :stream false :temperature 0
-                                                :max_tokens max-tokens
-                                                :messages [{:role "user" :content text}]}))))
+                              (json/write-json (cond-> {:model model :stream false :temperature 0
+                                                        :max_tokens max-tokens
+                                                        :messages (or messages [{:role "user" :content text}])}
+                                                 (some? enable-thinking)
+                                                 (assoc-in [:chat_template_kwargs :enable_thinking] enable-thinking)
+                                                 (some? reasoning-effort)
+                                                 (assoc-in [:chat_template_kwargs :reasoning_effort] reasoning-effort)
+                                                 (some? thinking-token-budget)
+                                                 (assoc :thinking_token_budget thinking-token-budget))))))
           _ (when (seq api-key) (.header builder "Authorization" (str "Bearer " api-key)))
           response (await-response!
                     (.sendAsync client (.build builder) (HttpResponse$BodyHandlers/ofString))

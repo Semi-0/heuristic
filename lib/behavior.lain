@@ -1,5 +1,7 @@
-;; Temporal behavior experiment: opt in with the behavior session evaluator and
-;; (load-lain "lib/behavior.lain"). It does not install model orchestration.
+(load-lain "lib/behavior-core.lain")
+
+;; Temporal behavior experiment: opt in with (load-lain "lib/behavior.lain").
+;; Its native import declares the evaluator for this immutable session.
 ;;
 ;; (define input-cell)
 ;; (define sums (scan input-cell +))

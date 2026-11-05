@@ -33,7 +33,8 @@
      {:id :model-io
       :files (assoc (merge (:files runtime) (:files project)) "model-refined.lain" model-source)
       :primitives (merge (:primitives runtime) (:primitives project))
-      :imports (merge (:imports runtime) (:imports project))})))
+      :imports (merge (:imports runtime) (:imports project))
+      :evaluation (:evaluation project)})))
 
 (defn compiler []
   (session/create-session {:id (random-uuid) :run-id (random-uuid)

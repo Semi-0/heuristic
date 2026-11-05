@@ -1,0 +1,2 @@
+;; Namespaced operators for compositions that already export history.
+(load-primitive-environment "src/lain_harness/behavior.clj" :lain-harness.behavior/primitive-bindings 1)

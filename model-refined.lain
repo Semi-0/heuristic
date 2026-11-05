@@ -8,27 +8,12 @@
       (-> (io-model:worker) worker)
       (io-model:input worker input)
       (io-model:output worker output)
-      (struct :input input
+      (struct :worker worker :input input
               :output output
               :thinking (prim-slot :thinking output)
               :actions (prim-slot :text output)))))
-
-(define m (model))
 
 (define model:input (slot :input))
 (define model:output (slot :output))
 (define model:thinking (slot :thinking))
 (define model:action (slot :actions))
-
-;; Submit in the session extender when ready:
-;; (-> "can you access internet?" (model:input m))
-
-(define model-struct-view
-  (struct :input (model:input m)
-          :thinking (model:thinking m)
-          :action (model:action m)))
-
-(define model-struct-trace
-  ((tracer:semantic modifier:with-values) model-struct-view))
-
-(display model-struct-trace)
