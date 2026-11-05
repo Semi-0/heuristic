@@ -51,7 +51,7 @@
 (defn overview [network [e selected]]
   (let [selected (set selected)]
     (mapv (fn [{:keys [name cell value available state]}]
-            (cond-> {:title name :reference cell :state state
+            (cond-> {:title name :reference cell :state (if (and (not available) (not= state :contradictory)) :unknown state)
                      :headline (cond (= state :contradictory) "contradictory"
                                      (not available) "unknown"
                                      :else (headline value))}
@@ -64,6 +64,27 @@
 (defn overview-operator []
   (cd/observation-operator
    'environment:overview overview pr-str
+   (fn [current _ [e]] (map :cell (visible-facts current e))) true))
+
+(defn describe [network [e selected]]
+  (let [entries (overview network [e selected])
+        by-name (into {} (map (juxt :title identity)) entries)
+        selected (distinct selected)
+        section (fn [{:keys [title state headline content]}]
+                  (str "## " title "\n"
+                       (if (= state :known)
+                         (if (string? content) content (pr-str content))
+                         (str "State: " (name state) ". " headline))))]
+    (str "# Live environment\n\n"
+         (str/join "\n\n" (map section (keep by-name selected)))
+         "\n\n## Binding directory\n"
+         (str/join "\n" (map (fn [{:keys [title state headline reference]}]
+                               (str "- " title " [" (name state) "]: " headline
+                                    " | reference " (pr-str reference))) entries)))))
+
+(defn describe-operator []
+  (cd/observation-operator
+   'environment:describe describe identity
    (fn [current _ [e]] (map :cell (visible-facts current e))) true))
 
 (defn occurrence-operator []
@@ -188,6 +209,7 @@
              ['inspect:cell (inspect-operator)]
              ['cell:first (first-operator)]
              ['environment:overview (overview-operator)]
+             ['environment:describe (describe-operator)]
              ['behavior:latest-value (latest-operator)]
              ['source:admit
               (ops/async-op admitter
