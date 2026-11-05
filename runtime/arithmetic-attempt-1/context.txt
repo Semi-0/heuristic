@@ -1,0 +1,61 @@
+# Live environment
+
+## role-cell
+You are an agent writing executable Lain source. The source is compiled into a live lexical child of this environment. Return only Lain forms. Your task is in context-cell. Arithmetic expressions connect their operands to a result cell; define gives that cell a name.
+
+## context-cell
+Use Lain arithmetic operators to calculate (17 + 25) multiplied by 3. Define a cell named arithmetic-result containing the computed result. Express the calculation using + and *, rather than writing a precomputed numeric literal. Return only executable Lain source. This task requires only arithmetic; do not request another model evaluation or deliver a user message.
+
+## arithmetic-example-cell
+Lain uses prefix arithmetic. (define example-result (* (+ 2 3) 4)) connects addition to multiplication and binds the resulting cell. Its strongest value is 20. + adds numbers; * multiplies numbers. Nested calls compose the computations. This is documentation, not an installed example network.
+
+## Binding directory
+- environment-cell [known]: lexical environment propagators.ids.NodeId@cd38b981 | reference #propagators.ids.NodeId{:uuid #uuid "8c79e2f6-c255-306c-bd7b-b373a8e79183"}
+- inspect:cell [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a290dc25-dbce-33c9-8b02-386113df0be1"}
+- environment:overview [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f6447fc1-043e-3703-86bb-53fcd51311de"}
+- source:admit [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7d4bb5a9-3bbd-38c0-be55-50657d4ca26b"}
+- seq:project [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "489d5148-9d16-3851-83a4-dac6b9c3572e"}
+- seq:last [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "52a7fa53-ca37-3645-9714-dd6e60ae4e3b"}
+- seq:concat [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f401e978-dd87-3b7e-b86a-a51b608039b4"}
+- seq:append [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "3629a480-3e46-355c-a089-5cbff246973a"}
+- seq:empty [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "de767f48-f66d-34e1-95e9-148486ade195"}
+- data:equal? [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a9523676-aafe-3f7c-9849-b5728162c859"}
+- data:get [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "fad5b0dd-29d2-36a3-bb97-6ae0f24d0417"}
+- data:record [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d9af271a-1c9f-380b-b048-316880bc952c"}
+- text:format [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "53c7bab5-b607-318a-9102-f0f4e161096e"}
+- event:point [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "befecaa3-c31d-36c6-9b70-91a8e3dcdf39"}
+- behavior:latest-value [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "052ea26a-b20d-3fc5-9990-41a4f5eeeba0"}
+- behavior:event-filter [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a98b5d3c-2caa-3f66-a74c-6a3504c005ab"}
+- behavior:map [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "3d5cece5-1125-31d2-8e3c-be6f46c3e433"}
+- behavior:scan [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9f79275d-0f28-3ce5-b7db-7222a006f235"}
+- behavior:source [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "4dfc432a-698d-3ab2-b613-4ada5a3d4f7c"}
+- message-to-user [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "70ca7611-9076-3c23-b155-a9872c8d117b"}
+- model:request [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "939439bf-e00f-3e06-977c-53840e24b61c"}
+- user-ingress [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "fb8d16a3-39e3-3a26-9db8-a75c8feb05fc"}
+- data:snapshot [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ec25db7d-f7a1-3f6c-95aa-a591226ceec6"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- cell:input [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "e59010c5-1d4c-3330-b531-44153cca6234"}
+- cell:value [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "0cba5a31-c624-33eb-9c0f-7a27b60d7966"}
+- history [known]: vector with 0 elements | reference #propagators.ids.NodeId{:uuid #uuid "462c6353-96ef-3eb3-b3ab-5410247608f4"}
+- memory-cell [known]: record with keys [:code-history :deliveries :diagnostics :feedback-edge :feedback-value :model-output :orientation-edge :orientation-value :user] | reference #propagators.ids.NodeId{:uuid #uuid "34722617-6b0c-32c7-9c4b-a4eb28a76258"}
+- experiment-diagnostic-cell [known]: :not-started | reference #propagators.ids.NodeId{:uuid #uuid "ba0eb897-e68b-3f41-980a-f6c45ed83995"}
+- observe-cell [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ac442585-036c-3df2-8217-584e861d4f0c"}
+- language-introduction-cell [known]: Lain is a connected dataflow language, not Clojure. Return raw parenthesized forms only; triple-backtick fences are invalid source. A callable is invoked as (f  | reference #propagators.ids.NodeId{:uuid #uuid "939f0a3f-8d4a-32cd-ab0f-c7ed8800948c"}
+- reducer-verification-cell [known]: Verified through compiled Lain, not a simulated conversation: a numeric source with occurrences 1@1 and 2@2, scanned with seq:append and an empty vector seed, e | reference #propagators.ids.NodeId{:uuid #uuid "2b18cd6a-7a6e-3274-adba-5db927c51d2b"}
+- construction-review-cell [known]: A previous generated setup compiled but did not connect requests or history. Diagnostic review: each call to behavior:source creates a DISTINCT source, so writi | reference #propagators.ids.NodeId{:uuid #uuid "f1545c04-c5d3-3963-af30-4f8e3bdeb19f"}
+- operator-examples-cell [known]: Concrete executable examples and expected results for the advertised operators. Each example is independent and uses doc:* names. Core libraries and experiment  | reference #propagators.ids.NodeId{:uuid #uuid "c3ba0b52-ba56-32dc-a545-ad742207b5aa"}
+- guide-examples-cell [known]: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc | reference #propagators.ids.NodeId{:uuid #uuid "e232ef20-5930-3c0f-a172-d14fd31ad0e9"}
+- dynamic-expressions-cell [known]: Every expression builds connected propagators. A function call whose operands are cells is reactive: it recomputes when their strongest values change. event:poi | reference #propagators.ids.NodeId{:uuid #uuid "15834226-70b3-3d71-8d95-0e84c0a65f12"}
+- context-selection-cell [known]: vector with 3 elements | reference #propagators.ids.NodeId{:uuid #uuid "6ffc09a7-7690-38a3-92bc-ea13111859d0"}
+- orientation-result-cell [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "d3ec7fb2-b6d4-37c1-b4ae-82654c45e12f"}
+- construction-examples-cell [known]: Operators: data:record
+Purpose: Construct a plain immutable record from key/value pairs.
+Lain source:
+(define doc:record (data:record :score 7 :label "north"))
+ | reference #propagators.ids.NodeId{:uuid #uuid "b75107ca-ad9b-3b55-9499-655f0a1635ac"}
+- orientation-example-cell [known]: This is code to read, not a running example. Numeric occurrences become a behavior, a scan emits numeric prefixes, and latest-value projects an ordinary number. | reference #propagators.ids.NodeId{:uuid #uuid "5de0e974-a361-35db-807f-0433ae2ba711"}
+- guide-principles-cell [known]: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc | reference #propagators.ids.NodeId{:uuid #uuid "67264fed-3ce9-3850-8e1f-8cf4a78f2baa"}
+- guide-core-cell [known]: These are language documentation excerpts, not source to admit verbatim. The early guide's schematic helpers are not additional capabilities. For temporal reduc | reference #propagators.ids.NodeId{:uuid #uuid "c8af958a-e232-3609-a4a3-da895386ce9c"}
+- context-cell [known]: Use Lain arithmetic operators to calculate (17 + 25) multiplied by 3. Define a cell named arithmetic-result containing the computed result. Express the calculat | reference #propagators.ids.NodeId{:uuid #uuid "949dd17b-c2fa-35d3-9cba-303ce8ab37f2"}
+- role-cell [known]: You are an agent writing executable Lain source. The source is compiled into a live lexical child of this environment. Return only Lain forms. Your task is in c | reference #propagators.ids.NodeId{:uuid #uuid "48b7d9b7-3197-3c51-9732-cbac69248369"}
+- arithmetic-example-cell [known]: Lain uses prefix arithmetic. (define example-result (* (+ 2 3) 4)) connects addition to multiplication and binds the resulting cell. Its strongest value is 20.  | reference #propagators.ids.NodeId{:uuid #uuid "acf22ec0-fa66-321f-bcc6-c64a071192c1"}

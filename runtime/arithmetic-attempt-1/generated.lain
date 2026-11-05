@@ -1,0 +1,3 @@
+
+
+(define arithmetic-result (* (+ 17 25) 3))
