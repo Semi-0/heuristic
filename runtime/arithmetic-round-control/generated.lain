@@ -1,0 +1,1 @@
+(-> 7 ((slot :result) observed)) (-> "7" user-output)

@@ -1,0 +1,4 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:status :passed, :controlled? false, :ask "How much is (- 20 (* 100 30))?", :result -2980, :reply "The answer is -2980.", :history [{:role "user", :content "How much is (- 20 (* 100 30))?"} {:role "assistant", :content "The answer is -2980."}]}
+{:cleanup {:status :closed}}

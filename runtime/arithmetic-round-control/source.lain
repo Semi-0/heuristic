@@ -1,0 +1,59 @@
+(load-lain "model-refined.lain")
+(load-lain "lib/behavior-core.lain")
+
+(define m (model))
+(define ask)
+(define user-output)
+(define result-cell)
+(define observed (struct :result result-cell))
+(define evaluate-trigger)
+
+;; Parent-maintained conversation history, outside the generated child.
+(define conversation-events (behavior:source))
+(-> (event:point "user-1" 1 (data:record :role "user" :content ask)) conversation-events)
+(-> (event:point "assistant-1" 2 (data:record :role "assistant" :content user-output)) conversation-events)
+(define conversation-prefixes (behavior:scan conversation-events seq:append (seq:empty)))
+(define conversation-history (behavior:latest-value conversation-prefixes (seq:empty)))
+
+(define role-cell
+  "You are the agent inside a live Lain environment. Read the user's question from ask. Write executable Lain source that constructs the computation and connects its answer to the provided output cells. Source is admitted into a lexical child inheriting these bindings. Return only Lain source, without Markdown fences.")
+(define context-cell
+  "Answer the current ask using actual Lain arithmetic operators. Bind the computed number to a result cell, connect that number to the :result slot of observed, and connect a text reply derived from the computed number to user-output. The parent maintains history with a temporal reducer: actual ask values are user messages, and values written to user-output are assistant replies. You do not need to build history, request another model, or simulate a conversation. The observed slot records the computation result separately from the text reply. Use the provided references and examples. Do not return a precomputed numeric literal in place of the arithmetic expression.")
+(define language-cell
+  "Lain uses prefix arithmetic and connected expressions. (define name expression) binds a cell. + adds, - subtracts, * multiplies, / divides. A nested call composes computations. (-> value target) connects cells. (struct :key cell) exposes a cell as a named slot. ((slot :key) object) accesses that slot, including as a connection target. text:format constructs text from a template and connected values. Unknown cells wait for information. The following examples are documentation only.")
+(define examples-cell
+  "Arithmetic: (define demo-number (- 9 (* 2 3))) produces 3.
+Observation: given (define demo-result) and (define demo-observed (struct :result demo-result)), (-> demo-number ((slot :result) demo-observed)) attaches that number to the result slot.
+Reply: given (define demo-output), (-> (text:format \"The answer is %s.\" demo-number) demo-output) writes text derived from the computed number.
+Reading history: history is a vector of role/content records maintained by the parent reducer. It contains real user inputs and output-cell replies, not model source or thinking.")
+(define context:include (network [name] (network [names] (seq:append names name))))
+(define contribute (network [name reference] (network [environment] (extend-env environment (env:reference-slot name reference)))))
+(define parent-environment
+  (|> (empty-env)
+      (contribute "role-cell" (cell:reference role-cell))
+      (contribute "context-cell" (cell:reference context-cell))
+      (contribute "language-cell" (cell:reference language-cell))
+      (contribute "examples-cell" (cell:reference examples-cell))
+      (contribute "ask" (cell:reference ask))
+      (contribute "observed" (cell:reference observed))
+      (contribute "user-output" (cell:reference user-output))
+      (contribute "history" (cell:reference conversation-history))
+      (contribute "+" (cell:reference +))
+      (contribute "-" (cell:reference -))
+      (contribute "*" (cell:reference *))
+      (contribute "/" (cell:reference /))
+      (contribute "slot" (cell:reference slot))
+      (contribute "text:format" (cell:reference text:format))))
+(define generated-environment (lexical-child parent-environment))
+(define selection (|> (seq:empty)
+                      (context:include "role-cell")
+                      (context:include "context-cell")
+                      (context:include "ask")
+                      (context:include "history")
+                      (context:include "language-cell")
+                      (context:include "examples-cell")
+                      (context:include "observed")
+                      (context:include "user-output")))
+(define request (cell:first (switch (data:record :id "arithmetic-round" :text (environment:describe parent-environment selection)) evaluate-trigger)))
+(io-model:input ((slot :worker) m) request)
+(define admission-result (source:admit (model:output m) generated-environment (cell:reference (model:output m))))
