@@ -1,0 +1,73 @@
+# Live environment
+
+## role-cell
+You are the agent inside a live Lain environment. Read the user's question from ask. Write executable Lain source that constructs the computation and connects its answer to the provided output cells. Source is admitted into a lexical child inheriting these bindings. Return only Lain source, without Markdown fences.
+
+## context-cell
+This is round 3 in ONE persistent lexical child. Answer ask by building actual Lain arithmetic. Define result-3 for this round and attach it to observed-3's :result slot. Write a text reply derived from that value to user-output-3. Previous result cells and their definitions persist; written-code contains your actual earlier source and history contains real messages. When asked to use a previous result, reference its existing cell by name in the new arithmetic expression. Do not substitute its numeric value, repeat its earlier calculation, or redefine earlier cells. Result cells are named result-1, result-2, result-3 in round order. The parent maintains conversation history. Return only new executable forms for the current round. Definitions alone do not write the observation or reply: connect both output ports.
+
+## ask
+Add 150 to that.
+
+## history
+[{:role "user", :content "How much is (- 20 (* 100 30))?"} {:role "assistant", :content "The answer is -2980."} {:role "user", :content "Divide your previous result by 20."} {:role "assistant", :content "The answer is -149."} {:role "user", :content "Add 150 to that."}]
+
+## language-cell
+Lain uses prefix arithmetic and connected expressions. (define name expression) binds a cell. + adds, - subtracts, * multiplies, / divides. A nested call composes computations. (-> value target) connects cells. (struct :key cell) exposes a cell as a named slot. ((slot :key) object) accesses that slot, including as a connection target. text:format constructs text from a template and connected values. Unknown cells wait for information. The following examples are documentation only.
+
+## examples-cell
+Arithmetic: (define demo-number (- 9 (* 2 3))) produces 3.
+Observation: given (define demo-result) and (define demo-observed (struct :result demo-result)), (-> demo-number ((slot :result) demo-observed)) attaches that number to the result slot.
+Reply: given (define demo-output), (-> (text:format "The answer is %s." demo-number) demo-output) writes text derived from the computed number.
+Reading history: history is a vector of role/content records maintained by the parent reducer. It contains real user inputs and output-cell replies, not model source or thinking.
+
+## written-code
+["\n\n(define result-1 (- 20 (* 100 30)))\n(-> result-1 ((slot :result) observed-1))\n(-> (text:format \"The answer is %s.\" result-1) user-output-1)" "\n\n(define result-2 (/ result-1 20))\n(-> result-2 ((slot :result) observed-2))\n(-> (text:format \"The answer is %s.\" result-2) user-output-2)"]
+
+## result-1
+-2980
+
+## result-2
+-149
+
+## observed-1
+:reference-only
+
+## user-output-1
+The answer is -2980.
+
+## observed-2
+:reference-only
+
+## user-output-2
+The answer is -149.
+
+## observed-3
+:reference-only
+
+## user-output-3
+State: unknown. unknown
+
+## Binding directory
+- result-1 [known]: -2980 | reference #propagators.ids.NodeId{:uuid #uuid "f0ff2c0b-c11c-3efc-95e9-f83b0f2defa4"}
+- result-2 [known]: -149 | reference #propagators.ids.NodeId{:uuid #uuid "1f089801-16a7-3d8a-88ed-a95c560d449c"}
+- text:format [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "53c7bab5-b607-318a-9102-f0f4e161096e"}
+- slot [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "4dd2cd77-3bf6-30bd-9f86-486b3d81a234"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "30f0176d-d694-3de9-a48f-ddd4c0bff8ea"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "77ff483f-1a47-3bea-a4a0-3fb487be80e0"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ff6d2da8-72ff-33ca-8097-87bb30dba50f"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "4aba2a2e-0a1b-3fcd-9237-7276dd95ab74"}
+- history [known]: vector with 5 elements | reference #propagators.ids.NodeId{:uuid #uuid "5ce72b16-531b-3867-91b3-e81d3cb962f5"}
+- written-code [known]: vector with 2 elements | reference #propagators.ids.NodeId{:uuid #uuid "f60d67b7-89f6-3929-a583-edf25a76e031"}
+- user-output-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "a24171dd-c496-309c-bf1c-1692fdfac2d1"}
+- observed-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "b8296448-ffef-3463-acd8-637498911ce4"}
+- user-output-2 [known]: The answer is -149. | reference #propagators.ids.NodeId{:uuid #uuid "64ca359a-2648-3780-9737-182493d67171"}
+- observed-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "c02ae761-d8dd-3642-98fb-5f362861a916"}
+- user-output-1 [known]: The answer is -2980. | reference #propagators.ids.NodeId{:uuid #uuid "836e0430-9d28-3436-b74f-e55327d75a41"}
+- observed-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "abec747c-e710-3b33-9cc7-9450c10d6f73"}
+- ask [known]: Add 150 to that. | reference #propagators.ids.NodeId{:uuid #uuid "bb26316a-79f3-3434-b8aa-6683bc791bc0"}
+- examples-cell [known]: Arithmetic: (define demo-number (- 9 (* 2 3))) produces 3.
+Observation: given (define demo-result) and (define demo-observed (struct :result demo-result)), (->  | reference #propagators.ids.NodeId{:uuid #uuid "cfd65008-f49a-379c-b5e4-95a42c2076bb"}
+- language-cell [known]: Lain uses prefix arithmetic and connected expressions. (define name expression) binds a cell. + adds, - subtracts, * multiplies, / divides. A nested call compos | reference #propagators.ids.NodeId{:uuid #uuid "f6bd2935-d049-3750-9324-8cf9a3281243"}
+- context-cell [known]: This is round 3 in ONE persistent lexical child. Answer ask by building actual Lain arithmetic. Define result-3 for this round and attach it to observed-3's :re | reference #propagators.ids.NodeId{:uuid #uuid "eeda39ee-d516-3dda-a4fa-f76e71efb0c3"}
+- role-cell [known]: You are the agent inside a live Lain environment. Read the user's question from ask. Write executable Lain source that constructs the computation and connects i | reference #propagators.ids.NodeId{:uuid #uuid "f47d7185-9ac6-34fa-8115-b7c2db59053c"}

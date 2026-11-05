@@ -6,5 +6,7 @@ The guide and examples are copied from the local Lain source tree at `projects/d
 
 ## Experiment records
 
+- [Arithmetic reuse and premise-supported networks](2026-11-06-arithmetic-reuse-and-premises.md): actual model-generated source, context changes, failures, support checks and reproduction instructions.
+
 - [Our first working Lain model IO experiment — November 4, 2026](2026-11-04-first-model-io-experiment.md): the journey from behaviors and model wiring to a live reply and semantic trace, including failed approaches, corrected diagnoses, and remaining bugs.
 - [Model IO experiment](model-io.md): implementation, verification commands, and hosted editor details.

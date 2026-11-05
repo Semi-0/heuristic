@@ -1,0 +1,71 @@
+Actual real-model TTMS inventory results
+
+:initial
+  usable = 216N
+    support: #{damage-percent items-per-box boxes definition-stock question-stock}
+  margin = 16N
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  can-fill = true
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  user-output = "Usable items: 216. Margin: 16. Damage status: unverified estimate."
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+
+:corrected
+  usable = 180N
+    support: #{damage-percent items-per-box boxes definition-stock question-stock}
+  margin = -20N
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  can-fill = false
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  user-output = "Usable items: 180. Margin: -20. Damage status: confirmed inspection."
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+
+:unrelated-change
+  usable = 180N
+    support: #{damage-percent items-per-box boxes definition-stock question-stock}
+  margin = -20N
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  can-fill = false
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  user-output = "Usable items: 180. Margin: -20. Damage status: confirmed inspection."
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+
+:damage-withdrawn
+  usable = :unknown
+    support: #{}
+  margin = :unknown
+    support: #{}
+  can-fill = :unknown
+    support: #{}
+  user-output = :unknown
+    support: #{}
+
+:recovered
+  usable = 180N
+    support: #{damage-percent items-per-box boxes definition-stock question-stock}
+  margin = -20N
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  can-fill = false
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  user-output = "Usable items: 180. Margin: -20. Damage status: confirmed inspection."
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+
+:order-question-withdrawn
+  usable = 180N
+    support: #{damage-percent items-per-box boxes definition-stock question-stock}
+  margin = :unknown
+    support: #{}
+  can-fill = :unknown
+    support: #{}
+  user-output = :unknown
+    support: #{}
+
+:order-question-restored
+  usable = 180N
+    support: #{damage-percent items-per-box boxes definition-stock question-stock}
+  margin = -20N
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  can-fill = false
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}
+  user-output = "Usable items: 180. Margin: -20. Damage status: confirmed inspection."
+    support: #{damage-percent items-per-box boxes definition-stock question-order question-stock definition-order order-quantity}

@@ -1,0 +1,60 @@
+# Live environment
+
+## role-cell
+You are an agent constructing executable Lain computations inside one persistent lexical child. Read the question and input cells. Return only executable Lain source. The input values carry TTMS premises: preserve them through the supplied supported arithmetic and premise closures. Examples are documentation, not preinstalled code.
+
+## context-cell
+Build a reusable inventory calculation. Define usable as the number of usable items, margin as usable minus order-quantity, and can-fill as whether margin is at least zero. Use the provided input cells rather than hardcoded input values. The stock computation must depend on question-stock and definition-stock through nested ttms-premise-closure wrappers. The order computation must depend on question-order and definition-order through nested wrappers, and reuse usable. Calling the wrapped procedures creates the result cells. Write a text reply derived from usable and margin to user-output with str. The current damage percentage is an UNVERIFIED estimate: qualify your reply using the changing damage-status cell, rather than hardcoding a certainty label. Premise activity establishes dependency, not factual certainty. Never invent a confidence percentage. Do not use delivery-note in these calculations. The host will revise or withdraw input premises after your code runs; the existing network should then update without another model request.
+
+## question-stock
+How many usable items are in 20 boxes of 12, with an estimated 10 percent damaged?
+
+## question-order
+Can we fulfill an order for 200 using that usable stock?
+
+## boxes
+20
+
+## items-per-box
+12
+
+## damage-percent
+10
+
+## damage-status
+unverified estimate
+
+## order-quantity
+200
+
+## metadata-cell
+boxes and items-per-box are supplied inventory facts. damage-percent starts at an unverified estimate of 10 percent. order-quantity is the requested count. question-stock and question-order identify the questions that triggered the respective computations. definition-stock and definition-order identify the agent's generated formulas; they are not external validation of those formulas. delivery-note is unrelated. A later inspection may supersede the estimate. Qualitative certainty must be based on source metadata, not the size of a support set.
+
+## language-cell
++ - * / >= and str are the existing support-aware TTMS operators in this environment. A closure attaches the premise of its second argument to the callable, and normal invocation carries that support into its result. Example: (define demo-f (ttms-premise-closure (network [x] (+ x 2)) demo-question)) then (define demo-answer (demo-f demo-input)). To attach both a question and a definition premise, wrap the callable twice before invoking it. (-> value target) connects cells. str joins strings and numbers. inspect:premises accepts a cell:reference and exposes its current value, supporting premises and premise states. Withdrawn inputs must yield unknown dependent values, not invented defaults. Ordinary definitions persist; support governs result availability.
+
+## Binding directory
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- user-output [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "d243da06-0b1d-33b7-8ce8-0a55046b6e7f"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "5dd07ea6-7bfe-3f9b-8b74-cd97ef8e4797"}
+- definition-order [known]: agent-generated order formula | reference #propagators.ids.NodeId{:uuid #uuid "e5b8b753-6f45-3e89-8736-e9a0376a129c"}
+- definition-stock [known]: agent-generated stock formula | reference #propagators.ids.NodeId{:uuid #uuid "083251ee-759d-35f5-b035-d41457f5d2da"}
+- question-order [known]: Can we fulfill an order for 200 using that usable stock? | reference #propagators.ids.NodeId{:uuid #uuid "824f3185-b36b-359e-8d16-222228d039db"}
+- question-stock [known]: How many usable items are in 20 boxes of 12, with an estimated 10 percent damaged? | reference #propagators.ids.NodeId{:uuid #uuid "ece8b0bf-e78b-30f1-b1a4-1ec83f31eb95"}
+- order-quantity [known]: 200 | reference #propagators.ids.NodeId{:uuid #uuid "8bf2ebae-2112-3a43-885c-428ab3031226"}
+- damage-percent [known]: 10 | reference #propagators.ids.NodeId{:uuid #uuid "b27b5ac3-dade-3197-8352-c54445184302"}
+- damage-status [known]: unverified estimate | reference #propagators.ids.NodeId{:uuid #uuid "62ca020f-7946-36ba-803e-b4327cfba73b"}
+- items-per-box [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "31409cd3-43bc-33a7-8505-9bf549ee7a20"}
+- boxes [known]: 20 | reference #propagators.ids.NodeId{:uuid #uuid "b5cad0c6-a131-3060-abeb-6747a5cfe459"}
+- metadata-cell [known]: boxes and items-per-box are supplied inventory facts. damage-percent starts at an unverified estimate of 10 percent. order-quantity is the requested count. ques | reference #propagators.ids.NodeId{:uuid #uuid "6c5f1b66-d5fe-3421-b5d5-028845acb8f6"}
+- language-cell [known]: + - * / >= and str are the existing support-aware TTMS operators in this environment. A closure attaches the premise of its second argument to the callable, and | reference #propagators.ids.NodeId{:uuid #uuid "309e94ce-3331-3317-b0e9-5a6932339d21"}
+- context-cell [known]: Build a reusable inventory calculation. Define usable as the number of usable items, margin as usable minus order-quantity, and can-fill as whether margin is at | reference #propagators.ids.NodeId{:uuid #uuid "99902338-f6ec-3946-835d-4612ca9f5e27"}
+- role-cell [known]: You are an agent constructing executable Lain computations inside one persistent lexical child. Read the question and input cells. Return only executable Lain s | reference #propagators.ids.NodeId{:uuid #uuid "4e353ed5-bb68-3ad4-bbdf-e3d0ac53423e"}

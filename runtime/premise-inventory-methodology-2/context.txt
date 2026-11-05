@@ -1,0 +1,76 @@
+# Live environment
+
+## role-cell
+You are an agent constructing executable Lain computations inside one persistent lexical child. Read the question and input cells. Return raw parenthesized Lain forms only. Your first non-whitespace character must be (. Markdown fences such as triple backticks are invalid syntax and cause the entire response to be rejected. The input values carry TTMS premises: preserve them through the supplied supported arithmetic and premise closures. Examples are documentation, not preinstalled code.
+
+## methodology-cell
+1. Identify the problem. Separate known conditions from unknowns. Identify the requested outputs, available inputs, assumptions and missing information. Treat an estimate as an assumption rather than an established fact.
+
+2. Abstract its structure. Identify quantities, units, relations and dependencies. Distinguish mathematical inputs from the question that motivated a computation and the rule used to derive its result. Determine what each conclusion needs to remain justified.
+
+3. Reduce to simpler problems. Express unknowns through known relations and smaller computations. Reuse existing cells and results where appropriate. Preserve the required premises for each derived quantity. Prefer a small network whose parts have clear purposes.
+
+4. Solve and reconstruct. Derive the solution, connect the parts, and verify it against the original problem. Check numerical meaning, units, the requested output interfaces, and whether dependencies match the assumptions used. Consider what should happen if an input is corrected or withdrawn, or if unrelated information changes. Qualify conclusions that depend on assumptions; do not invent certainty.
+
+Apply this methodology to any task. The task-specific contract determines required names, outputs and validity conditions. Follow the response format separately; these steps do not require returning prose or a reasoning transcript.
+
+## output-format-cell
+Response format: a sequence of complete executable Lain forms, beginning with (. No Markdown fences, language labels, prose, or JSON envelope. Use define to name result cells and -> to connect output cells. The admission reader consumes your response directly as Lain source. Create these NEW child result bindings: usable (number), margin (number), and can-fill (boolean). The EXISTING parent output port user-output accepts a text reply derived from the results. Write that text to it with ->. Do not define user-output again: a child definition shadows the parent port. Do not connect numeric or boolean results to a text port. The numeric results are inspected through their own named cells. Do not replace computation with a precomputed answer. Provider thinking, if any, is a separate field and is not admitted as source.
+
+## context-cell
+Build a reusable inventory calculation. Define usable as the number of usable items, margin as usable minus order-quantity, and can-fill as whether margin is at least zero. Use the provided input cells rather than hardcoded input values. The stock computation must depend on question-stock and definition-stock through nested ttms-premise-closure wrappers. The order computation must depend on question-order and definition-order through nested wrappers, and reuse usable. Calling the wrapped procedures creates the result cells. Write a text reply derived from usable and margin to user-output with str. The current damage percentage is an UNVERIFIED estimate: qualify your reply using the changing damage-status cell, rather than hardcoding a certainty label. Premise activity establishes dependency, not factual certainty. Never invent a confidence percentage. Do not use delivery-note in these calculations. The host will revise or withdraw input premises after your code runs; the existing network should then update without another model request.
+
+## question-stock
+How many usable items are in 20 boxes of 12, with an estimated 10 percent damaged?
+
+## question-order
+Can we fulfill an order for 200 using that usable stock?
+
+## boxes
+20
+
+## items-per-box
+12
+
+## damage-percent
+10
+
+## damage-status
+unverified estimate
+
+## order-quantity
+200
+
+## metadata-cell
+boxes and items-per-box are supplied inventory facts. damage-percent starts at an unverified estimate of 10 percent. order-quantity is the requested count. question-stock and question-order identify the questions that triggered the respective computations. definition-stock and definition-order identify the agent's generated formulas; they are not external validation of those formulas. delivery-note is unrelated. A later inspection may supersede the estimate. Qualitative certainty must be based on source metadata, not the size of a support set.
+
+## language-cell
++ - * / >= and str are the existing support-aware TTMS operators in this environment. A closure attaches the premise of its second argument to the callable, and normal invocation carries that support into its result. Example: (define demo-f (ttms-premise-closure (network [x] (+ x 2)) demo-question)) then (define demo-answer (demo-f demo-input)). To attach both a question and a definition premise, wrap the callable twice before invoking it. (-> value target) connects cells. str joins strings and numbers. inspect:premises accepts a cell:reference and exposes its current value, supporting premises and premise states. Withdrawn inputs must yield unknown dependent values, not invented defaults. Ordinary definitions persist; support governs result availability.
+
+## Binding directory
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- user-output [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "e6e827ea-33ed-31e9-812d-5f9e75519c5c"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "738e79cf-c6d1-3413-bdb5-a78993ed6866"}
+- definition-order [known]: agent-generated order formula | reference #propagators.ids.NodeId{:uuid #uuid "d99f5698-0699-3ab4-ad63-f9d462caa252"}
+- definition-stock [known]: agent-generated stock formula | reference #propagators.ids.NodeId{:uuid #uuid "973e222b-4763-3d5c-b737-9cf21783ca52"}
+- question-order [known]: Can we fulfill an order for 200 using that usable stock? | reference #propagators.ids.NodeId{:uuid #uuid "521c78e1-4503-394b-8f02-f2481cb28750"}
+- question-stock [known]: How many usable items are in 20 boxes of 12, with an estimated 10 percent damaged? | reference #propagators.ids.NodeId{:uuid #uuid "61f6ce35-1566-3a8f-88e7-148d2ef493ee"}
+- order-quantity [known]: 200 | reference #propagators.ids.NodeId{:uuid #uuid "86d7d6b1-3819-3026-a02c-a83a45417a9e"}
+- damage-percent [known]: 10 | reference #propagators.ids.NodeId{:uuid #uuid "cc70273a-a1f7-355c-8826-5b47f55d21cf"}
+- damage-status [known]: unverified estimate | reference #propagators.ids.NodeId{:uuid #uuid "09e224a2-8544-3d3f-8104-a9ad859269dd"}
+- items-per-box [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "a2d0608e-8293-3ad3-a90f-b1830cbc6759"}
+- boxes [known]: 20 | reference #propagators.ids.NodeId{:uuid #uuid "900540bd-c5b9-326a-849c-5b3ede0f6ab4"}
+- metadata-cell [known]: boxes and items-per-box are supplied inventory facts. damage-percent starts at an unverified estimate of 10 percent. order-quantity is the requested count. ques | reference #propagators.ids.NodeId{:uuid #uuid "3f1a118f-fb93-36d7-b5cd-9cf0769eb6f7"}
+- language-cell [known]: + - * / >= and str are the existing support-aware TTMS operators in this environment. A closure attaches the premise of its second argument to the callable, and | reference #propagators.ids.NodeId{:uuid #uuid "5b4387c4-6f98-323c-8152-10c6ba4c0a50"}
+- context-cell [known]: Build a reusable inventory calculation. Define usable as the number of usable items, margin as usable minus order-quantity, and can-fill as whether margin is at | reference #propagators.ids.NodeId{:uuid #uuid "867e1d69-d86c-3b0c-af4a-40d8d0436026"}
+- role-cell [known]: You are an agent constructing executable Lain computations inside one persistent lexical child. Read the question and input cells. Return raw parenthesized Lain | reference #propagators.ids.NodeId{:uuid #uuid "3154ac24-bbbd-31fc-8deb-aa12ac9d7e9d"}
+- methodology-cell [known]: 1. Identify the problem. Separate known conditions from unknowns. Identify the requested outputs, available inputs, assumptions and missing information. Treat a | reference #propagators.ids.NodeId{:uuid #uuid "da887b8c-861e-3bbd-8576-9c83952f2383"}
+- output-format-cell [known]: Response format: a sequence of complete executable Lain forms, beginning with (. No Markdown fences, language labels, prose, or JSON envelope. Use define to nam | reference #propagators.ids.NodeId{:uuid #uuid "c7fa9798-dbb5-33b3-ab49-865448e3ea81"}

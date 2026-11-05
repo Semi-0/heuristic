@@ -1,0 +1,35 @@
+
+
+(define orient:source (behavior:source))
+(-> (event:point "orient-a" 1 2) orient:source)
+(-> (event:point "orient-b" 2 3) orient:source)
+(define orient:sum (behavior:scan orient:source + 0))
+(define orient:reading (behavior:latest-value orient:sum 0))
+(-> (cell:value (cell:reference orient:reading)) (cell:input (data:get :orientation-value memory-cell)))
+(-> (inspect:cell (cell:reference orient:reading)) (cell:input (data:get :orientation-edge memory-cell)))
+
+(define conv:source (behavior:source))
+(define conv:user-scan (behavior:scan conv:source seq:append (seq:empty)))
+(define conv:history (behavior:latest-value conv:user-scan (seq:empty)))
+(define conv:reply (network [content]
+  (let [ack (message-to-user (data:record :id "assistant-reply" :time 0 :role "assistant" :content content))]
+    (-> (event:point "assistant-reply" 0 ack) conv:source)
+    ack)))
+(define conv:system-msg (data:record :role "system" :content "To reply, call (conv:reply \"your message here\") as executable Lain source. Do not include setup code or provider thinking in conversation replies."))
+(define conv:user-msgs (behavior:map conv:user-scan (network [prefix] (seq:project :content prefix))))
+(define conv:user-latest (behavior:latest-value conv:user-msgs (seq:empty)))
+(define conv:user-content (seq:last conv:user-latest))
+(define conv:user-id (data:get :id user-ingress))
+(define conv:user-time (data:get :time user-ingress))
+(define conv:assistant-time (+ conv:user-time 1))
+(define conv:assistant-id (text:format "assistant-%s" conv:user-time))
+(define conv:reply-fn (network [content]
+  (let [ack (message-to-user (data:record :id conv:assistant-id :time conv:assistant-time :role "assistant" :content content))]
+    (-> (event:point conv:assistant-id conv:assistant-time ack) conv:source)
+    ack)))
+(define conv:all-msgs (behavior:map conv:user-scan (network [prefix]
+  (seq:concat
+    (seq:append (seq:empty) conv:system-msg)
+    (seq:map (network [rec] (data:record :role (data:get :role rec) :content (data:get :content rec))) prefix)))))
+(define conv:latest-msgs (behavior:latest-value conv:all-msgs (seq:empty)))
+(define conv:request (model:request (data:record :id (text:format "req-%s" conv:user-time) :messages conv:latest-msgs)))

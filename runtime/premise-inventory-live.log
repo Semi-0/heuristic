@@ -1,0 +1,8 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:cleanup {:status :closed}}
+Execution error (ExceptionInfo) at user/eval26073 (probe_premise_inventory.clj:48).
+Admission failed
+
+Full report at:
+/tmp/clojure-6529073791966522521.edn

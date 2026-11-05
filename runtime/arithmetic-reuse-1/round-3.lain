@@ -1,0 +1,5 @@
+
+
+(define result-3 (+ result-2 150))
+(-> result-3 ((slot :result) observed-3))
+(-> (text:format "The answer is %s." result-3) user-output-3)

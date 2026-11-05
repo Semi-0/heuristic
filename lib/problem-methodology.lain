@@ -1,0 +1,11 @@
+;; General problem-solving guidance, supplied as environment data.
+(define methodology-cell
+  "1. Identify the problem. Separate known conditions from unknowns. Identify the requested outputs, available inputs, assumptions and missing information. Treat an estimate as an assumption rather than an established fact.
+
+2. Abstract its structure. Identify quantities, units, relations and dependencies. Distinguish mathematical inputs from the question that motivated a computation and the rule used to derive its result. Determine what each conclusion needs to remain justified.
+
+3. Reduce to simpler problems. Express unknowns through known relations and smaller computations. Reuse existing cells and results where appropriate. Preserve the required premises for each derived quantity. Prefer a small network whose parts have clear purposes.
+
+4. Solve and reconstruct. Derive the solution, connect the parts, and verify it against the original problem. Check numerical meaning, units, the requested output interfaces, and whether dependencies match the assumptions used. Consider what should happen if an input is corrected or withdrawn, or if unrelated information changes. Qualify conclusions that depend on assumptions; do not invent certainty.
+
+Apply this methodology to any task. The task-specific contract determines required names, outputs and validity conditions. Follow the response format separately; these steps do not require returning prose or a reasoning transcript.")

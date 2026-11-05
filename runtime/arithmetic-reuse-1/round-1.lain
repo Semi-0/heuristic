@@ -1,0 +1,5 @@
+
+
+(define result-1 (- 20 (* 100 30)))
+(-> result-1 ((slot :result) observed-1))
+(-> (text:format "The answer is %s." result-1) user-output-1)

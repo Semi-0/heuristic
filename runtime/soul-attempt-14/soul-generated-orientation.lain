@@ -1,0 +1,9 @@
+
+
+(define orient:source (behavior:source))
+(-> (event:point "orient-a" 1 2) orient:source)
+(-> (event:point "orient-b" 2 3) orient:source)
+(define orient:sum (behavior:scan orient:source + 0))
+(define orient:reading (behavior:latest-value orient:sum 0))
+(-> (cell:value (cell:reference orient:reading)) (cell:input (data:get :orientation-value memory-cell)))
+(-> (inspect:cell (cell:reference orient:reading)) (cell:input (data:get :orientation-edge memory-cell)))

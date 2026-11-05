@@ -165,3 +165,5 @@ catalog, with a natural-language purpose beside each verified example. Unknown
 unavailable values are explicitly marked unknown. Context previews under
 `runtime/context-redesign-*.txt` apply this renderer to the recorded attempt-13
 state with current documentation; they are previews, not new provider requests.
+
+Subsequent narrower experiments are recorded in [Arithmetic reuse and premises](2026-11-06-arithmetic-reuse-and-premises.md), including successful three-turn cell reuse, TTMS correction/withdrawal, methodology context, and the intervening failures. These do not replace the original conversation-construction acceptance criteria.

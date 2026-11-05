@@ -1,0 +1,28 @@
+
+
+(define stock-f
+  (ttms-premise-closure
+    (ttms-premise-closure
+      (network [b ip dp]
+        (* b ip (- 1 (/ dp 100))))
+      question-stock)
+    definition-stock))
+
+(define usable (stock-f boxes items-per-box damage-percent))
+
+(define order-f
+  (ttms-premise-closure
+    (ttms-premise-closure
+      (network [u oq]
+        (- u oq))
+      question-order)
+    definition-order))
+
+(define margin (order-f usable order-quantity))
+
+(define can-fill (>= margin 0))
+
+(define reply
+  (str "Usable items: " usable ". Margin: " margin ". Damage status: " damage-status "."))
+
+(-> reply user-output)
