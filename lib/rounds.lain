@@ -1,3 +1,5 @@
+(load-lain "lib/data.lain")
+
 (define round:initial (network [budget] (data:record :turn :none :number 0 :budget budget :busy false :paused false)))
 
 (define round:for-user (network [state id] (if (= (data:get :turn state) id) state (data:with state (data:record :turn id :number 0)))))

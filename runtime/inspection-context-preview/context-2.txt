@@ -1,0 +1,198 @@
+# Live environment
+
+## role-cell
+You can make progress by working carefully through what is known and checking the result. You are an agent constructing executable Lain computations in a live lexical child. Read ask and the input bindings. Computed answers must come from Lain operations on input cells. Return only executable Lain source.
+
+## methodology-cell
+1. Understand the problem. What is the unknown? What are the data and conditions? Separate known facts, estimates, assumptions and missing information. Identify what is being asked and whether the available information suffices.
+2. Explore examples and related problems. Have you seen a related problem? Consider simpler cases, boundary cases, and alternative representations. Identify quantities, units, relationships and dependencies.
+3. Decompose and construct a solution. Break the problem into manageable parts, relate unknowns to known quantities, and connect the parts into a coherent solution. Choose an approach appropriate to the problem.
+A problem can sometimes be represented as a partial Lain network: known conditions supply inputs, unknown quantities remain open cells, and relationships connect them. You can construct relationships before all information is available, inspect what is already determined, and let later information complete the computation. Consider whether this representation is useful for the problem.
+4. Verify. Check the result against the original question, units, conditions and examples. Check each conclusion's dependencies, what happens when information changes or is withdrawn, and whether unrelated information matters. Qualify estimates and unresolved conclusions. Encouragement is not evidence of correctness. These stages do not require a prose reasoning transcript.
+
+## output-format-cell
+Return a sequence of complete executable Lain forms beginning with (. No Markdown fences, language labels, prose or JSON envelope. Provider thinking is separate and not admitted. New define forms create child bindings. Existing parent output ports must be connected with ->, not redefined: redefining them shadows the intended port. Each round has an existing text port user-output-1 or user-output-2. Connect a text reply there; it may explain missing information. Optional observation ports observed-total-N, observed-usable-N, observed-margin-N, observed-fulfillment-N accept total items, usable items, usable minus order quantity, and whether the order can be fulfilled, respectively. N is the round number. To expose a computed value use (-> your-value observed-total-1), for example. You may populate any useful observation ports; no port is required for source admission. Do not put numbers in the text port. Do not substitute precomputed answers for Lain computation.
+
+## context-cell
+One model worker and one lexical child stay alive across the questions. Earlier child bindings remain live and appear in the binding directory. written-code contains actual earlier generated source; history contains actual user messages and available text replies, maintained by reducers. Return new forms for the current ask. The parent provides inputs and output ports, not a question solution.
+
+## language-cell
+Lain uses (define name expression), (network [parameters] body), and prefix calls. + - * / >= and str are support-aware TTMS operators. Unknown operands leave dependent computations unknown until information is supplied. (-> value target) connects cells. str joins text and connected values. ttms-premise-closure attaches the support of its second argument to a callable; normal invocation carries that support to results. Generic example: (define demo (ttms-premise-closure (network [x] (+ x 2)) demo-premise)). Calling (demo input) computes with both input and premise support. Closures can be nested. inspect:premises accepts (cell:reference name) and exposes current value and support. Ordinary definitions persist; premise withdrawal controls availability of supported results. Premise activity does not establish truth or confidence.
+
+## inspection-guide-cell
+Inspection is a problem-solving tool. Unknown does not by itself mean erroneous. A callable can exist without being invoked; an invocation can wait for missing data or an unresolved operator. Inspect the current state before choosing a repair.
+
+Available inspection operations:
+(environment:overview current-environment (seq:empty)) returns visible binding titles, references, states and short headlines, including unknowns. This is a finite binding directory, not a recursive scan of every closure body. An unknown binding is not proof that a closure is undefined. Compare it with operator uses in written-code.
+(inspect:cell (cell:reference name)) returns edge, value, inputs and outputs. These are direct runtime connections; they are not automatically callable argument/result ports or a minimal causal explanation.
+(inspect:premises (cell:reference name)) returns value, support and premise states.
+(inspect:errors (cell:reference name)) returns native cell error evidence, when present. Records can contain operation, operands, exception/class, exception/message and exception/data. Empty error evidence does not prove correctness. This adapter reads merge-error evidence; it does not catch every compiler or scheduler exception.
+admission-status is the latest source admission receipt. A rejected receipt is an admission failure; inspect its diagnostic and form identity. Successful earlier forms remain installed. source admission is not proof that every output computed.
+
+Literal examples below are documentation, not networks already installed in your environment. Names beginning demo- belong only to the examples.
+
+Example 1: intentional partial computation.
+(define demo-input)
+(define demo-ready (+ 2 3))
+(define demo-answer (+ demo-input demo-ready))
+(define demo-view (inspect:cell (cell:reference demo-answer)))
+Before demo-input is supplied, demo-ready is 5 and demo-answer is unknown. In a later extension of the SAME child, (-> 7 demo-input) makes demo-answer 12. No recompilation or model evaluation is needed to complete the already constructed relationship. This does not make + automatically solve backwards.
+
+Example 2: an unresolved callable, not a syntax error.
+(define demo-later)
+(define demo-waiting (demo-later 4))
+(define demo-directory (environment:overview current-environment (seq:empty)))
+The directory shows demo-later unknown; demo-waiting has no result. The source uses demo-later in operator position. In a later extension, (-> (network [x] (+ x 1)) demo-later) supplies the missing callable and the existing demo-waiting becomes 5. Do not redefine a parent output port while trying to repair a connection.
+
+Example 3: correct output direction and explicit feedback.
+(define demo-output)
+(-> demo-ready demo-output)
+(-> (inspect:cell (cell:reference demo-output)) inspection-feedback)
+The first argument of -> supplies information to the second. The feedback port retains the inspection record for a subsequent environment description. Merely defining a computed value does not connect it to an unrelated answer port. The examples do not schedule model calls.
+
+Error interpretation:
+An incomplete reader form such as the literal text (define demo-broken causes source rejection before that form can compile. A runtime merge exception instead yields a contradiction with error evidence describing the operation and operands that failed. Conflicting contributions can also produce a contradiction without an exception record. A blocked output may be intentional missing input, unresolved operator, or incomplete wiring; follow its input connections and inspect the relevant source before claiming a cause. Source references identify places to investigate, not necessarily causes. Never treat an unknown-to-unknown transition as proof of successful withdrawal or repair.
+
+
+## admission-status
+{:status :admitted, :response "round-1", :forms 11, :receipts [{:status :admitted, :extension [:lain-admission ["round-1" 0]]} {:status :admitted, :extension [:lain-admission ["round-1" 1]]} {:status :admitted, :extension [:lain-admission ["round-1" 2]]} {:status :admitted, :extension [:lain-admission ["round-1" 3]]} {:status :admitted, :extension [:lain-admission ["round-1" 4]]} {:status :admitted, :extension [:lain-admission ["round-1" 5]]} {:status :admitted, :extension [:lain-admission ["round-1" 6]]} {:status :admitted, :extension [:lain-admission ["round-1" 7]]} {:status :admitted, :extension [:lain-admission ["round-1" 8]]} {:status :admitted, :extension [:lain-admission ["round-1" 9]]} {:status :admitted, :extension [:lain-admission ["round-1" 10]]}]}
+
+## inspection-feedback
+{:edge #propagators.ids.NodeId{:uuid #uuid "523e9c61-5faf-347b-b654-3084ed8618bd"}, :value 5, :inputs #{#propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9629-759c-9abd-c7164b98cb86"} #propagators.ids.NodeId{:uuid #uuid "b76305fa-d1c0-3446-94b4-d9c18c6add0e"} #propagators.ids.NodeId{:uuid #uuid "e9974bad-0cab-3596-add8-890a2b137585"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9628-7915-93a5-cffc17dc7377"} #propagators.ids.NodeId{:uuid #uuid "eb3701c5-d58a-3668-a58d-f53602553c37"} #propagators.ids.NodeId{:uuid #uuid "d7833f2c-40db-3254-9481-93df48cf4bb5"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-97f7-7aef-a92f-403d0aca0611"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9703-777f-9919-ed71fd6840e8"}}, :outputs #{#propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9629-759c-9abd-c7164b98cb86"} #propagators.ids.NodeId{:uuid #uuid "b76305fa-d1c0-3446-94b4-d9c18c6add0e"} #propagators.ids.NodeId{:uuid #uuid "e9974bad-0cab-3596-add8-890a2b137585"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9703-777f-9919-ed71fd6840e7"} #propagators.ids.NodeId{:uuid #uuid "17122f3d-21a8-3dc7-9464-74e4eced3209"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9628-7915-93a5-cffc17dc7376"} #propagators.ids.NodeId{:uuid #uuid "d7833f2c-40db-3254-9481-93df48cf4bb5"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-97f7-7aef-a92f-403d0aca0612"} #propagators.ids.NodeId{:uuid #uuid "c8989149-7c1c-38a5-81b0-ce05dd1d3c14"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-97f7-7aef-a92f-403d0aca0610"} #propagators.ids.NodeId{:uuid #uuid "01a1b5a6-9703-777f-9919-ed71fd6840e9"}}}
+
+## metadata-cell
+Names ending in -1 and -2 belong to separate shipments and questions. boxes-N, items-per-box-N, damage-percent-N and order-quantity-N are independently supported input facts; percentage units are 0 through 100. damage-percent-1 is initially unknown; a later published value for it is an estimate. damage-percent-2 is an inspection result. question-N is the premise identifying the corresponding user question and should support conclusions answering it. shared-rule is the shared premise identifying validity of agent-generated mathematical rules; it does not validate the formulas. delivery-note is unrelated metadata. Damage rates can be estimated or inspected as described by the question or supplied status. Do not invent missing facts.
+
+## ask
+Controlled example completion; no provider request.
+
+## written-code
+["(define demo-input)\n(define demo-ready (+ 2 3))\n(define demo-answer (+ demo-input demo-ready))\n(define demo-view (inspect:cell (cell:reference demo-answer)))\n(define demo-later)\n(define demo-waiting (demo-later 4))\n(define demo-directory (environment:overview current-environment (seq:empty)))\n(define demo-output)\n(-> demo-ready demo-output)\n(-> (inspect:cell (cell:reference demo-output)) inspection-feedback)\n(define demo-errors (inspect:errors (cell:reference demo-output)))"]
+
+## user-output-1
+State: unknown. unknown
+
+## observed-total-1
+State: unknown. unknown
+
+## observed-usable-1
+State: unknown. unknown
+
+## observed-margin-1
+State: unknown. unknown
+
+## observed-fulfillment-1
+State: unknown. unknown
+
+## boxes-1
+20
+
+## items-per-box-1
+12
+
+## damage-percent-1
+State: unknown. unknown
+
+## order-quantity-1
+200
+
+## question-1
+shipment 1 question
+
+## user-output-2
+State: unknown. unknown
+
+## observed-total-2
+State: unknown. unknown
+
+## observed-usable-2
+State: unknown. unknown
+
+## observed-margin-2
+State: unknown. unknown
+
+## observed-fulfillment-2
+State: unknown. unknown
+
+## boxes-2
+State: unknown. unknown
+
+## items-per-box-2
+State: unknown. unknown
+
+## damage-percent-2
+State: unknown. unknown
+
+## order-quantity-2
+State: unknown. unknown
+
+## question-2
+State: unknown. unknown
+
+## shared-rule
+generated rules; not independently validated
+
+## delivery-note
+Tuesday
+
+## history
+[{:role "user", :content "A shipment contains 20 boxes of 12 items. We need to fulfill an order for 200 items. The damaged percentage has not been reported yet. What can we determine now, and what remains unresolved about the usable stock and whether we can fulfill the order?"} {:role "user", :content "Controlled example completion; no provider request."}]
+
+## Binding directory
+- demo-answer [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "9061559b-a9cd-38ff-8c27-7fd321bd4cc2"}
+- demo-directory [known]: environment description; inspect its reference | reference #propagators.ids.NodeId{:uuid #uuid "47eb4437-20ab-30f3-b315-4216c1004334"}
+- demo-errors [known]: vector with 0 elements | reference #propagators.ids.NodeId{:uuid #uuid "3f91a212-4fa5-33c9-98ee-d7fb414eb390"}
+- demo-input [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "cda360a6-7f0b-31ef-9cb2-c7b85c17d875"}
+- demo-later [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "790f5125-4f36-3900-8f40-67e6fc2ca7b2"}
+- demo-output [known]: 5 | reference #propagators.ids.NodeId{:uuid #uuid "523e9c61-5faf-347b-b654-3084ed8618bd"}
+- demo-ready [known]: 5 | reference #propagators.ids.NodeId{:uuid #uuid "513d3fa3-395a-3587-8dd0-c8af17a66c01"}
+- demo-view [known]: record with keys [:edge :inputs :outputs :value] | reference #propagators.ids.NodeId{:uuid #uuid "404876ac-4f09-3e2b-b5da-4577b673d120"}
+- demo-waiting [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "e434dcfd-6f02-3fcc-a865-412551964247"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- history [known]: vector with 2 elements | reference #propagators.ids.NodeId{:uuid #uuid "0fe8ab7f-b870-376e-a39d-64c0ddcd78d5"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "f8a77d50-725e-3d1f-b11c-39dec526b152"}
+- shared-rule [known]: generated rules; not independently validated | reference #propagators.ids.NodeId{:uuid #uuid "6e1679c4-651c-3216-a307-a04a70f2f1fa"}
+- question-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "7e8bf76a-886b-38f2-a53a-def811acc9cc"}
+- order-quantity-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "afe4a158-9e80-34aa-b7b6-6f2f0e663e28"}
+- damage-percent-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "0753136b-f744-3311-a6dd-3480344801e8"}
+- items-per-box-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "86cb0514-01a4-33d4-8f5e-80a85fdb8c24"}
+- boxes-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "4a326850-514a-3c1c-955a-76679bb3d2e8"}
+- observed-fulfillment-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "c19c585e-37ae-3cc5-9cf3-4b035dd7f252"}
+- observed-margin-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "5e21da72-702b-3063-84ef-a55973a36f9c"}
+- observed-usable-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "6971284f-f930-310b-a8a2-d08a265959c8"}
+- observed-total-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "0fd39b2a-3a5e-322a-82f7-e214ed729fb7"}
+- user-output-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "38f3cf7f-7ea2-31ab-bc98-cae779b3f4ae"}
+- question-1 [known]: shipment 1 question | reference #propagators.ids.NodeId{:uuid #uuid "f0249df4-6b07-3d21-885d-da43509875ea"}
+- order-quantity-1 [known]: 200 | reference #propagators.ids.NodeId{:uuid #uuid "e68dce89-9014-3858-8d78-52b0a086032d"}
+- damage-percent-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "b110b0eb-3b25-31dd-82f0-94a0e3fc18c0"}
+- items-per-box-1 [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "6ce51d42-1d5d-3928-ae93-996c0d53b71a"}
+- boxes-1 [known]: 20 | reference #propagators.ids.NodeId{:uuid #uuid "b344b607-8fc6-3fd4-b5d2-ee6176841d6a"}
+- observed-fulfillment-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "8bd10388-3387-303a-b355-998049ba4b98"}
+- observed-margin-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "805640c9-a6fb-3302-85c7-5071f7810977"}
+- observed-usable-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "cf2c0c8e-8b5e-3de6-b004-b75c9dedc6ed"}
+- observed-total-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "fafbc54f-5492-32d6-9127-03efb507f242"}
+- user-output-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "38fac952-8dbf-3a9f-b67a-a0e06e41a423"}
+- written-code [known]: vector with 1 elements | reference #propagators.ids.NodeId{:uuid #uuid "2e5ee8c6-1f52-3902-b726-73cbfa55f189"}
+- ask [known]: Controlled example completion; no provider request. | reference #propagators.ids.NodeId{:uuid #uuid "5aa7331b-49ba-3c62-a812-aabb5062c75d"}
+- metadata-cell [known]: Names ending in -1 and -2 belong to separate shipments and questions. boxes-N, items-per-box-N, damage-percent-N and order-quantity-N are independently supporte | reference #propagators.ids.NodeId{:uuid #uuid "d492e4d2-517e-3fbe-813b-e387ac680c4b"}
+- language-cell [known]: Lain uses (define name expression), (network [parameters] body), and prefix calls. + - * / >= and str are support-aware TTMS operators. Unknown operands leave d | reference #propagators.ids.NodeId{:uuid #uuid "ebcbe75d-d5da-315d-bd28-c8baf6c16df2"}
+- context-cell [known]: One model worker and one lexical child stay alive across the questions. Earlier child bindings remain live and appear in the binding directory. written-code con | reference #propagators.ids.NodeId{:uuid #uuid "3cce75d9-8cf3-309a-a1a1-39f7ae544b0b"}
+- output-format-cell [known]: Return a sequence of complete executable Lain forms beginning with (. No Markdown fences, language labels, prose or JSON envelope. Provider thinking is separate | reference #propagators.ids.NodeId{:uuid #uuid "c1ce5ea9-f364-3aca-995a-f3a945021de6"}
+- methodology-cell [known]: 1. Understand the problem. What is the unknown? What are the data and conditions? Separate known facts, estimates, assumptions and missing information. Identify | reference #propagators.ids.NodeId{:uuid #uuid "00b37a06-11e9-3906-8f38-8af401caf19b"}
+- role-cell [known]: You can make progress by working carefully through what is known and checking the result. You are an agent constructing executable Lain computations in a live l | reference #propagators.ids.NodeId{:uuid #uuid "4e8d5fa9-4ac4-314d-8926-28aa46340646"}
+- seq:empty [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "de767f48-f66d-34e1-95e9-148486ade195"}
+- environment:overview [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f6447fc1-043e-3703-86bb-53fcd51311de"}
+- inspect:errors [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a4766f65-0d78-305c-ab2c-10a7fc12fe2a"}
+- inspect:cell [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a290dc25-dbce-33c9-8b02-386113df0be1"}
+- inspection-feedback [known]: record with keys [:edge :inputs :outputs :value] | reference #propagators.ids.NodeId{:uuid #uuid "36a89a6a-2ebf-3e6e-962b-f0e7932a64eb"}
+- admission-status [known]: record with keys [:forms :receipts :response :status] | reference #propagators.ids.NodeId{:uuid #uuid "2c39903c-14c4-3564-81d7-b1c68198e333"}
+- current-environment [known]: lexical environment propagators.ids.NodeId@429588b2 | reference #propagators.ids.NodeId{:uuid #uuid "a6c98b4d-dd07-3a88-bd6a-d623b7215442"}
+- inspection-guide-cell [known]: Inspection is a problem-solving tool. Unknown does not by itself mean erroneous. A callable can exist without being invoked; an invocation can wait for missing  | reference #propagators.ids.NodeId{:uuid #uuid "e048b7f1-15ce-3582-950e-d93e5c57fb5b"}

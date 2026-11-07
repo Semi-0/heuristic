@@ -1,0 +1,11 @@
+
+
+(define total-1 (* boxes-1 items-per-box-1))
+(define usable-1 (* total-1 (- 1 (/ damage-percent-1 100))))
+(define margin-1 (- usable-1 order-quantity-1))
+(define fulfillment-1 (>= usable-1 order-quantity-1))
+(-> total-1 observed-total-1)
+(-> usable-1 observed-usable-1)
+(-> margin-1 observed-margin-1)
+(-> fulfillment-1 observed-fulfillment-1)
+(-> (str "Determined now: the total item count is fully computable from the known box count and items-per-box. Unresolved: the damaged percentage has not been reported, so usable stock, the margin over the order quantity, and the fulfillment decision all remain unknown. Once a damage percentage is supplied, usable stock, margin, and fulfillment will propagate automatically through the constructed relationships. The fulfillment threshold corresponds to a damage rate at which usable stock exactly equals the order quantity; any damage above that threshold means the order cannot be fulfilled.") user-output-1)

@@ -17,6 +17,8 @@
             :namespaces [lain-harness.model-io-test]}
  :transport {:description "Stream framing and native transport contracts"
              :vars [lain-harness.streaming-test/sse-contract]}
+ :model-behavior {:description "Independent compiled model reducer and connection contracts"
+                  :namespaces [lain-harness.model-behavior-test]}
  :model {:description "Connected Lain model with controlled context and a test output consumer"
          :namespaces [lain-harness.model-test]}
  :model-live {:description "Three bounded rounds against the configured Blazux model"

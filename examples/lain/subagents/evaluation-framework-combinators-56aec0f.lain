@@ -1,0 +1,109 @@
+;; Relationships first: the framework is a shared protocol endpoint, not a
+;; coordinator that interprets steps. Primitive bodies arrive by session extension.
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+
+;; The abstraction owns its representation. Each accessor is a bidirectional
+;; partial view; callers neither allocate its slots nor unwrap the whole actor.
+(define assignments (slot :assignments))
+(define on-going-assignment (slot :on-going-assignment))
+(define assignment-result (slot :assignment-result))
+(define evaluation:observations (slot :evaluation/observations))
+(define evaluation:requests (slot :evaluation/requests))
+(define evaluation:trials (slot :evaluation/trials))
+(define evaluation:assessments (slot :evaluation/assessments))
+
+;; Deferred primitives normalize observations or derive request facts. They do
+;; not perform Harbor I/O. Outside handlers own effects, receipts and cleanup.
+(define harbor:framework)
+(define harbor:observe-context)
+(define harbor:observe-assessment)
+(define harbor:prepare)
+(define harbor:grade)
+(define evaluation:assignment-trials)
+(define evaluation:assessment-updates)
+(define evaluation:trial-execution)
+(define evaluation:runnable-assignments)
+
+(define harbor
+  (network []
+    (define evaluation-framework)
+    (harbor:framework evaluation-framework)
+    evaluation-framework))
+
+;; Named relationships remain inspectable while their primitive bodies are open.
+(define harbor:trial-contexts
+  (network [trials observations]
+    (harbor:observe-context trials observations)
+    (list trials)))
+
+(define harbor:trial-assessments
+  (network [trials observations]
+    (define assessments)
+    (harbor:observe-assessment trials observations assessments)
+    assessments))
+
+(define harbor:preparation-requests
+  (network [shared-assignments trials]
+    (define requests)
+    (harbor:prepare shared-assignments trials requests)
+    requests))
+
+(define harbor:grading-requests
+  (network [trials assessments]
+    (define requests)
+    (harbor:grade trials assessments requests)
+    requests))
+
+;; Trials and graded outcomes enrich the same assignment facts.
+(define evaluation:assignment-protocol
+  (network [framework]
+    (evaluation:assignment-trials
+      (assignments framework) (evaluation:trials framework))
+    (-> (evaluation:assessment-updates
+          (evaluation:trials framework) (evaluation:assessments framework))
+        (assignments framework))
+    (list framework)))
+
+;; Prepared contexts and execution observations constrain eligible work.
+;; The ongoing assignment is a derived view, never a second task queue or Pi FSM.
+(define evaluation:execution-protocol
+  (network [framework]
+    (evaluation:trial-execution
+      (evaluation:trials framework) (assignment-result framework))
+    (-> (evaluation:runnable-assignments
+          (assignments framework) (evaluation:trials framework))
+        (on-going-assignment framework))
+    (list framework)))
+
+;; Harbor observations contribute trial contexts and assessments.
+(define evaluation:assessment-protocol
+  (network [framework]
+    (harbor:trial-contexts
+      (evaluation:trials framework) (evaluation:observations framework))
+    (-> (harbor:trial-assessments
+          (evaluation:trials framework) (evaluation:observations framework))
+        (evaluation:assessments framework))
+    (list framework)))
+
+;; Preparation and grading are distinct request relationships. The extension
+;; merges their facts with stable identities; unresolved facts do not mean failure.
+(define evaluation:external-protocol
+  (network [framework]
+    (-> (harbor:preparation-requests
+          (assignments framework) (evaluation:trials framework))
+        (evaluation:requests framework))
+    (-> (harbor:grading-requests
+          (evaluation:trials framework) (evaluation:assessments framework))
+        (evaluation:requests framework))
+    (list framework)))
+
+;; Zero inputs; one Harbor-backed framework output. These four relationships
+;; coexist on its views. Their textual order is not an execution schedule.
+(define make-evaluation-framework
+  (network []
+    (define framework (harbor))
+    (evaluation:assignment-protocol framework)
+    (evaluation:execution-protocol framework)
+    (evaluation:assessment-protocol framework)
+    (evaluation:external-protocol framework)
+    framework))

@@ -1,0 +1,39 @@
+(define history (behavior:source))
+(define user-events (behavior:source))
+(define assistant-events (behavior:source))
+
+(-> user-ingress user-events)
+
+(define reply-fn (network [id time content]
+  (let [ack (message-to-user (data:record :id id :time time :role "assistant" :content content))]
+    (-> ack assistant-events)
+    ack)))
+
+(define history-updated (behavior:scan history (network [acc event]
+  (let [role (data:get :role event)
+        content (data:get :content event)
+        id (data:get :id event)
+        time (data:get :time event)]
+    (seq:append acc (data:record :role role :content content :id id :time time)))) []))
+
+(-> user-events history-updated)
+(-> assistant-events history-updated)
+
+(define model-request (network [user-event]
+  (let [user-id (data:get :id user-event)
+        user-time (data:get :time user-event)
+        user-content (data:get :content user-event)
+        current-history (behavior:latest-value history-updated)
+        system-msg (data:record :role "system" :content "You are a Lain assistant. Reply with executable Lain code that calls (reply-fn id time content) where id is a new unique string, time is user-time + 1, and content is your response.")
+        messages (seq:append (seq:map :role current-history) system-msg)
+        request (data:record :id (text:format "req-%s" user-id) :messages messages)]
+    (model:request request))))
+
+(-> user-events model-request)
+
+(define model-response (behavior:source))
+(-> model-response (network [resp]
+  (let [id (data:get :id resp)
+        time (data:get :time resp)
+        content (data:get :content resp)]
+    (reply-fn id time content))))

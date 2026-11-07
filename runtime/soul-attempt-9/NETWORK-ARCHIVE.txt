@@ -1,0 +1,3 @@
+The original network dump is preserved as soul-network.edn.gz.
+Read with: gzip -dc soul-network.edn.gz
+The uncompressed local copy exceeds the remote single-file limit and is ignored.

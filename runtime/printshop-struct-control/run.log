@@ -1,0 +1,8 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-printshop.Jvnwtf/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+Syntax error reading source at (/tmp/lain-printshop.Jvnwtf/tools/probe_printshop_struct.clj:25:103).
+Unmatched delimiter: ]
+
+Full report at:
+/tmp/clojure-12320395601900972199.edn

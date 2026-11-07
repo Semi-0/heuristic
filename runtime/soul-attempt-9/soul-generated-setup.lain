@@ -1,0 +1,5 @@
+(define conversation-history (behavior:source))
+(define user-events (behavior:source))
+(define reply-network (network [content] (message-to-user (data:record :id "reply" :time 0 :role "assistant" :content content))))
+
+(-> user-ingress user-events)

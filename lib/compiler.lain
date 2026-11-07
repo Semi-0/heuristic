@@ -1,3 +1,6 @@
+(load-lain "lib/data.lain")
+(load-lain "lib/queue.lain")
+
 (define parser:initial
   (network [] (data:record :buffer "" :finish false :index 0 :status :waiting)))
 (define incremental-compile-form
@@ -64,5 +67,5 @@
                  declaration (data:snapshot (compiler:declaration state parsed target ((slot :premise) actions)))
                  receipt (data:snapshot (session:admit declaration (data:snapshot (str (data:get :model-id state) "/" (data:get :serial state)))))
                  next (compiler:step state parsed declaration receipt)]
-             (session:feedback ((slot :state-cell) actions) (data:get :version state) next)
+             (((slot :transition) actions) state next)
              :connected)))

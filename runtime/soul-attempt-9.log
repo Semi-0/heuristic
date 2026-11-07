@@ -1,0 +1,9 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:setup {:status :rejected, :response "setup", :message "Source reader rejected response", :details {:status :invalid, :message "Incomplete final Lain form"}}, :journal [{:response "setup", :form 0, :source "(define conversation-history (behavior:source))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 0]]}} {:response "setup", :form 1, :source "\n(define user-events (behavior:source))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 1]]}} {:response "setup", :form 2, :source "\n(define reply-network (network [content] (message-to-user (data:record :id \"reply\" :time 0 :role \"assistant\" :content content))))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 2]]}} {:response "setup", :form 3, :source "\n\n(-> user-ingress user-events)", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 3]]}} {:response "setup", :diagnostic {:status :rejected, :response "setup", :message "Source reader rejected response", :details {:status :invalid, :message "Incomplete final Lain form"}}}]}
+{:cleanup {:status :closed}}
+Execution error (ExceptionInfo) at probe-soul/eval25974 (probe_soul.clj:47).
+Construction failed; see environment diagnostics
+
+Full report at:
+/tmp/clojure-5727097875484656.edn

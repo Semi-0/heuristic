@@ -1,0 +1,242 @@
+# Live environment
+
+## phase
+implementation
+
+## procedure-cell
+Before answering every new question, always consider whether an earlier computation can solve it or a useful part of it. Inspect the visible bindings, earlier source, and available outputs. Check candidate parameters, dependencies, assumptions and observed execution status, not just its name. Reuse is not mandatory: explain whether a candidate fits, needs adaptation, or should be rejected. A callable's existence does not establish that it produces valid answers. State when a candidate has not been tested.
+ANALYSIS: identify requested outputs, known facts, unknowns, units and relationships; look back at earlier computations; choose reuse, adapt or construct; plan construction, inspection and independent verification. Distinguish a network waiting for information from missing operators, disconnected outputs, admission errors and contradictory values.
+IMPLEMENTATION: execute the plan as Lain relationships, connect the answer ports and check against the original question. Preserve relevant premises and independent questions. Do not hardcode a conclusion that should change with the computed result. If earlier observations invalidate the plan, record the discrepancy in inspection-feedback and adjust. Do not invent missing information or unsupported certainty.
+
+## analysis-record
+
+
+{:outputs "total items (computable now), usable stock (unknown until damage reported), margin over order (unknown), fulfillment boolean (unknown); plus a text explanation of what is determined and what is unresolved" :facts "boxes-1 = 20, items-per-box-1 = 12, order-quantity-1 = 200; damage-percent-1 is unknown (not yet reported)" :unknowns "damage-percent-1, usable stock, margin, fulfillment status" :units "items for totals and usable; percentage 0-100 for damage; boolean for fulfillment" :relations "total = boxes * items-per-box; usable = total * (1 - damage-percent/100); margin = usable - order-quantity; fulfillment = usable >= order-quantity" :operators "no earlier callable exists; + - * / >= and str are available as primitives; no prior network to reuse" :operator "none" :status "boxes-1, items-per-box-1, order-quantity-1 are known; damage-percent-1 is unknown so usable, margin, and fulfillment will remain unknown until that value is supplied; total is immediately computable" :decision :construct :steps "construct total from boxes-1 and items-per-box-1; construct usable as a function of total and damage-percent-1; construct margin and fulfillment from usable and order-quantity-1; connect total to observed-total-1; connect usable, margin, fulfillment to their observation ports (they will stay unknown until damage-percent-1 arrives); write a text explanation to user-output-1; verify total equals 240 and that usable/margin/fulfillment are unknown" :tests "check total = 20*12 = 240 independently; check that if damage-percent-1 were 0 then usable=240, margin=40, fulfillment=true; check that if damage-percent-1 were 20 then usable=192, margin=-8, fulfillment=false; confirm the threshold is approximately 16.67% damage"}
+
+## role-cell
+You are an agent constructing Lain computations in a persistent lexical child. Follow phase and output-format-cell: analyze first, then implement. Computed answers must come from operations on input cells.
+
+## methodology-cell
+1. Understand the problem. What is the unknown? What are the data and conditions? Separate known facts, estimates, assumptions and missing information. Identify what is being asked and whether the available information suffices.
+2. Explore examples and related problems. Have you seen a related problem? Consider simpler cases, boundary cases, and alternative representations. Identify quantities, units, relationships and dependencies.
+3. Decompose and construct a solution. Break the problem into manageable parts, relate unknowns to known quantities, and connect the parts into a coherent solution. Choose an approach appropriate to the problem.
+A problem can sometimes be represented as a partial Lain network: known conditions supply inputs, unknown quantities remain open cells, and relationships connect them. You can construct relationships before all information is available, inspect what is already determined, and let later information complete the computation. Consider whether this representation is useful for the problem.
+4. Verify. Check the result against the original question, units, conditions and examples. Check each conclusion's dependencies, what happens when information changes or is withdrawn, and whether unrelated information matters. Qualify estimates and unresolved conclusions. Encouragement is not evidence of correctness. These stages do not require a prose reasoning transcript.
+
+## output-format-cell
+Read phase first. ANALYSIS phase: return only one EDN map, without Markdown. Required nonempty string fields: :outputs, :facts, :unknowns, :units, :relations, :operators, :operator, :status, :steps, :tests. Also include :decision, exactly :reuse, :adapt or :construct. Use "none" where appropriate. :operators reviews available candidates and suitability. :operator names the selected existing callable for reuse/adapt, or a proposed new callable (or "none") for construct. :status describes the observed readiness, unresolved values and validity of the candidate; distinguish observed facts from assumptions. :steps describes construction, inspection and verification steps, not an imperative order for propagation. :tests describes checks independent of the implementation expression. The host checks format and existence of a selected callable, not correctness of the plan. Do not return executable source in analysis phase.
+Analysis shape example for an unrelated problem:
+{:outputs "a numeric result" :facts "input x is available" :unknowns "none" :units "dimensionless" :relations "derive the requested transformation" :operators "no suitable earlier callable observed" :operator "none" :status "no earlier candidate" :decision :construct :steps "construct the relation and connect the answer" :tests "check a small independently computed case"}
+IMPLEMENTATION phase: analysis-record contains your unchanged plan. Implement it using the current environment. If observations invalidate a step, correct it and record the discrepancy in inspection-feedback using str. Only in this phase, follow the source contract below.
+
+Return a sequence of complete executable Lain forms beginning with (. No Markdown fences, language labels, prose or JSON envelope. Provider thinking is separate and not admitted. New define forms create child bindings. Existing parent output ports must be connected with ->, not redefined: redefining them shadows the intended port. Each round has an existing text port user-output-1 or user-output-2. Connect a text reply there; it may explain missing information. Optional observation ports observed-total-N, observed-usable-N, observed-margin-N, observed-fulfillment-N accept total items, usable items, usable minus order quantity, and whether the order can be fulfilled, respectively. N is the round number. To expose a computed value use (-> your-value observed-total-1), for example. You may populate any useful observation ports; no port is required for source admission. Do not put numbers in the text port. Do not substitute precomputed answers for Lain computation.
+
+Expected response shape (documentation only): raw executable forms, with no surrounding text. This generic arithmetic example illustrates syntax and output direction, not the answer to ask:
+(define example-answer (+ 2 3))
+(-> (str "Example result: " example-answer) user-output-1)
+Use the current round's existing output port and the actual input cells when answering ask. Do not copy the example's constants as your answer. Define internal result names of your choice; no specific decomposition is required.
+
+Not the expected response format:
+1. Markdown-wrapped source:
+```lain
+(define example-answer (+ 2 3))
+```
+The backticks and language label are not Lain forms.
+2. Prose followed by source:
+Here is my solution:
+(define example-answer (+ 2 3))
+The introductory sentence is not executable Lain source.
+3. A JSON envelope:
+{"code": "(define example-answer (+ 2 3))"}
+The admission interface expects forms directly, not a code field.
+4. A bare answer:
+5
+This neither constructs the requested computation nor connects a reply.
+
+These are executable-looking interface mistakes, distinct from formatting:
+(define user-output-1 "Example result: 5")
+This shadows the existing parent output instead of writing to it.
+(-> user-output-1 example-answer)
+This reverses the required direction. Connect the computed text into the existing text port, as in the valid example.
+Return only your chosen executable forms, not these labels, explanations, or examples of invalid responses.
+
+
+## context-cell
+One model worker and one lexical child stay alive across the questions. Earlier child bindings remain live and appear in the binding directory. written-code contains actual earlier generated source; history contains actual user messages and available text replies, maintained by reducers. Return new forms for the current ask. The parent provides inputs and output ports, not a question solution.
+
+## language-cell
+Lain uses (define name expression), (network [parameters] body), and prefix calls. + - * / >= and str are support-aware TTMS operators. Unknown operands leave dependent computations unknown until information is supplied. (-> value target) connects cells. str joins text and connected values. ttms-premise-closure attaches the support of its second argument to a callable; normal invocation carries that support to results. Generic example: (define demo (ttms-premise-closure (network [x] (+ x 2)) demo-premise)). Calling (demo input) computes with both input and premise support. Closures can be nested. inspect:premises accepts (cell:reference name) and exposes current value and support. Ordinary definitions persist; premise withdrawal controls availability of supported results. Premise activity does not establish truth or confidence.
+
+## inspection-guide-cell
+Inspection is a problem-solving tool. Unknown does not by itself mean erroneous. A callable can exist without being invoked; an invocation can wait for missing data or an unresolved operator. Inspect the current state before choosing a repair.
+
+Available inspection operations:
+(environment:overview current-environment (seq:empty)) returns visible binding titles, references, states and short headlines, including unknowns. This is a finite binding directory, not a recursive scan of every closure body. An unknown binding is not proof that a closure is undefined. Compare it with operator uses in written-code.
+(inspect:cell (cell:reference name)) returns edge, value, inputs and outputs. These are direct runtime connections; they are not automatically callable argument/result ports or a minimal causal explanation.
+(inspect:premises (cell:reference name)) returns value, support and premise states.
+(inspect:errors (cell:reference name)) returns native cell error evidence, when present. Records can contain operation, operands, exception/class, exception/message and exception/data. Empty error evidence does not prove correctness. This adapter reads merge-error evidence; it does not catch every compiler or scheduler exception.
+admission-status is the latest source admission receipt. A rejected receipt is an admission failure; inspect its diagnostic and form identity. Successful earlier forms remain installed. source admission is not proof that every output computed.
+
+Literal examples below are documentation, not networks already installed in your environment. Names beginning demo- belong only to the examples.
+
+Example 1: intentional partial computation.
+(define demo-input)
+(define demo-ready (+ 2 3))
+(define demo-answer (+ demo-input demo-ready))
+(define demo-view (inspect:cell (cell:reference demo-answer)))
+Before demo-input is supplied, demo-ready is 5 and demo-answer is unknown. In a later extension of the SAME child, (-> 7 demo-input) makes demo-answer 12. No recompilation or model evaluation is needed to complete the already constructed relationship. This does not make + automatically solve backwards.
+
+Example 2: an unresolved callable, not a syntax error.
+(define demo-later)
+(define demo-waiting (demo-later 4))
+(define demo-directory (environment:overview current-environment (seq:empty)))
+The directory shows demo-later unknown; demo-waiting has no result. The source uses demo-later in operator position. In a later extension, (-> (network [x] (+ x 1)) demo-later) supplies the missing callable and the existing demo-waiting becomes 5. Do not redefine a parent output port while trying to repair a connection.
+
+Example 3: correct output direction and explicit feedback.
+(define demo-output)
+(-> demo-ready demo-output)
+(-> (inspect:cell (cell:reference demo-output)) inspection-feedback)
+The first argument of -> supplies information to the second. The feedback port retains the inspection record for a subsequent environment description. Merely defining a computed value does not connect it to an unrelated answer port. The examples do not schedule model calls.
+
+Error interpretation:
+An incomplete reader form such as the literal text (define demo-broken causes source rejection before that form can compile. A runtime merge exception instead yields a contradiction with error evidence describing the operation and operands that failed. Conflicting contributions can also produce a contradiction without an exception record. A blocked output may be intentional missing input, unresolved operator, or incomplete wiring; follow its input connections and inspect the relevant source before claiming a cause. Source references identify places to investigate, not necessarily causes. Never treat an unknown-to-unknown transition as proof of successful withdrawal or repair.
+
+
+## admission-status
+State: unknown. unknown
+
+## inspection-feedback
+State: unknown. unknown
+
+## metadata-cell
+Names ending in -1 and -2 belong to separate shipments and questions. boxes-N, items-per-box-N, damage-percent-N and order-quantity-N are independently supported input facts; percentage units are 0 through 100. damage-percent-1 is initially unknown; a later published value for it is an estimate. damage-percent-2 is an inspection result. question-N is the premise identifying the corresponding user question and should support conclusions answering it. shared-rule is the shared premise identifying validity of agent-generated mathematical rules; it does not validate the formulas. delivery-note is unrelated metadata. Damage rates can be estimated or inspected as described by the question or supplied status. Do not invent missing facts.
+
+## ask
+A shipment contains 20 boxes of 12 items. We need to fulfill an order for 200 items. The damaged percentage has not been reported yet. What can we determine now, and what remains unresolved about the usable stock and whether we can fulfill the order?
+
+## written-code
+[]
+
+## user-output-1
+State: unknown. unknown
+
+## observed-total-1
+State: unknown. unknown
+
+## observed-usable-1
+State: unknown. unknown
+
+## observed-margin-1
+State: unknown. unknown
+
+## observed-fulfillment-1
+State: unknown. unknown
+
+## boxes-1
+20
+
+## items-per-box-1
+12
+
+## damage-percent-1
+State: unknown. unknown
+
+## order-quantity-1
+200
+
+## question-1
+A shipment contains 20 boxes of 12 items. We need to fulfill an order for 200 items. The damaged percentage has not been reported yet. What can we determine now, and what remains unresolved about the usable stock and whether we can fulfill the order?
+
+## user-output-2
+State: unknown. unknown
+
+## observed-total-2
+State: unknown. unknown
+
+## observed-usable-2
+State: unknown. unknown
+
+## observed-margin-2
+State: unknown. unknown
+
+## observed-fulfillment-2
+State: unknown. unknown
+
+## boxes-2
+State: unknown. unknown
+
+## items-per-box-2
+State: unknown. unknown
+
+## damage-percent-2
+State: unknown. unknown
+
+## order-quantity-2
+State: unknown. unknown
+
+## question-2
+State: unknown. unknown
+
+## shared-rule
+Validity premise for generated mathematical rules
+
+## delivery-note
+Tuesday
+
+## history
+[{:role "user", :content "A shipment contains 20 boxes of 12 items. We need to fulfill an order for 200 items. The damaged percentage has not been reported yet. What can we determine now, and what remains unresolved about the usable stock and whether we can fulfill the order?"}]
+
+## Binding directory
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- history [known]: vector with 1 elements | reference #propagators.ids.NodeId{:uuid #uuid "0fe8ab7f-b870-376e-a39d-64c0ddcd78d5"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "1150a2b9-d7da-36d9-8b3e-c7eaac3dbd9d"}
+- shared-rule [known]: Validity premise for generated mathematical rules | reference #propagators.ids.NodeId{:uuid #uuid "3b94df38-ee78-3700-9ca7-076ba55bf2f3"}
+- question-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "23be516b-ed70-3369-be87-7754f2b6930f"}
+- order-quantity-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "33b5096f-8a4e-380f-b0be-de2308e91789"}
+- damage-percent-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "9a623727-23e0-331a-9396-cba6eee0d506"}
+- items-per-box-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "439f4aff-0318-3b9c-bc6f-3263bc2ba7f8"}
+- boxes-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "77f85c46-f63a-32fa-98ff-982a40707554"}
+- observed-fulfillment-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "33f6df9d-d38d-3d5d-9f9b-250e12e8f2dd"}
+- observed-margin-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "faa30f99-5c1d-317d-b29b-aeee56288652"}
+- observed-usable-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "5142ac04-cff1-35c0-b4d6-8d1d357bd546"}
+- observed-total-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "42735509-826e-3c22-b14a-86ef119b2dde"}
+- user-output-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "f5cdcef9-b851-3f6c-ba38-323eab51d5de"}
+- question-1 [known]: A shipment contains 20 boxes of 12 items. We need to fulfill an order for 200 items. The damaged percentage has not been reported yet. What can we determine now | reference #propagators.ids.NodeId{:uuid #uuid "fb6f2447-2ab8-326b-a6a7-e676016d17c9"}
+- order-quantity-1 [known]: 200 | reference #propagators.ids.NodeId{:uuid #uuid "f63d8801-7835-34b6-8297-e56660d2e01a"}
+- damage-percent-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "39de9c85-199c-325c-a945-2efcc3368b96"}
+- items-per-box-1 [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "281663f2-ab75-3af7-a7f9-e00579e2e91a"}
+- boxes-1 [known]: 20 | reference #propagators.ids.NodeId{:uuid #uuid "a6996098-44a3-3931-9c6c-782ad637f2c5"}
+- observed-fulfillment-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "54fde4cb-42bb-3f6c-8f2e-a2081def0607"}
+- observed-margin-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "a53072df-0971-3cf6-b0d3-1f7d69841498"}
+- observed-usable-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "586b30b7-df7f-3fe1-a7fa-a0943a930a6a"}
+- observed-total-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "619db57e-0023-3bb9-b71c-a20e2e8d343e"}
+- user-output-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "836a9931-c532-3040-9fc9-89f32c67ba23"}
+- written-code [known]: vector with 0 elements | reference #propagators.ids.NodeId{:uuid #uuid "2e5ee8c6-1f52-3902-b726-73cbfa55f189"}
+- ask [known]: A shipment contains 20 boxes of 12 items. We need to fulfill an order for 200 items. The damaged percentage has not been reported yet. What can we determine now | reference #propagators.ids.NodeId{:uuid #uuid "5aa7331b-49ba-3c62-a812-aabb5062c75d"}
+- metadata-cell [known]: Names ending in -1 and -2 belong to separate shipments and questions. boxes-N, items-per-box-N, damage-percent-N and order-quantity-N are independently supporte | reference #propagators.ids.NodeId{:uuid #uuid "52eac1d3-06a1-3176-b141-a035a2119c7b"}
+- language-cell [known]: Lain uses (define name expression), (network [parameters] body), and prefix calls. + - * / >= and str are support-aware TTMS operators. Unknown operands leave d | reference #propagators.ids.NodeId{:uuid #uuid "9509a377-bc30-3315-beca-6f6b5fd27c42"}
+- context-cell [known]: One model worker and one lexical child stay alive across the questions. Earlier child bindings remain live and appear in the binding directory. written-code con | reference #propagators.ids.NodeId{:uuid #uuid "4d4d458e-e085-3ecd-a10b-826f58b30d3b"}
+- output-format-cell [known]: Read phase first. ANALYSIS phase: return only one EDN map, without Markdown. Required nonempty string fields: :outputs, :facts, :unknowns, :units, :relations, : | reference #propagators.ids.NodeId{:uuid #uuid "7bd0ba84-191b-3122-b883-5c6bd8e9663a"}
+- methodology-cell [known]: 1. Understand the problem. What is the unknown? What are the data and conditions? Separate known facts, estimates, assumptions and missing information. Identify | reference #propagators.ids.NodeId{:uuid #uuid "026a096f-f957-3b1f-90a5-6fd09f93f21c"}
+- role-cell [known]: You are an agent constructing Lain computations in a persistent lexical child. Follow phase and output-format-cell: analyze first, then implement. Computed answ | reference #propagators.ids.NodeId{:uuid #uuid "8235769e-6e52-381b-9094-a33c156c217c"}
+- seq:empty [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "de767f48-f66d-34e1-95e9-148486ade195"}
+- environment:overview [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f6447fc1-043e-3703-86bb-53fcd51311de"}
+- inspect:errors [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a4766f65-0d78-305c-ab2c-10a7fc12fe2a"}
+- inspect:cell [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a290dc25-dbce-33c9-8b02-386113df0be1"}
+- inspection-feedback [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "36a89a6a-2ebf-3e6e-962b-f0e7932a64eb"}
+- admission-status [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "2c39903c-14c4-3564-81d7-b1c68198e333"}
+- current-environment [known]: lexical environment propagators.ids.NodeId@468e046c | reference #propagators.ids.NodeId{:uuid #uuid "a6c98b4d-dd07-3a88-bd6a-d623b7215442"}
+- inspection-guide-cell [known]: Inspection is a problem-solving tool. Unknown does not by itself mean erroneous. A callable can exist without being invoked; an invocation can wait for missing  | reference #propagators.ids.NodeId{:uuid #uuid "e048b7f1-15ce-3582-950e-d93e5c57fb5b"}
+- procedure-cell [known]: Before answering every new question, always consider whether an earlier computation can solve it or a useful part of it. Inspect the visible bindings, earlier s | reference #propagators.ids.NodeId{:uuid #uuid "0a199c63-5c18-304c-98a1-27c19f195723"}
+- analysis-record [known]: 
+
+{:outputs "total items (computable now), usable stock (unknown until damage reported), margin over order (unknown), fulfillment boolean (unknown); plus a text | reference #propagators.ids.NodeId{:uuid #uuid "6fc57175-8660-3b64-8141-12077d13beae"}
+- phase [known]: implementation | reference #propagators.ids.NodeId{:uuid #uuid "bb52c8da-36d5-33d5-92b3-c590bfc91193"}

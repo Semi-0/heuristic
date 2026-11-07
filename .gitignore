@@ -2,3 +2,7 @@ __pycache__/
 .cpcache/
 experiments/live/bootstrap*.lain
 experiments/live/config.edn
+
+/runtime/soul-attempt-8/soul-network.edn
+
+/runtime/soul-attempt-9/soul-network.edn

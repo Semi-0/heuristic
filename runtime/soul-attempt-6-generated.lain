@@ -1,0 +1,22 @@
+(define history (behavior:scan (behavior:source) (network [acc msg] (seq:append acc msg)) (seq:empty)))
+
+(define user-events (event:point "user" 1 user-ingress))
+(-> user-events (behavior:source))
+
+(define reply-fn (network [content]
+  (define msg (data:record :id "assistant" :time 2 :role "assistant" :content content))
+  (define ack (message-to-user msg))
+  (-> ack (behavior:source))
+  ack))
+
+(define system-prompt (text:format "You are a helpful assistant. To reply, call (reply-fn \"your response\")."))
+
+(define request-fn (network [user-msg]
+  (define history-so-far (behavior:latest-value history (seq:empty)))
+  (define messages (seq:concat
+    (seq:append (seq:empty) (data:record :role "system" :content system-prompt))
+    (seq:map :role history-so-far)
+    (seq:append (seq:empty) user-msg)))
+  (model:request (data:record :id "req" :messages messages))))
+
+(-> (behavior:map user-events (network [msg] (request-fn msg))) (behavior:source))

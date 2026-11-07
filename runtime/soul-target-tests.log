@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE soul-target — Reducer source in a live lexical admission target
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 1 tests containing 1 assertions.
+0 failures, 0 errors.
+MODULE-RESULT soul-target {:test 1, :pass 1, :fail 0, :error 0}

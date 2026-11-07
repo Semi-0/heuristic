@@ -62,6 +62,8 @@
     (try
       (host/extend! owner (soul/extension owner journal))
       (host/extend! owner (premise/facilities))
+      (when (= "1" (System/getenv "LAIN_INSPECTION"))
+        (host/extend! owner ((requiring-resolve 'lain-harness.inspection-experiment/facilities))))
       (host/extend! owner (model/declaration root "soul-refined.lain"
         {:transport (fn [request]
                       (let [i (count (swap! requests conj (dissoc request :cancelled?)))]

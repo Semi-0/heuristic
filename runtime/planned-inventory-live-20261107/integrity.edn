@@ -1,0 +1,1 @@
+{:single-worker-each true, :corresponding-implementations-identical true, :completed true, :fresh-sessions true, :four-requests-each true, :implementation-only-history true, :stable-identities true, :unchanged-plans-in-implementation-context true, :phase-order true}

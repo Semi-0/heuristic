@@ -1,0 +1,61 @@
+;; Three actors; four high-level interactions. Pi owns its child agents.
+;; Actor data, accessors and task policies remain partial until session extension.
+(load-lain "propagators/compiler_2/runtime/lain/tracers.lain")
+
+(<-> (assignments user) 
+     (assignments evaluation-framework))
+
+(-> (on-going-assignment evaluation-framework) 
+    (execute-assignment runtime))
+
+(-> (assignment-result runtime)
+    (assignment-result evaluation-framework))
+
+(display (trace:root-semantic user))
+
+
+
+
+
+(define assign-evaluation
+  (network [input-1 input-2]
+    (define out)
+    out))
+
+(define delegate-assignment
+  (network [input-1 input-2]
+    (define out)
+    out))
+
+(define on-going-assignment
+  (network [input-1]
+    (define out)
+    out))
+
+(define receive-assignment
+  (network [input]
+   (list input)))
+
+(define receive-assignment-result
+  (network [input]
+     (list input)))
+
+(define a)
+
+(define assignments
+  (network [input]
+    (list input)))
+
+
+
+(define b)
+
+(define assignment-result
+  (network [input-1]
+    (define out)
+    out))
+
+(define execute-assignment
+  (network [input-1]
+    (define out)
+    out))

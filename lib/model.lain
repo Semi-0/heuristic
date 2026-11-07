@@ -1,3 +1,12 @@
+(load-lain "lib/behavior-core.lain")
+(load-lain "lib/data.lain")
+(load-lain "lib/ports.lain")
+(load-lain "lib/queue.lain")
+(load-lain "lib/rounds.lain")
+(load-lain "lib/compiler.lain")
+
+;; The reducer is a pure Compiler-2 callable. Connections below only admit events
+;; and project effects; no relationship independently starts or settles a round.
 (define model:initial
   (network [capacity budget]
            (data:record :version 0 :inputs (queue:empty capacity) :outputs (queue:empty capacity)
@@ -18,7 +27,7 @@
                                    (data:record :diagnostic (str "Queue " (data:get :status offered))
                                                 :round (round:finish (data:get :round state) true)))]))))
 
-(define model:start
+(define model:reduce-start
   (network [state event context]
            (let [round (data:get :round state)
                  prepared (if (= (data:get :kind event) :user)
@@ -45,86 +54,144 @@
                                                 (round:resume (data:get :round state))
                                                 (data:get :round state))))))
 
-(define model:step
-  (network [state users events delivered commands context]
-           (let [inputs (data:get :inputs state)
-                 outputs (data:get :outputs state)
-                 new-commands (queue:unseen commands (data:get :commands state))
-                 new-users (queue:unseen users (data:get :history inputs))
-                 new-events (queue:unseen events (data:get :history outputs))
-                 new-deliveries (queue:unseen delivered (data:get :deliveries state))]
-             (cond [(not (data:empty? new-commands))
-                    (model:command state (data:get :car new-commands))
+(define model:reduce-event
+  (network [state event]
+    (let [kind (data:get :kind event) payload (data:get :payload event)]
+      (cond [(= kind :user) (model:offer state :inputs (data:get :inputs state) payload)
+             (= kind :source)
+             (if (= (data:get :kind payload) :failure)
+               (state:advance state
+                 (data:record :active :idle :round (round:finish (data:get :round state) true)
+                              :diagnostic (data:get :payload payload)))
+               (model:offer state :outputs (data:get :outputs state) payload))
+             (= kind :delivery)
+             (state:advance state
+               (data:record :deliveries (queue:append-list (data:get :deliveries state) payload)
+                            :history (queue:append-list (data:get :history state)
+                                       (data:record :role "assistant" :content (data:get :payload payload)))))
+             (= kind :context)
+             (if (data:equal? (data:get :context state) payload) state
+               (if (= (data:get :context state) :uninitialized)
+                 (state:advance state (data:record :context payload))
+                 (data:with
+                   (model:offer state :inputs (data:get :inputs state)
+                     (data:record :id payload :kind :feedback :payload (str payload)))
+                   (data:record :context payload))))
+             (= kind :command) (model:command state payload)
+             (= kind :compiler)
+             (if (= (data:get :expected payload) (data:get :version state))
+               (data:get :next payload) state)
+             else state]))))
 
-                    (not (data:empty? new-events))
-                    (let [event (data:get :car new-events)]
-                      (if (= (data:get :kind event) :failure)
-                        (state:advance state
-                                       (data:record :active :idle
-                                                    :round (round:finish (data:get :round state) true)
-                                                    :outputs (data:get :state (queue:offer outputs event))
-                                                    :diagnostic (data:get :payload event)))
-                        (model:offer state :outputs outputs event)))
+(define model:reduce-settle
+  (network [state]
+    (let [inputs (data:get :inputs state)]
+      (if (and (not (= (data:get :active state) :idle))
+               (= (data:get :status (data:get :parser state)) :done)
+               (= (data:get :count (data:get :outputs state)) 0))
+        (state:advance state
+          (data:record :active :idle :round (round:finish (data:get :round state) false)
+                       :inputs (data:get :state (queue:acknowledge inputs
+                                  (data:get :id (data:get :car (data:get :pending inputs)))))))
+        state))))
 
-                    (not (data:empty? new-users))
-                    (model:offer state :inputs inputs (data:get :car new-users))
+(define model:reduce
+  (network [previous event]
+    (let [state (model:reduce-settle (data:snapshot (model:reduce-event previous event)))
+          inputs (data:get :inputs state)]
+      (if (and (= (data:get :active state) :idle)
+               (not (= (data:get :context state) :uninitialized))
+               (> (data:get :count inputs) 0))
+        (model:reduce-start state (data:get :car (data:get :pending inputs))
+                            (data:get :context state))
+        state))))
 
-                    (not (data:empty? new-deliveries))
-                    (let [delivery (data:get :car new-deliveries)]
-                      (state:advance state
-                                     (data:record :deliveries (queue:append-list (data:get :deliveries state) delivery)
-                                                  :history (queue:append-list (data:get :history state)
-                                                                              (data:record :role "assistant" :content (data:get :payload delivery))))))
+;; Admission gives events an explicit logical time, independent of propagator
+;; activation. CAS orders concurrent connections; stable IDs suppress replay.
+;; This finite journal retains the exact admitted sequence for deterministic scan.
+(define model:record
+  (network [journal-cell identity kind payload]
+    (define no-event)
+    (let [journal (cell:value journal-cell)
+          events (data:get :events journal)]
+      (session:feedback journal-cell (data:get :version journal)
+        (if (or (= identity :idle) (queue:contains events identity)) no-event
+          (state:advance journal
+            (data:record :events
+              (queue:append-list events
+                (data:record :id identity :time (+ 1 (data:get :version journal))
+                             :value (data:record :kind kind :payload payload))))))))))
 
-                    (not (data:equal? (data:get :context state) context))
-                    (if (= (data:get :context state) :uninitialized)
-                      (state:advance state (data:record :context context))
-                      (data:with
-                       (model:offer state :inputs inputs
-                                    (data:record :id context :kind :feedback :payload (str context)))
-                       (data:record :context context)))
+(define model:unseen
+  (network [recorded kind events]
+    (cond [(data:empty? events) (data:list)
+           (queue:contains recorded
+             (data:record :connection kind :event (data:get :id (data:get :car events))))
+           (model:unseen recorded kind (data:get :cdr events))
+           else events])))
 
-                    (= (data:get :active state) :idle)
-                    (if (data:empty? (data:get :pending inputs)) state
-                        (model:start state (data:get :car (data:get :pending inputs)) context))
+(define model:connect-events
+  (network [journal-cell kind events]
+    (let [journal (cell:value journal-cell)
+          unseen (model:unseen (data:get :events journal) kind events)
+          event (if (data:empty? unseen) :idle (data:get :car unseen))]
+      (model:record journal-cell
+        (if (= event :idle) :idle (data:record :connection kind :event (data:get :id event)))
+        kind event))))
 
-                    (= (data:get :status (data:get :parser state)) :done)
-                    (state:advance state
-                                   (data:record :active :idle
-                                                :round (round:finish (data:get :round state) false)
-                                                :inputs (data:get :state
-                                                                  (queue:acknowledge inputs
-                                                                                     (data:get :id (data:get :car (data:get :pending inputs)))))))
-                    else state]))))
+(define model:connect-context
+  (network [journal-cell context]
+    (model:record journal-cell (data:record :connection :context :event context) :context context)))
+
+;; A compiler is independently connected through compare-and-transition events.
+;; Stale proposals are harmless; the reducer validates the expected state version.
+(define model:connect-transition
+  (network [journal state next]
+    (model:record journal
+      (if (data:equal? state next) :idle
+        (data:record :connection :compiler :expected (data:get :version state) :next next))
+      :compiler (data:record :expected (data:get :version state) :next next))))
+
+(define model:connect-request
+  (network [state request events-cell]
+    (request (data:snapshot (data:get :active state)) events-cell)))
 
 (define model:connect
   (network [model description user-cell]
-           (let [state (cell:value ((slot :state-cell) model))
-                 next (model:step state (cell:value user-cell) (cell:value ((slot :events-cell) model))
-                                  (cell:value ((slot :delivered-cell) model))
-                                  (cell:value ((slot :commands-cell) model)) (data:snapshot description))]
-             (session:feedback ((slot :state-cell) model) (data:get :version state) next)
-             (((slot :request) model) (data:snapshot (data:get :active state)) ((slot :events-cell) model))
-             :connected)))
-(define actions-of (network [model] model))
-(define inputs-of (network [model] (cell:input ((slot :inlet) model))))
+    (let [journal ((slot :journal-cell) model)
+          state (cell:value ((slot :state-cell) model))]
+      (model:connect-events journal :user (cell:value user-cell))
+      (model:connect-events journal :source (cell:value ((slot :events-cell) model)))
+      (model:connect-events journal :delivery (cell:value ((slot :delivered-cell) model)))
+      (model:connect-events journal :command (cell:value ((slot :commands-cell) model)))
+      (model:connect-context journal (data:snapshot description))
+      (model:connect-request state ((slot :request) model) ((slot :events-cell) model))
+      :connected)))
 
-;; Model topology and initial values belong here, not in an extension's :cells.
+(define actions-of (network [model] model))
+(define inputs-of (slot :inlet))
+
 (define model:new
   (network [identity request capacity budget user]
-           (define inlet)
-           (let [state (source:new (data:with (model:initial capacity budget)
-                                              (data:record :model-id identity)))
-                 events (source:new (data:list))
-                 delivered (source:new (data:list))
-                 commands (source:new (data:list))
-                 premise (source:new identity)
-                 instance (struct :state-cell state :inlet (cell:reference inlet)
-                                  :events-cell events :delivered-cell delivered
-                                  :commands-cell commands :request request :premise premise)]
-             (session:export :model identity :model state)
-             (session:export :source identity :source events)
-             (session:export :messages identity :messages delivered)
-             (session:export :control identity :model-control commands)
-             (model:connect instance inlet user)
-             instance)))
+    (define inlet)
+    (let [initial (data:with (model:initial capacity budget) (data:record :model-id identity))
+          journal (source:new (data:record :version 0 :events (data:list)))
+          occurrences (behavior:from-events (data:get :events (cell:value journal)))
+          states (behavior:scan occurrences model:reduce initial)
+          current (behavior:current states initial)
+          state (cell:reference current)
+          events (source:new (data:list))
+          delivered (source:new (data:list))
+          commands (source:new (data:list))
+          premise (source:new identity)
+          transition (network [previous next] (model:connect-transition journal previous next))
+          instance (struct :transition transition :state-cell state :inlet inlet :journal-cell journal
+                           :events-cell events :delivered-cell delivered
+                           :commands-cell commands :request request :premise premise)]
+      (session:export :model identity :model state)
+      (session:export :journal identity :event-journal journal)
+      (session:export :source identity :source events)
+      (session:export :messages identity :messages delivered)
+      (session:export :control identity :model-control commands)
+      (model:connect instance inlet user)
+      instance)))

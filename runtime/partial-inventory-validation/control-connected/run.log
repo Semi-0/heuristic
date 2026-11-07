@@ -1,0 +1,9 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-partial-inventory.XCXZCI/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+WARNING: ancestors already refers to: #'clojure.core/ancestors in namespace: user, being replaced by: #'user/ancestors
+Syntax error reading source at (/tmp/lain-partial-inventory.XCXZCI/tools/probe_partial_inventory.clj:149:84).
+Unmatched delimiter: ]
+
+Full report at:
+/tmp/clojure-18018911453763936787.edn

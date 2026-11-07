@@ -1,0 +1,5 @@
+ propagators/compiler_2/session.clj             | 31 ++++++++++++------
+ propagators/compiler_2/session/files.clj       | 37 +++++++++++++++-------
+ propagators/experimental/temporal_behavior.clj | 44 ++++++++++++++++++--------
+ propagators/stdlib/observation.clj             |  8 +++--
+ 4 files changed, 83 insertions(+), 37 deletions(-)

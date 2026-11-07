@@ -1,0 +1,76 @@
+;; Application vocabulary: three actor data structures and two composing networks.
+;; Constructors/accessors are reactive interfaces; their slot-backed bodies remain
+;; unresolved. They must preserve partial fields, not unwrap complete actor values.
+
+;; Harbor: trial inputs and execution reports. Harbor alone grades correctness.
+(define harbor:make)
+(define harbor:trials)
+(define harbor:report)
+
+;; Interactive user: commands in, state/receipts/diagnostics out.
+(define user:make)
+(define user:commands)
+(define user:feedback)
+
+;; Pi/subagent runtime: intended requests in, observations/artifacts out.
+(define pi:make)
+(define pi:requests)
+(define pi:observations)
+
+;; Coordination is a declaration of the internal harness, to be refined later
+;; into ordered event accumulation, the pure FSM and the session effect boundary.
+;; Its outputs are intentions and evidence; it never performs external I/O.
+(define subagent:coordinate)
+(define subagent:requests)
+(define subagent:feedback)
+(define subagent:report)
+
+;; Connect domain ports without choosing their representation or transport.
+(define connect-actors
+  (network [harbor user-input pi-runtime]
+    (define coordination
+      (subagent:coordinate
+        (harbor:trials harbor)
+        (user:commands user-input)
+        (pi:observations pi-runtime)))
+    (define requests (pi:requests pi-runtime))
+    (define feedback (user:feedback user-input))
+    (define report (harbor:report harbor))
+    (-> (subagent:requests coordination) requests)
+    (-> (subagent:feedback coordination) feedback)
+    (-> (subagent:report coordination) report)
+    coordination))
+
+;; These interfaces will connect actor accessors to the session extension's
+;; external effect/observation ports. Outside handlers own bridges, sockets/RPC,
+;; child processes, receipts and cleanup; these declarations do not invoke them.
+(define harbor:interpret)
+(define user:interpret)
+(define pi:interpret)
+
+(define interpret-actors
+  (network [backend session harbor user-input pi-runtime]
+    (define harbor-connection (harbor:interpret backend session harbor))
+    (define user-connection (user:interpret backend session user-input))
+    (define pi-connection (pi:interpret backend session pi-runtime))
+    (list harbor-connection user-connection pi-connection)))
+
+;; Construct the actors, then compose their internal wiring and outside bindings.
+;; One session extension will supply the interpreter capabilities. Observation
+;; mode leaves external work unresolved; recorded replay must use recorded facts
+;; and must never resolve live handlers. Reopening this file launches no children.
+(def-cells session-context)
+(define backend :observe)
+(define harbor (harbor:make :harbor))
+(define user-input (user:make :user-input))
+(define pi-runtime (pi:make :pi-runtime))
+(define coordination (connect-actors harbor user-input pi-runtime))
+(define interpretation
+  (interpret-actors backend session-context harbor user-input pi-runtime))
+
+;; Inspect actor structures and both networks through the existing tracer.
+(display
+  (relationship:with-values
+    (relationship:dataflow
+      (relationship:roots
+        (list harbor user-input pi-runtime coordination interpretation)))))

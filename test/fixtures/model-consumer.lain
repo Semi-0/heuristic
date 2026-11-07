@@ -1,0 +1,13 @@
+;; Independent downstream test double: acknowledge events without parsing or IO.
+(define test:consume-model-output
+  (network [model]
+    (let [state (cell:value ((slot :state-cell) model))
+          output (data:get :outputs state)
+          next (if (data:empty? (data:get :pending output)) state
+                 (let [event (data:get :car (data:get :pending output))
+                       parser (data:get :parser state)]
+                   (state:advance state
+                     (data:record :outputs (data:get :state (queue:acknowledge output (data:get :id event)))
+                                  :parser (if (= (data:get :kind event) :complete)
+                                            (data:with parser (data:record :status :done)) parser)))))]
+      (((slot :transition) model) state next))))

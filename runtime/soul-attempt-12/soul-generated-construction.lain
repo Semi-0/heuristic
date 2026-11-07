@@ -1,0 +1,28 @@
+
+
+(define conv:user-source (behavior:source))
+(define conv:assistant-source (behavior:source))
+(-> user-ingress conv:user-source)
+(define conv:user-history (behavior:scan conv:user-source seq:append (seq:empty)))
+(define conv:assistant-history (behavior:scan conv:assistant-source seq:append (seq:empty)))
+(define conv:user-latest (behavior:latest-value conv:user-source))
+(define conv:user-msgs (behavior:map conv:user-history (network [xs] (seq:project :content xs))))
+(define conv:assistant-msgs (behavior:map conv:assistant-history (network [xs] (seq:project :content xs))))
+(define conv:user-ids (behavior:map conv:user-history (network [xs] (seq:project :id xs))))
+(define conv:assistant-ids (behavior:map conv:assistant-history (network [xs] (seq:project :id xs))))
+(define conv:user-times (behavior:map conv:user-history (network [xs] (seq:project :time xs))))
+(define conv:assistant-times (behavior:map conv:assistant-history (network [xs] (seq:project :time xs))))
+(define conv:reply (network [content]
+  (let [ack (message-to-user (data:record :id "assistant-reply" :time 0 :role "assistant" :content content))]
+    (-> ack conv:assistant-source)
+    ack)))
+(define conv:sys-msg (data:record :role "system" :content "To reply, emit exactly: (conv:reply \"your message text\")"))
+(define conv:build-request (network [uid utime ucontent uids utimes aids atimes amsgs]
+  (let [umsgs (seq:map (network [i t c] (data:record :role "user" :content c)) uids utimes ucontent)
+        amsgs (seq:map (network [i t c] (data:record :role "assistant" :content c)) aids atimes amsgs)
+        msgs (seq:concat (seq:append (seq:empty) conv:sys-msg) umsgs amsgs)]
+    (model:request (data:record :id uid :messages msgs)))))
+(-> (seq:last conv:user-ids) (cell:input (data:get :model-output memory-cell)))
+(-> (seq:last conv:user-times) (cell:input (data:get :model-output memory-cell)))
+(-> conv:user-latest (cell:input (data:get :model-output memory-cell)))
+(-> (seq:last conv:user-ids) (cell:input (data:get :model-output memory-cell)))

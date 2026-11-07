@@ -1,0 +1,21 @@
+;; Three actors connected by declarative relations. Actor implementations and
+;; outside handlers remain partial until a session extension supplies them.
+(load-lain "propagators/compiler_2/runtime/lain/tracers.lain")
+(load-lain "/home/lain/projects/lain-workspace/examples/lain/subagents/evaluation-framework-30af9fae.lain")
+
+(def-cells user runtime)
+(define execute-assignment)
+(define evaluation-framework (make-evaluation-framework))
+
+(<-> (assignments user)
+     (assignments evaluation-framework))
+
+(-> (on-going-assignment evaluation-framework)
+    (execute-assignment runtime))
+
+(-> (assignment-result runtime)
+    (assignment-result evaluation-framework))
+
+;; Shared assignment facts include framework progress and graded outcomes.
+;; Socket/RPC adapters, Harbor preparation/grading and Pi effects stay outside.
+(display (trace:root-semantic user))

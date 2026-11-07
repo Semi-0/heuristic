@@ -159,7 +159,12 @@
                  {:id ::compositional-library
                   :read-files ["propagators/compiler_2/runtime/lain/combinator.lain"
                                "propagators/compiler_2/runtime/lain/list.lain"]})
-        parts (session/extension-parts library)
+        library-parts (session/extension-parts library)
+        model-parts (session/extension-parts
+                     (files/prepare-extension!
+                      {:id ::model-library :root (.getParent (java.io.File. path))
+                       :read-files ["lib/model.lain"]}))
+        parts (merge-with merge library-parts model-parts)
         owner (:owner services)
         root (.getParent (java.io.File. path))
         files (merge (:files parts)

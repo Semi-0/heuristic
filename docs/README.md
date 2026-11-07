@@ -4,7 +4,16 @@ The guide and examples are copied from the local Lain source tree at `projects/d
 
 `soul-refined.lain` contributes a language-guide index and harness context through Lain environment composition. The index identifies documents; it does not pretend to load their contents. A future document capability must preserve source identity and revision when contributing contents. No generated bootstrap or fixed host description schema is required.
 
+## Research intention
+
+- [Lain Agent Harness](lain-agent-harness-proposal.md): the author's version 0.1 proposal for persistent computational networks as executable agent memory.
+- [Experiment intention and next steps](experiment-intention.md): how wiring the model into `soul-refined.lain` tests executable reuse, the implementation rounds, and the separate persistence milestone.
+
 ## Experiment records
+
+- [Explicit analysis and inventory implementation](2026-11-07-planned-inventory-experiment.md): three two-stage trials, visible look-back decisions, and independent correctness checks.
+
+- [Inspection examples and response format](2026-11-07-inspection-context-experiment.md): three fresh trials, actual inspection usage, partial completion, and remaining support/text failures.
 
 - [Generalize reuse experiment](2026-11-06-generalize-reuse-experiment.md)
 - [Lookback reuse experiment](2026-11-06-lookback-reuse-experiment.md)

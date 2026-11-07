@@ -1,0 +1,290 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:setup {:status :admitted, :response "setup", :forms 7, :receipts [{:status :admitted, :extension [:lain-admission ["setup" 0]]} {:status :admitted, :extension [:lain-admission ["setup" 1]]} {:status :admitted, :extension [:lain-admission ["setup" 2]]} {:status :admitted, :extension [:lain-admission ["setup" 3]]} {:status :admitted, :extension [:lain-admission ["setup" 4]]} {:status :admitted, :extension [:lain-admission ["setup" 5]]} {:status :admitted, :extension [:lain-admission ["setup" 6]]}]}, :journal [{:response "setup", :form 0, :source "\n\n(define orient:source (behavior:source))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 0]]}} {:response "setup", :form 1, :source "\n(-> (event:point \"a\" 1 2) orient:source)", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 1]]}} {:response "setup", :form 2, :source "\n(-> (event:point \"b\" 2 3) orient:source)", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 2]]}} {:response "setup", :form 3, :source "\n(define orient:sum (behavior:scan orient:source + 0))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 3]]}} {:response "setup", :form 4, :source "\n(define orient:reading (behavior:latest-value orient:sum 0))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 4]]}} {:response "setup", :form 5, :source "\n(-> (cell:value (cell:reference orient:reading)) (cell:input (data:get :orientation-value memory-cell)))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 5]]}} {:response "setup", :form 6, :source "\n(-> (inspect:cell (cell:reference orient:reading)) (cell:input (data:get :orientation-edge memory-cell)))", :completion-reference #propagators.ids.NodeId{:uuid #uuid "e5625e1f-ff66-3eb7-a4e4-4d969d5e2f50"}, :receipt {:status :admitted, :extension [:lain-admission ["setup" 6]]}}]}
+{:orientation {:value 5, :edge {:edge #propagators.ids.NodeId{:uuid #uuid "4a1e0a21-c590-3d2b-98a9-014906c5e642"}, :value 5, :inputs #{#propagators.ids.NodeId{:uuid #uuid "01a1a967-5bd3-7203-9553-c1e8ef216f13"} #propagators.ids.NodeId{:uuid #uuid "42648cde-2739-366e-9254-9e43387bb2b8"} #propagators.ids.NodeId{:uuid #uuid "01a1a967-5b34-73bf-a74f-242b2438b18d"} #propagators.ids.NodeId{:uuid #uuid "e192e7d7-ad7f-3b53-88db-244daa35768a"} #propagators.ids.NodeId{:uuid #uuid "c9213162-e81a-362a-9792-7b10c4eddd6a"}}, :outputs #{#propagators.ids.NodeId{:uuid #uuid "6a75efa6-1b1d-3660-9ea0-87a7dbeb4050"} #propagators.ids.NodeId{:uuid #uuid "01a1a967-5bd3-7203-9553-c1e8ef216f12"} #propagators.ids.NodeId{:uuid #uuid "01a1a967-5bd3-7203-9553-c1e8ef216f14"} #propagators.ids.NodeId{:uuid #uuid "beed6d0f-02ce-3a82-8277-5dc9364e2e02"} #propagators.ids.NodeId{:uuid #uuid "e192e7d7-ad7f-3b53-88db-244daa35768a"} #propagators.ids.NodeId{:uuid #uuid "01a1a967-5b34-73bf-a74f-242b2438b18e"} #propagators.ids.NodeId{:uuid #uuid "01a1a967-5b34-73bf-a74f-242b2438b18c"} #propagators.ids.NodeId{:uuid #uuid "c9213162-e81a-362a-9792-7b10c4eddd6a"}}}}}
+2026-11-05 02:53:41
+Full thread dump OpenJDK 64-Bit Server VM (21.0.12.1+1-LTS mixed mode, sharing):
+
+Threads class SMR info:
+_java_thread_list=0x0000e35364128b00, length=17, elements={
+0x0000e353bc02c220, 0x0000e353bc5f6e40, 0x0000e353bc5f8440, 0x0000e353bc5f9bf0,
+0x0000e353bc5fb250, 0x0000e353bc5fc810, 0x0000e353bc5fe380, 0x0000e353bc5ffa60,
+0x0000e353bc60c320, 0x0000e353bc60f940, 0x0000e353bed37fa0, 0x0000e3534406aea0,
+0x0000e353444dd480, 0x0000e3534c03b390, 0x0000e3534c041140, 0x0000e3533c001fe0,
+0x0000e3534c041c50
+}
+
+"main" #1 [619187] prio=5 os_prio=0 cpu=56723.74ms elapsed=184.37s tid=0x0000e353bc02c220 nid=619187 waiting on condition  [0x0000e353c1b0d000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep0(java.base@21.0.12.1/Native Method)
+	at java.lang.Thread.sleep(java.base@21.0.12.1/Thread.java:509)
+	at probe_soul$await_BANG_.invokeStatic(probe_soul.clj:29)
+	at probe_soul$await_BANG_.invoke(probe_soul.clj:21)
+	at probe_soul$eval25993.invokeStatic(probe_soul.clj:54)
+	at probe_soul$eval25993.invoke(probe_soul.clj:30)
+	at clojure.lang.Compiler.eval(Compiler.java:7757)
+	at clojure.lang.Compiler.load(Compiler.java:8223)
+	at clojure.lang.Compiler.loadFile(Compiler.java:8161)
+	at clojure.main$load_script.invokeStatic(main.clj:476)
+	at clojure.main$script_opt.invokeStatic(main.clj:536)
+	at clojure.main$script_opt.invoke(main.clj:531)
+	at clojure.main$main.invokeStatic(main.clj:665)
+	at clojure.main$main.doInvoke(main.clj:617)
+	at clojure.lang.RestFn.applyTo(RestFn.java:140)
+	at clojure.lang.Var.applyTo(Var.java:707)
+	at clojure.main.main(main.java:40)
+
+"Reference Handler" #9 [619195] daemon prio=10 os_prio=0 cpu=6.28ms elapsed=184.35s tid=0x0000e353bc5f6e40 nid=619195 waiting on condition  [0x0000e353a078e000]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.ref.Reference.waitForReferencePendingList(java.base@21.0.12.1/Native Method)
+	at java.lang.ref.Reference.processPendingReferences(java.base@21.0.12.1/Reference.java:246)
+	at java.lang.ref.Reference$ReferenceHandler.run(java.base@21.0.12.1/Reference.java:208)
+
+"Finalizer" #10 [619196] daemon prio=8 os_prio=0 cpu=0.31ms elapsed=184.35s tid=0x0000e353bc5f8440 nid=619196 in Object.wait()  [0x0000e353a0590000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait0(java.base@21.0.12.1/Native Method)
+	- waiting on <0x0000000080000888> (a java.lang.ref.NativeReferenceQueue$Lock)
+	at java.lang.Object.wait(java.base@21.0.12.1/Object.java:366)
+	at java.lang.Object.wait(java.base@21.0.12.1/Object.java:339)
+	at java.lang.ref.NativeReferenceQueue.await(java.base@21.0.12.1/NativeReferenceQueue.java:48)
+	at java.lang.ref.ReferenceQueue.remove0(java.base@21.0.12.1/ReferenceQueue.java:158)
+	at java.lang.ref.NativeReferenceQueue.remove(java.base@21.0.12.1/NativeReferenceQueue.java:89)
+	- locked <0x0000000080000888> (a java.lang.ref.NativeReferenceQueue$Lock)
+	at java.lang.ref.Finalizer$FinalizerThread.run(java.base@21.0.12.1/Finalizer.java:173)
+
+"Signal Dispatcher" #11 [619197] daemon prio=9 os_prio=0 cpu=0.16ms elapsed=184.35s tid=0x0000e353bc5f9bf0 nid=619197 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Service Thread" #12 [619198] daemon prio=9 os_prio=0 cpu=18.69ms elapsed=184.35s tid=0x0000e353bc5fb250 nid=619198 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Monitor Deflation Thread" #13 [619199] daemon prio=9 os_prio=0 cpu=27.18ms elapsed=184.35s tid=0x0000e353bc5fc810 nid=619199 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" #14 [619200] daemon prio=9 os_prio=0 cpu=5141.92ms elapsed=184.35s tid=0x0000e353bc5fe380 nid=619200 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   No compile task
+
+"C1 CompilerThread0" #22 [619201] daemon prio=9 os_prio=0 cpu=894.68ms elapsed=184.35s tid=0x0000e353bc5ffa60 nid=619201 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   No compile task
+
+"Notification Thread" #26 [619202] daemon prio=9 os_prio=0 cpu=0.07ms elapsed=184.35s tid=0x0000e353bc60c320 nid=619202 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Common-Cleaner" #27 [619203] daemon prio=8 os_prio=0 cpu=0.96ms elapsed=184.35s tid=0x0000e353bc60f940 nid=619203 waiting on condition  [0x0000e35390407000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x0000000080000958> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(java.base@21.0.12.1/LockSupport.java:269)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1886)
+	at java.lang.ref.ReferenceQueue.await(java.base@21.0.12.1/ReferenceQueue.java:71)
+	at java.lang.ref.ReferenceQueue.remove0(java.base@21.0.12.1/ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(java.base@21.0.12.1/ReferenceQueue.java:218)
+	at jdk.internal.ref.CleanerImpl.run(java.base@21.0.12.1/CleanerImpl.java:140)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+	at jdk.internal.misc.InnocuousThread.run(java.base@21.0.12.1/InnocuousThread.java:186)
+
+"lain-dependency-delivery" #45 [619245] daemon prio=5 os_prio=0 cpu=5.60ms elapsed=159.90s tid=0x0000e353bed37fa0 nid=619245 waiting on condition  [0x0000e35357dff000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x000000008235ae38> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:371)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:519)
+	at java.util.concurrent.ForkJoinPool.unmanagedBlock(java.base@21.0.12.1/ForkJoinPool.java:3780)
+	at java.util.concurrent.ForkJoinPool.managedBlock(java.base@21.0.12.1/ForkJoinPool.java:3725)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1746)
+	at java.util.concurrent.ArrayBlockingQueue.take(java.base@21.0.12.1/ArrayBlockingQueue.java:420)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@21.0.12.1/ThreadPoolExecutor.java:1070)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1130)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"async-mixed-1" #46 [619246] daemon prio=5 os_prio=0 cpu=336.88ms elapsed=159.88s tid=0x0000e3534406aea0 nid=619246 waiting on condition  [0x0000e35390209000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x00000000877719a8> (a java.util.concurrent.CountDownLatch$Sync)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:221)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:788)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1133)
+	at java.util.concurrent.CountDownLatch.await(java.base@21.0.12.1/CountDownLatch.java:230)
+	at clojure.core$promise$reify__8625.deref(core.clj:7257)
+	at clojure.core$deref.invokeStatic(core.clj:2337)
+	at clojure.core$deref.invoke(core.clj:2323)
+	at clojure.core.async$fn__33943.invokeStatic(async.clj:344)
+	at clojure.core.async$fn__33943.doInvoke(async.clj:333)
+	at clojure.lang.RestFn.invoke(RestFn.java:442)
+	at lain_harness.model_io$run_worker_BANG_$fn__36490.invoke(model_io.clj:45)
+	at clojure.lang.AFn.applyToHelper(AFn.java:152)
+	at clojure.lang.AFn.applyTo(AFn.java:144)
+	at clojure.core$apply.invokeStatic(core.clj:667)
+	at clojure.core$with_bindings_STAR_.invokeStatic(core.clj:1990)
+	at clojure.core$with_bindings_STAR_.doInvoke(core.clj:1990)
+	at clojure.lang.RestFn.invoke(RestFn.java:428)
+	at clojure.lang.AFn.applyToHelper(AFn.java:156)
+	at clojure.lang.RestFn.applyTo(RestFn.java:135)
+	at clojure.core$apply.invokeStatic(core.clj:671)
+	at clojure.core$bound_fn_STAR_$fn__5839.doInvoke(core.clj:2020)
+	at clojure.lang.RestFn.invoke(RestFn.java:400)
+	at clojure.core.async$thread_call$returning_to_chan__34018$fn__34019.invoke(async.clj:509)
+	at clojure.lang.AFn.run(AFn.java:22)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1144)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"lain-session-inputs" #47 [619247] daemon prio=5 os_prio=0 cpu=2135.83ms elapsed=159.88s tid=0x0000e353444dd480 nid=619247 waiting on condition  [0x0000e35357ffd000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x00000000822dcad0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:371)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:519)
+	at java.util.concurrent.ForkJoinPool.unmanagedBlock(java.base@21.0.12.1/ForkJoinPool.java:3780)
+	at java.util.concurrent.ForkJoinPool.managedBlock(java.base@21.0.12.1/ForkJoinPool.java:3725)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1746)
+	at java.util.concurrent.LinkedBlockingQueue.take(java.base@21.0.12.1/LinkedBlockingQueue.java:435)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@21.0.12.1/ThreadPoolExecutor.java:1070)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1130)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"lain-dependency-delivery" #48 [619248] daemon prio=5 os_prio=0 cpu=2.37ms elapsed=159.76s tid=0x0000e3534c03b390 nid=619248 waiting on condition  [0x0000e35357c01000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x000000008235ae38> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:371)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:519)
+	at java.util.concurrent.ForkJoinPool.unmanagedBlock(java.base@21.0.12.1/ForkJoinPool.java:3780)
+	at java.util.concurrent.ForkJoinPool.managedBlock(java.base@21.0.12.1/ForkJoinPool.java:3725)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1746)
+	at java.util.concurrent.ArrayBlockingQueue.take(java.base@21.0.12.1/ArrayBlockingQueue.java:420)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@21.0.12.1/ThreadPoolExecutor.java:1070)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1130)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"lain-dependency-delivery" #49 [619249] daemon prio=5 os_prio=0 cpu=1.55ms elapsed=159.76s tid=0x0000e3534c041140 nid=619249 waiting on condition  [0x0000e35357a03000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x000000008235ae38> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:371)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:519)
+	at java.util.concurrent.ForkJoinPool.unmanagedBlock(java.base@21.0.12.1/ForkJoinPool.java:3780)
+	at java.util.concurrent.ForkJoinPool.managedBlock(java.base@21.0.12.1/ForkJoinPool.java:3725)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1746)
+	at java.util.concurrent.ArrayBlockingQueue.take(java.base@21.0.12.1/ArrayBlockingQueue.java:420)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@21.0.12.1/ThreadPoolExecutor.java:1070)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1130)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"async-mixed-2" #50 [619250] daemon prio=5 os_prio=0 cpu=2.32ms elapsed=159.76s tid=0x0000e3533c001fe0 nid=619250 waiting on condition  [0x0000e35357805000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x00000000877721b8> (a java.util.concurrent.CountDownLatch$Sync)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:221)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:788)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1133)
+	at java.util.concurrent.CountDownLatch.await(java.base@21.0.12.1/CountDownLatch.java:230)
+	at clojure.core$promise$reify__8625.deref(core.clj:7257)
+	at clojure.core$deref.invokeStatic(core.clj:2337)
+	at clojure.core$deref.invoke(core.clj:2323)
+	at clojure.core.async$fn__33943.invokeStatic(async.clj:344)
+	at clojure.core.async$fn__33943.doInvoke(async.clj:333)
+	at clojure.lang.RestFn.invoke(RestFn.java:442)
+	at lain_harness.model_io$subscribe_BANG_$fn__36512.invoke(model_io.clj:92)
+	at clojure.lang.AFn.applyToHelper(AFn.java:152)
+	at clojure.lang.AFn.applyTo(AFn.java:144)
+	at clojure.core$apply.invokeStatic(core.clj:667)
+	at clojure.core$with_bindings_STAR_.invokeStatic(core.clj:1990)
+	at clojure.core$with_bindings_STAR_.doInvoke(core.clj:1990)
+	at clojure.lang.RestFn.invoke(RestFn.java:428)
+	at clojure.lang.AFn.applyToHelper(AFn.java:156)
+	at clojure.lang.RestFn.applyTo(RestFn.java:135)
+	at clojure.core$apply.invokeStatic(core.clj:671)
+	at clojure.core$bound_fn_STAR_$fn__5839.doInvoke(core.clj:2020)
+	at clojure.lang.RestFn.invoke(RestFn.java:400)
+	at clojure.core.async$thread_call$returning_to_chan__34018$fn__34019.invoke(async.clj:509)
+	at clojure.lang.AFn.run(AFn.java:22)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1144)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"lain-dependency-delivery" #57 [619281] daemon prio=5 os_prio=0 cpu=3.33ms elapsed=137.22s tid=0x0000e3534c041c50 nid=619281 waiting on condition  [0x0000e35354725000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@21.0.12.1/Native Method)
+	- parking to wait for  <0x000000008235ae38> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(java.base@21.0.12.1/LockSupport.java:371)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:519)
+	at java.util.concurrent.ForkJoinPool.unmanagedBlock(java.base@21.0.12.1/ForkJoinPool.java:3780)
+	at java.util.concurrent.ForkJoinPool.managedBlock(java.base@21.0.12.1/ForkJoinPool.java:3725)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@21.0.12.1/AbstractQueuedSynchronizer.java:1746)
+	at java.util.concurrent.ArrayBlockingQueue.take(java.base@21.0.12.1/ArrayBlockingQueue.java:420)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@21.0.12.1/ThreadPoolExecutor.java:1070)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@21.0.12.1/ThreadPoolExecutor.java:1130)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@21.0.12.1/ThreadPoolExecutor.java:642)
+	at java.lang.Thread.runWith(java.base@21.0.12.1/Thread.java:1596)
+	at java.lang.Thread.run(java.base@21.0.12.1/Thread.java:1583)
+
+"G1 Conc#3" os_prio=0 cpu=88.85ms elapsed=183.21s tid=0x0000e35394002390 nid=619229 runnable  
+
+"G1 Conc#2" os_prio=0 cpu=85.40ms elapsed=183.21s tid=0x0000e35394001850 nid=619228 runnable  
+
+"G1 Conc#1" os_prio=0 cpu=85.66ms elapsed=183.21s tid=0x0000e35394000d10 nid=619227 runnable  
+
+"GC Thread#14" os_prio=0 cpu=309.42ms elapsed=183.68s tid=0x0000e35378012bc0 nid=619225 runnable  
+
+"GC Thread#13" os_prio=0 cpu=314.91ms elapsed=183.68s tid=0x0000e35378011c60 nid=619224 runnable  
+
+"GC Thread#12" os_prio=0 cpu=293.09ms elapsed=183.68s tid=0x0000e35378010d00 nid=619223 runnable  
+
+"GC Thread#11" os_prio=0 cpu=299.95ms elapsed=183.68s tid=0x0000e35378010190 nid=619222 runnable  
+
+"GC Thread#10" os_prio=0 cpu=292.41ms elapsed=183.68s tid=0x0000e3537800f620 nid=619221 runnable  
+
+"GC Thread#9" os_prio=0 cpu=316.22ms elapsed=183.68s tid=0x0000e3537800eab0 nid=619220 runnable  
+
+"GC Thread#8" os_prio=0 cpu=290.09ms elapsed=183.68s tid=0x0000e3537800df40 nid=619219 runnable  
+
+"GC Thread#7" os_prio=0 cpu=291.77ms elapsed=183.68s tid=0x0000e3537800d410 nid=619218 runnable  
+
+"GC Thread#6" os_prio=0 cpu=295.55ms elapsed=183.68s tid=0x0000e3537800c8e0 nid=619217 runnable  
+
+"GC Thread#5" os_prio=0 cpu=285.64ms elapsed=183.68s tid=0x0000e3537800bdb0 nid=619216 runnable  
+
+"GC Thread#4" os_prio=0 cpu=300.24ms elapsed=183.68s tid=0x0000e3537800b2b0 nid=619215 runnable  
+
+"GC Thread#3" os_prio=0 cpu=298.56ms elapsed=183.68s tid=0x0000e3537800a7b0 nid=619214 runnable  
+
+"GC Thread#2" os_prio=0 cpu=329.46ms elapsed=183.68s tid=0x0000e35378009cb0 nid=619213 runnable  
+
+"GC Thread#1" os_prio=0 cpu=302.83ms elapsed=183.68s tid=0x0000e35378009230 nid=619212 runnable  
+
+"VM Thread" os_prio=0 cpu=162.68ms elapsed=184.35s tid=0x0000e353bc5eb2d0 nid=619194 runnable  
+
+"VM Periodic Task Thread" os_prio=0 cpu=162.27ms elapsed=184.35s tid=0x0000e353bc5d8f30 nid=619193 waiting on condition  
+
+"G1 Service" os_prio=0 cpu=129.05ms elapsed=184.36s tid=0x0000e353bc5beaa0 nid=619192 runnable  
+
+"G1 Refine#0" os_prio=0 cpu=0.11ms elapsed=184.36s tid=0x0000e353bc5bdad0 nid=619191 runnable  
+
+"G1 Conc#0" os_prio=0 cpu=86.78ms elapsed=184.37s tid=0x0000e353bc077830 nid=619190 runnable  
+
+"G1 Main Marker" os_prio=0 cpu=2.48ms elapsed=184.37s tid=0x0000e353bc076850 nid=619189 runnable  
+
+"GC Thread#0" os_prio=0 cpu=302.79ms elapsed=184.37s tid=0x0000e353bc065360 nid=619188 runnable  
+
+JNI global refs: 22, weak refs: 0
+
+Heap
+ garbage-first heap   total 1204224K, used 400488K [0x0000000080000000, 0x0000000100000000)
+  region size 1024K, 270 young (276480K), 1 survivors (1024K)
+ Metaspace       used 78964K, committed 101120K, reserved 1179648K
+  class space    used 20071K, committed 27712K, reserved 1048576K
+

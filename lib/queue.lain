@@ -1,3 +1,5 @@
+(load-lain "lib/data.lain")
+
 (define queue:append-list
   (network [xs item]
            (if (data:empty? xs) (data:list item)

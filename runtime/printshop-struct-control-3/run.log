@@ -1,0 +1,7 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-printshop.si0bNU/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+WARNING: ancestors already refers to: #'clojure.core/ancestors in namespace: user, being replaced by: #'user/ancestors
+Operational failure: Source rejected
+{:cleanup {:status :closed}}
+{:operational-status :failed, :error "Source rejected", :data {:status :rejected, :response "round-1", :form 1, :receipts [{:status :admitted, :extension [:lain-admission ["round-1" 0]]} {:status :rejected, :message "class clojure.lang.Keyword cannot be cast to class java.lang.Number (clojure.lang.Keyword is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')", :data nil}]}}

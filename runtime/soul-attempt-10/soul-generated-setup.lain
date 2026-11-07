@@ -1,0 +1,26 @@
+
+
+(define conv:history-source (behavior:source))
+(define conv:history (behavior:scan conv:history-source seq:concat (seq:empty)))
+(define conv:history-latest (behavior:latest-value conv:history (seq:empty)))
+
+(define conv:user-source (behavior:source))
+(define conv:user-events (behavior:map conv:user-source (network [rec] (event:point (data:get :id rec) (data:get :time rec) rec))))
+(-> user-ingress conv:user-source)
+
+(define conv:reply (network [assistant-record]
+  (let [delivered (message-to-user assistant-record)
+        ack-record (data:record :role "assistant" :content (data:get :content delivered))
+        _ (-> (event:point (data:get :id delivered) (data:get :time delivered) (seq:append (seq:empty) ack-record)) conv:history-source)]
+    delivered)))
+
+(define conv:system-prompt "You are in a Lain conversation. Reply by calling (conv:reply (data:record :id \"assistant-N\" :time T :role \"assistant\" :content \"your reply\")) where T is the user time + 1 and N increments. Return only that executable Lain form.")
+
+(define conv:build-request (network [user-record history-vector]
+  (let [user-msg (data:record :role "user" :content (data:get :content user-record))
+        system-msg (data:record :role "system" :content conv:system-prompt)
+        messages (seq:concat (seq:append (seq:empty) system-msg) history-vector (seq:append (seq:empty) user-msg))]
+    (data:record :id (text:format "req-%s" (data:get :id user-record)) :messages messages))))
+
+(define conv:request (conv:build-request user-ingress conv:history-latest))
+(define conv:model-response (model:request conv:request))

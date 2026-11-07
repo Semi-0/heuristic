@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE soul-user — Existing user ingress and acknowledged delivery
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 1 tests containing 4 assertions.
+0 failures, 0 errors.
+MODULE-RESULT soul-user {:test 1, :pass 4, :fail 0, :error 0}

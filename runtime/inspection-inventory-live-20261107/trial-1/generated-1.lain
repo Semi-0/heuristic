@@ -1,0 +1,12 @@
+
+
+(define total-1 (* boxes-1 items-per-box-1))
+(define usable-1 (* total-1 (- 1 (/ damage-percent-1 100))))
+(define margin-1 (- usable-1 order-quantity-1))
+(define fulfillment-1 (>= usable-1 order-quantity-1))
+(-> total-1 observed-total-1)
+(-> usable-1 observed-usable-1)
+(-> margin-1 observed-margin-1)
+(-> fulfillment-1 observed-fulfillment-1)
+(define answer-1 (ttms-premise-closure (network [] (str "The total item count is determined from the known box and per-box counts. The usable stock, the margin over the order quantity, and whether the order can be fulfilled all depend on the damage percentage, which has not yet been reported. Once the damage percentage is supplied, the usable count, margin, and fulfillment status will resolve automatically through the already-constructed relationships.")) question-1))
+(-> (answer-1) user-output-1)

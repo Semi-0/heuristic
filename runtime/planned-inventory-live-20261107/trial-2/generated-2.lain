@@ -1,0 +1,11 @@
+
+
+(define total-2 (* boxes-2 items-per-box-2))
+(define usable-2 (* total-2 (- 1 (/ damage-percent-2 100))))
+(define margin-2 (- usable-2 order-quantity-2))
+(define fulfillment-2 (>= usable-2 order-quantity-2))
+(-> total-2 observed-total-2)
+(-> usable-2 observed-usable-2)
+(-> margin-2 observed-margin-2)
+(-> fulfillment-2 observed-fulfillment-2)
+(-> (str "The shipment of " boxes-2 " boxes at " items-per-box-2 " items per box yields a total of " total-2 " items. After inspection-confirmed damage of " damage-percent-2 " percent, the usable stock is " usable-2 " items. The order requires " order-quantity-2 " items, so the margin is " margin-2 " items. The order cannot be fulfilled because usable stock falls short of the order quantity.") user-output-2)
