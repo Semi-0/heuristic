@@ -1,0 +1,26 @@
+
+(define case-b-2 (= (test-usable-2 100) 0))
+(define case-c-2 (= (test-usable-2 50) 180))
+(define case-d-2 (= (test-usable-2 5) 342))
+(define case-e-2 (test-fulfillment-2 0))
+(define case-f-2 (<= (test-usable-2 5) (- order-quantity-2 1)))
+(define case-check-2-value (and case-a-2 case-b-2 case-c-2 case-d-2 case-e-2 case-f-2))
+(-> case-check-2-value case-check-2)
+(define live-check-2-value (= (+ usable-items-2 (* total-items-2 (/ damage-percent-2 100))) total-items-2))
+(-> live-check-2-value live-check-2)
+(define test-report-2-text (str "Case A: dp=0, usable=" (test-usable-2 0) ", expected 360, verdict=" case-a-2 ". Case B: dp=100, usable=" (test-usable-2 100) ", expected 0, verdict=" case-b-2 ". Case C: dp=50, usable=" (test-usable-2 50) ", expected 180, verdict=" case-c-2 ". Case D: dp=5, usable=" (test-usable-2 5) ", expected 342, verdict=" case-d-2 ". Case E: dp=0, fulfillment=" (test-fulfillment-2 0) ", expected true, verdict=" case-e-2 ". Case F: dp=5, usable<=order-1, verdict=" case-f-2 "."))
+(-> test-report-2-text test-report-2)
+(-> (str "Total items: " total-items-2 ". Usable stock: " usable-items-2 ". Margin (usable minus order): " margin-2 ". Fulfillment possible: " fulfillment-2 ".") user-output-2)
+```
+
+Wait, I need to double-check the arithmetic. 15 * 24 = 360. 360 * (1 - 5/100) = 360 * 0.95 = 342. 342 - 350 = -8. 342 >= 350 is false.
+
+For the live-check, I'm checking usable + damaged = total: 342 + (360 * 5/100) = 342 + 18 = 360. Yes, that works.
+
+Let me also make sure I'm not redefining any parent ports. The ports case-check-2, live-check-2, test-report-2, user-output-2, observed-total-2, observed-usable-2, observed-margin-2, observed-fulfillment-2 are all existing parent ports that I connect to with ->. Good.
+
+One concern: the `(- 1 (/ dp 100))` expression. When dp=0, this gives 1 - 0 = 1. When dp=100, this gives 1 - 1 = 0. When dp=50, this gives 1 - 0.5 = 0.5. When dp=5, this gives 1 - 0.05 = 0.95. These all look correct.
+
+For case-f-2: `(<= (test-usable-2 5) (- order-quantity-2 1))` = `(<= 342 349)` = true. This confirms shortage.
+
+I think this is complete. Let me format the output properly.

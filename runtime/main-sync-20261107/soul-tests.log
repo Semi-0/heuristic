@@ -1,0 +1,66 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE soul — Environment bootstrap, qualified reducers and completed admission
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+ERROR in (reducer-source-in-live-admission-target) (session.clj:89)
+Uncaught exception, not in assertion.
+expected: nil
+  actual: clojure.lang.ExceptionInfo: Compiler session propagation budget exhausted
+{:steps 37551, :max-steps 100000, :timeout-ms 30000}
+ at propagators.compiler_2.session$bounded$fn__21810$fn__21811.invoke (session.clj:89)
+    propagators.runner$run_network$bounce__4114$fn__4116.invoke (runner.clj:111)
+    clojure.core$trampoline.invokeStatic (core.clj:6381)
+    clojure.core$trampoline.invokeStatic (core.clj:6370)
+    clojure.core$trampoline.doInvoke (core.clj:6370)
+    clojure.lang.RestFn.invoke (RestFn.java:426)
+    propagators.runner$run_network.invokeStatic (runner.clj:129)
+    propagators.runner$run_network.invoke (runner.clj:102)
+    propagators.compiler_2.runtime.inspection.temperature$run_propagators.invokeStatic (temperature.clj:57)
+    propagators.compiler_2.runtime.inspection.temperature$run_propagators.invoke (temperature.clj:52)
+    propagators.compiler_2.session$refresh_observers.invokeStatic (session.clj:403)
+    propagators.compiler_2.session$refresh_observers.invoke (session.clj:398)
+    propagators.compiler_2.session$prepare_extension.invokeStatic (session.clj:424)
+    propagators.compiler_2.session$prepare_extension.invoke (session.clj:406)
+    propagators.compiler_2.session$eval22102$fn__22117$fn__22118.invoke (session.clj:612)
+    propagators.compiler_2.session$bounded.invokeStatic (session.clj:93)
+    propagators.compiler_2.session$bounded.invoke (session.clj:70)
+    propagators.compiler_2.session$eval22102$fn__22117.invoke (session.clj:612)
+    propagators.compiler_2.session$eval21588$fn__21589$G__21579__21596.invoke (session.clj:38)
+    propagators.compiler_2.session.host$extend_BANG_$fn__32300.invoke (host.clj:480)
+    propagators.compiler_2.session.host$extend_BANG_.invokeStatic (host.clj:476)
+    propagators.compiler_2.session.host$extend_BANG_.invoke (host.clj:474)
+    lain_harness.soul_session$open_BANG_.invokeStatic (soul_session.clj:226)
+    lain_harness.soul_session$open_BANG_.invoke (soul_session.clj:221)
+    lain_harness.soul_test$fn__35863.invokeStatic (soul_test.clj:168)
+    lain_harness.soul_test/fn (soul_test.clj:166)
+    clojure.test$test_var$fn__9898.invoke (test.clj:717)
+    clojure.test$test_var.invokeStatic (test.clj:717)
+    clojure.test$test_var.invoke (test.clj:708)
+    clojure.test$test_vars$fn__9924$fn__9929.invoke (test.clj:735)
+    clojure.test$default_fixture.invokeStatic (test.clj:687)
+    clojure.test$default_fixture.invoke (test.clj:683)
+    clojure.test$test_vars$fn__9924.invoke (test.clj:735)
+    clojure.test$default_fixture.invokeStatic (test.clj:687)
+    clojure.test$default_fixture.invoke (test.clj:683)
+    clojure.test$test_vars.invokeStatic (test.clj:731)
+    clojure.test$test_vars.invoke (test.clj:723)
+    user$run_module_BANG_$fn__679.invoke (run_module.clj:17)
+    user$run_module_BANG_.invokeStatic (run_module.clj:14)
+    user$run_module_BANG_.invoke (run_module.clj:4)
+    user$eval684.invokeStatic (run_module.clj:38)
+    user$eval684.invoke (run_module.clj:27)
+    clojure.lang.Compiler.eval (Compiler.java:7757)
+    clojure.lang.Compiler.load (Compiler.java:8223)
+    clojure.lang.Compiler.loadFile (Compiler.java:8161)
+    clojure.main$load_script.invokeStatic (main.clj:476)
+    clojure.main$script_opt.invokeStatic (main.clj:536)
+    clojure.main$script_opt.invoke (main.clj:531)
+    clojure.main$main.invokeStatic (main.clj:665)
+    clojure.main$main.doInvoke (main.clj:617)
+    clojure.lang.RestFn.applyTo (RestFn.java:140)
+    clojure.lang.Var.applyTo (Var.java:707)
+    clojure.main.main (main.java:40)
+
+Ran 9 tests containing 46 assertions.
+0 failures, 1 errors.
+MODULE-RESULT soul {:test 9, :pass 45, :fail 0, :error 1}

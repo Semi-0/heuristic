@@ -1,0 +1,8 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+
+Testing propagators.experimental.ttms-behavior-test
+
+Testing propagators.experimental.temporal-behavior-test
+
+Ran 16 tests containing 300 assertions.
+0 failures, 0 errors.

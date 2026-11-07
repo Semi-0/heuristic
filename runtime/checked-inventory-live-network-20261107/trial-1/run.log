@@ -1,0 +1,6 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-partial-inventory.vMYlgE/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+Operational failure: Source rejected
+{:cleanup {:status :closed}}
+{:operational-status :failed, :error "Source rejected", :data {:status :rejected, :response "round-1", :message "Source reader rejected response", :details {:status :invalid, :message "Incomplete final Lain form"}}}

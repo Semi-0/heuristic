@@ -11,6 +11,8 @@ The guide and examples are copied from the local Lain source tree at `projects/d
 
 ## Experiment records
 
+- [Requiring executable checks](2026-11-07-executable-checks-experiment.md): actual test construction, invalid-source failures, duplicate test formulas, and stale expectations.
+
 - [Explicit analysis and inventory implementation](2026-11-07-planned-inventory-experiment.md): three two-stage trials, visible look-back decisions, and independent correctness checks.
 
 - [Inspection examples and response format](2026-11-07-inspection-context-experiment.md): three fresh trials, actual inspection usage, partial completion, and remaining support/text failures.
