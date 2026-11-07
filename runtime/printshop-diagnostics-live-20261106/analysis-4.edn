@@ -1,0 +1,12 @@
+
+
+{:outputs "Quote breakdown for 90 copies (rush, member): production, rush charge, discount, subtotal, delivery, tax, final total; user-facing text; self-check boolean"
+ :facts "quantity-4=90, rush-4=true, member-4=true, discount-cap-4=40; tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08"
+ :unknowns "none"
+ :units "dollars and cents; quantities in copies"
+ :rules "Progressive tiers: 90<100 so all at tier-one-price. Rush adds rush-rate*production. Member discount = min(member-rate*(production+rush), discount-cap). Subtotal = (production-discount)+setup-fee. Delivery waived if subtotal>=250, else delivery-fee. Tax = tax-rate*(subtotal+delivery). Total = round-money(subtotal+delivery+tax)."
+ :branches "90<tier-one-limit so only tier-one applies; rush=true so rush charge applies; member=true so discount applies; subtotal likely <250 so delivery fee applies"
+ :operators "compute-quote [known]: network taking [qty rush? member? dcap], returns struct with :production :rush :discount :subtotal :delivery :tax :total; handles all tiers, rush, member discount with cap, setup, delivery threshold, tax, rounding. Directly suitable for this input set."
+ :operator "compute-quote"
+ :tests "Independent structural checks: (1) production = 90*tier-one-price since 90<tier-one-limit; (2) rush = rush-rate*production; (3) discount = min(member-rate*(production+rush), discount-cap-4); (4) subtotal = (production-discount)+setup-fee; (5) delivery = delivery-fee since subtotal<free-delivery-threshold; (6) tax = tax-rate*(subtotal+delivery); (7) total = round-money(subtotal+delivery+tax). These verify formula structure without reusing compute-quote internals, catching tier misapplication, missing rush, wrong discount cap, wrong delivery branch, or rounding errors."
+ :decision :reuse}

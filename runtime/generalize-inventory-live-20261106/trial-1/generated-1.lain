@@ -1,0 +1,11 @@
+
+
+(define total-1 (ttms-premise-closure (* boxes-1 items-per-box-1) shared-rule))
+(define usable-1 (ttms-premise-closure (* total-1 (- 1 (/ damage-percent-1 100))) shared-rule))
+(define margin-1 (ttms-premise-closure (- usable-1 order-quantity-1) shared-rule))
+(define fulfillment-1 (ttms-premise-closure (>= usable-1 order-quantity-1) shared-rule))
+(-> total-1 observed-total-1)
+(-> usable-1 observed-usable-1)
+(-> margin-1 observed-margin-1)
+(-> fulfillment-1 observed-fulfillment-1)
+(-> (str "Total items computable: " total-1 " (20 boxes x 12 items). Usable stock, margin over order, and fulfillment status all depend on damage-percent-1 which has not been reported. Once damage-percent-1 is supplied, usable-1 = total-1 * (1 - damage-percent-1/100), margin-1 = usable-1 - 200, and fulfillment-1 = usable-1 >= 200 will resolve automatically.") user-output-1)

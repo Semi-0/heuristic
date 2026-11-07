@@ -1,0 +1,256 @@
+{
+  "measurement": "Approximate provider response time from original context/response file timestamps. Includes transport and generation; excludes startup, admission and mutation checks.",
+  "limits": "Three trials per condition; not randomized or interleaved; caching, load and output length uncontrolled.",
+  "conditions": {
+    "partial_network": {
+      "trials": [
+        {
+          "trial": 1,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/partial-inventory-live-20261106/trial-1/context-1.txt",
+              "response_path": "runtime/partial-inventory-live-20261106/trial-1/response-1.edn",
+              "context_mtime_ns": 1793922843996262720,
+              "response_mtime_ns": 1793922874026408581,
+              "seconds": 30.030145861,
+              "source_characters": 1120
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/partial-inventory-live-20261106/trial-1/context-2.txt",
+              "response_path": "runtime/partial-inventory-live-20261106/trial-1/response-2.edn",
+              "context_mtime_ns": 1793922878973108128,
+              "response_mtime_ns": 1793922892405454689,
+              "seconds": 13.432346561,
+              "source_characters": 1009
+            }
+          ],
+          "total_provider_seconds": 43.462492422
+        },
+        {
+          "trial": 2,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/partial-inventory-live-20261106/trial-2/context-1.txt",
+              "response_path": "runtime/partial-inventory-live-20261106/trial-2/response-1.edn",
+              "context_mtime_ns": 1793922927026194477,
+              "response_mtime_ns": 1793922956103251473,
+              "seconds": 29.077056996,
+              "source_characters": 1120
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/partial-inventory-live-20261106/trial-2/context-2.txt",
+              "response_path": "runtime/partial-inventory-live-20261106/trial-2/response-2.edn",
+              "context_mtime_ns": 1793922960998298593,
+              "response_mtime_ns": 1793922973074909349,
+              "seconds": 12.076610756,
+              "source_characters": 1009
+            }
+          ],
+          "total_provider_seconds": 41.153667752
+        },
+        {
+          "trial": 3,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/partial-inventory-live-20261106/trial-3/context-1.txt",
+              "response_path": "runtime/partial-inventory-live-20261106/trial-3/response-1.edn",
+              "context_mtime_ns": 1793923007327364381,
+              "response_mtime_ns": 1793923036401440523,
+              "seconds": 29.074076142,
+              "source_characters": 1120
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/partial-inventory-live-20261106/trial-3/context-2.txt",
+              "response_path": "runtime/partial-inventory-live-20261106/trial-3/response-2.edn",
+              "context_mtime_ns": 1793923041329541762,
+              "response_mtime_ns": 1793923053493525938,
+              "seconds": 12.163984176,
+              "source_characters": 1009
+            }
+          ],
+          "total_provider_seconds": 41.238060317999995
+        }
+      ],
+      "mean_question_seconds": [
+        29.393759666333334,
+        12.557647164333332
+      ],
+      "mean_total_seconds": 41.95140683066666,
+      "median_total_seconds": 41.238060317999995
+    },
+    "lookback": {
+      "trials": [
+        {
+          "trial": 1,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/lookback-inventory-live-20261106/trial-1/context-1.txt",
+              "response_path": "runtime/lookback-inventory-live-20261106/trial-1/response-1.edn",
+              "context_mtime_ns": 1793923438349110318,
+              "response_mtime_ns": 1793923462570312575,
+              "seconds": 24.221202257,
+              "source_characters": 792
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/lookback-inventory-live-20261106/trial-1/context-2.txt",
+              "response_path": "runtime/lookback-inventory-live-20261106/trial-1/response-2.edn",
+              "context_mtime_ns": 1793923466702276328,
+              "response_mtime_ns": 1793923478890450902,
+              "seconds": 12.188174574,
+              "source_characters": 670
+            }
+          ],
+          "total_provider_seconds": 36.409376831
+        },
+        {
+          "trial": 2,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/lookback-inventory-live-20261106/trial-2/context-1.txt",
+              "response_path": "runtime/lookback-inventory-live-20261106/trial-2/response-1.edn",
+              "context_mtime_ns": 1793923511661550602,
+              "response_mtime_ns": 1793923534958424962,
+              "seconds": 23.29687436,
+              "source_characters": 792
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/lookback-inventory-live-20261106/trial-2/context-2.txt",
+              "response_path": "runtime/lookback-inventory-live-20261106/trial-2/response-2.edn",
+              "context_mtime_ns": 1793923539050530305,
+              "response_mtime_ns": 1793923550452131089,
+              "seconds": 11.401600784,
+              "source_characters": 670
+            }
+          ],
+          "total_provider_seconds": 34.698475144
+        },
+        {
+          "trial": 3,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/lookback-inventory-live-20261106/trial-3/context-1.txt",
+              "response_path": "runtime/lookback-inventory-live-20261106/trial-3/response-1.edn",
+              "context_mtime_ns": 1793923583263708728,
+              "response_mtime_ns": 1793923606509133569,
+              "seconds": 23.245424841,
+              "source_characters": 792
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/lookback-inventory-live-20261106/trial-3/context-2.txt",
+              "response_path": "runtime/lookback-inventory-live-20261106/trial-3/response-2.edn",
+              "context_mtime_ns": 1793923610584926962,
+              "response_mtime_ns": 1793923622006900299,
+              "seconds": 11.421973337,
+              "source_characters": 670
+            }
+          ],
+          "total_provider_seconds": 34.667398178
+        }
+      ],
+      "mean_question_seconds": [
+        23.587833819333333,
+        11.670582898333333
+      ],
+      "mean_total_seconds": 35.25841671766667,
+      "median_total_seconds": 34.698475144
+    },
+    "generalization": {
+      "trials": [
+        {
+          "trial": 1,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/generalize-inventory-live-20261106/trial-1/context-1.txt",
+              "response_path": "runtime/generalize-inventory-live-20261106/trial-1/response-1.edn",
+              "context_mtime_ns": 1793957355379433425,
+              "response_mtime_ns": 1793957370712761546,
+              "seconds": 15.333328121,
+              "source_characters": 862
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/generalize-inventory-live-20261106/trial-1/context-2.txt",
+              "response_path": "runtime/generalize-inventory-live-20261106/trial-1/response-2.edn",
+              "context_mtime_ns": 1793957374951739741,
+              "response_mtime_ns": 1793957387968169738,
+              "seconds": 13.016429997,
+              "source_characters": 785
+            }
+          ],
+          "total_provider_seconds": 28.349758117999997
+        },
+        {
+          "trial": 2,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/generalize-inventory-live-20261106/trial-2/context-1.txt",
+              "response_path": "runtime/generalize-inventory-live-20261106/trial-2/response-1.edn",
+              "context_mtime_ns": 1793957421368339195,
+              "response_mtime_ns": 1793957435980148533,
+              "seconds": 14.611809338,
+              "source_characters": 862
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/generalize-inventory-live-20261106/trial-2/context-2.txt",
+              "response_path": "runtime/generalize-inventory-live-20261106/trial-2/response-2.edn",
+              "context_mtime_ns": 1793957440118434305,
+              "response_mtime_ns": 1793957452396947156,
+              "seconds": 12.278512851,
+              "source_characters": 785
+            }
+          ],
+          "total_provider_seconds": 26.890322189000003
+        },
+        {
+          "trial": 3,
+          "rounds": [
+            {
+              "question": 1,
+              "context_path": "runtime/generalize-inventory-live-20261106/trial-3/context-1.txt",
+              "response_path": "runtime/generalize-inventory-live-20261106/trial-3/response-1.edn",
+              "context_mtime_ns": 1793957485590952267,
+              "response_mtime_ns": 1793957500189718663,
+              "seconds": 14.598766396,
+              "source_characters": 862
+            },
+            {
+              "question": 2,
+              "context_path": "runtime/generalize-inventory-live-20261106/trial-3/context-2.txt",
+              "response_path": "runtime/generalize-inventory-live-20261106/trial-3/response-2.edn",
+              "context_mtime_ns": 1793957504395951793,
+              "response_mtime_ns": 1793957516720494415,
+              "seconds": 12.324542622,
+              "source_characters": 785
+            }
+          ],
+          "total_provider_seconds": 26.923309017999998
+        }
+      ],
+      "mean_question_seconds": [
+        14.847967951666666,
+        12.53982849
+      ],
+      "mean_total_seconds": 27.387796441666666,
+      "median_total_seconds": 26.923309017999998
+    }
+  },
+  "generalization_change_percent": {
+    "partial_network": -34.71542789443222,
+    "lookback": -22.322670751282857
+  }
+}

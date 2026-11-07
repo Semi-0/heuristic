@@ -1,0 +1,12 @@
+
+
+{:outputs "A quote struct with :production :rush :discount :subtotal :delivery :tax :total for order-5, a text reply to user-output-5, and a boolean to self-check-5"
+ :facts "order-5: quantity=720, rush?=true, member?=true, discount-cap=75 (promotional). pricing: tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08. All other rules unchanged from prior orders."
+ :unknowns "none"
+ :units "USD; quantities in copies; rates as decimal multipliers"
+ :rules "Progressive tiers: first 100 at $2, next 400 at $1.60, remainder at $1.30. Rush adds 20% of production. Member discount = 10% of (production+rush), capped at order's discount-cap (here $75). Add setup-fee $25 after discount. Delivery $12 waived if subtotal>=250. Tax 8% on (subtotal+delivery). Final total rounded half-up to cents; intermediates unrounded."
+ :branches "rush?=true so rush charge applies; member?=true so discount applies; discount-cap=75 (promotional, higher than standard 40); 720 copies spans all three tiers; subtotal will exceed 250 so delivery waived"
+ :operators "compute-quote-1 (known callable): reads :quantity :rush? :member? :discount-cap from order struct and all pricing slots; implements full progressive pricing, rush, member discount with cap, setup, delivery threshold, tax, and round-money on total. Fully matches this order's requirements since order-5 carries discount-cap=75."
+ :operator "compute-quote-1"
+ :decision :reuse
+ :tests "Independent checks: (1) production equals 100*2 + 400*1.60 + 220*1.30 = 1126 (verifies tier split for 720); (2) rush equals production*0.20 (verifies rush applied); (3) discount equals 75 exactly, confirming the promotional cap binds (raw would be 135.12 > 75); (4) subtotal equals production+rush-discount+setup; (5) delivery is 0 since subtotal>=250; (6) tax equals (subtotal+delivery)*0.08; (7) total equals round-money of subtotal+delivery+tax. These detect errors in tier boundaries, rush omission, wrong cap value, delivery threshold misapplication, or rounding placement."}

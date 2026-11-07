@@ -1,0 +1,6 @@
+(define stock1 (ttms-premise-closure (network [b n d] (/ (* (* b n) (- 100 d)) 100)) shared-rule))
+(define total1 ((ttms-premise-closure (ttms-premise-closure (network [b n] (* b n)) shared-rule) question-1) boxes-1 items-per-box-1))
+(-> total1 observed-total-1)
+(define open-usable)
+(-> open-usable observed-usable-1)
+(-> (str "Total=" total1 "; damage unknown; usable and fulfillment unresolved.") user-output-1)

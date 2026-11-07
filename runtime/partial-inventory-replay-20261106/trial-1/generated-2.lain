@@ -1,0 +1,15 @@
+
+
+(define compute-total-2 (ttms-premise-closure (network [b ipb] (* b ipb)) shared-rule))
+(define compute-usable-2 (ttms-premise-closure (network [total dp] (* total (- 1 (/ dp 100)))) shared-rule))
+(define compute-margin-2 (ttms-premise-closure (network [usable oq] (- usable oq)) shared-rule))
+(define compute-fulfillment-2 (ttms-premise-closure (network [usable oq] (>= usable oq)) shared-rule))
+(define total-2 (compute-total-2 boxes-2 items-per-box-2))
+(define usable-2 (compute-usable-2 total-2 damage-percent-2))
+(define margin-2 (compute-margin-2 usable-2 order-quantity-2))
+(define fulfillment-2 (compute-fulfillment-2 usable-2 order-quantity-2))
+(-> total-2 observed-total-2)
+(-> usable-2 observed-usable-2)
+(-> margin-2 observed-margin-2)
+(-> fulfillment-2 observed-fulfillment-2)
+(-> (str "Total items: " total-2 ". Usable stock after 5% damage: " usable-2 ". Margin against order of 350: " margin-2 ". Fulfillment possible: " fulfillment-2 ". The shipment falls short by 8 items.") user-output-2)

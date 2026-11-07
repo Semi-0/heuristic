@@ -1,0 +1,12 @@
+
+
+{:outputs "A quote struct (production, rush, discount, subtotal, delivery, tax, total) connected to quote-2 slots, a formatted text reply to user-output-2, and a boolean self-check to self-check-2."
+ :facts "quantity-2=240, rush-2=true, member-2=true, discount-cap-2=40. Shared rules: tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08. compute-quote is a known callable network [qty rush? member? dcap] returning a struct with all seven slots."
+ :unknowns "none"
+ :units "Dollars for all monetary values; copies for quantity; rates are dimensionless multipliers."
+ :rules "Progressive production: first 100 at $2, next 400 at $1.60, remainder at $1.30. Rush adds 0.20*production. Member discount = 0.10*(production+rush), capped at discount-cap. Add setup-fee after discount. Delivery waived if subtotal>=250, else $12. Tax = 0.08*(subtotal+delivery). Total = round-money(subtotal+delivery+tax). Only final total is rounded."
+ :branches "240 copies spans tier-one (100) and tier-two (140), no tier-three. Rush is true so rush-charge applies. Member is true so discount applies but is capped at 40 (raw would be 50.88). Subtotal after discount+setup = 409 >= 250 so delivery is waived."
+ :operators "compute-quote [known, callable]: network [qty rush? member? dcap] -> struct with :production :rush :discount :subtotal :delivery :tax :total. Handles progressive tiers, rush, member discount with cap, setup, delivery threshold, tax, and rounding. Directly matches all requirements for this order. No other pricing callables exist."
+ :operator "compute-quote"
+ :tests "Self-check verifies: (1) production equals 100*2 + 140*1.60 = 424 (exposes tier arithmetic errors); (2) rush equals 0.20*424 = 84.80 (exposes rush-rate or application errors); (3) discount equals min(0.10*(424+84.80), 40) = 40 (exposes cap logic); (4) subtotal equals (424-40)+25 = 409 (exposes setup-fee placement); (5) delivery equals 0 since 409>=250 (exposes threshold comparison); (6) tax equals 0.08*409 = 32.72 (exposes tax base); (7) total equals round-money(409+0+32.72) = 441.72 (exposes rounding). These are independent arithmetic checks, not re-running the implementation."
+ :decision :reuse}

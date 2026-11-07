@@ -1,0 +1,17 @@
+(require '[clojure.edn :as edn])
+(let [root "runtime/printshop-diagnostics-live-20261106"
+      e (edn/read-string {:default tagged-literal} (slurp (str root "/evidence.edn")))
+      r (edn/read-string {:default tagged-literal} (slurp (str root "/evaluation.edn")))
+      integrity {:request-count (count (:requests e))
+                 :source-unchanged (every? true? (map-indexed (fn [i x] (= (:text x) (slurp (str root "/generated-" (inc i) ".lain")))) (:responses e)))
+                 :analysis-unchanged (every? true? (map-indexed (fn [i x] (= (:record x) (edn/read-string (slurp (str root "/analysis-" (inc i) ".edn"))))) (:analyses e)))
+                 :admission-statuses (mapv #(get-in % [:admission :status]) (:rounds e))
+                 :diagnostic-counts (mapv #(frequencies (map :kind (:records %))) (:diagnostic-history e))
+                 :history-entries (count (:history e))
+                 :callables-invoked (into {} (map (fn [[i xs]] [i (mapv :name xs)]) (:callable-invocations r)))
+                 :answer-connected-reuse (:reuse r)
+                 :self-checks (:self-checks r)
+                 :failed-checks (mapv :check (remove :pass (:checks r)))
+                 :diagnostics-visible (every? :pass (filter #(and (vector? (:check %)) (= :diagnostics-visible (first (:check %)))) (:checks r)))}]
+ (spit (str root "/integrity.edn") (pr-str integrity))
+ (prn integrity))

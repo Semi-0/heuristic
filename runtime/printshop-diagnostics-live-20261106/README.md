@@ -1,0 +1,1 @@
+Strict procedure with diagnostic feedback: one fresh five-question session, ten provider requests. All sources and contexts are original. See docs/2026-11-06-printshop-diagnostic-feedback.md for results and limits. errors is a refreshed observational snapshot, not proof of causal attribution.

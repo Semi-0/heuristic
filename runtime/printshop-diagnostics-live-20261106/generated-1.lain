@@ -1,0 +1,56 @@
+
+
+(define compute-quote
+  (ttms-premise-closure
+    (network [qty rush? member? dcap]
+      (define tier-one-copies (min qty tier-one-limit))
+      (define tier-two-copies (min (max (- qty tier-one-limit) 0) tier-two-count))
+      (define tier-three-copies (max (- qty tier-one-limit tier-two-count) 0))
+      (define production (+ (* tier-one-copies tier-one-price)
+                            (* tier-two-copies tier-two-price)
+                            (* tier-three-copies tier-three-price)))
+      (define rush-charge (select rush? (* rush-rate production) 0))
+      (define raw-discount (select member? (* member-rate (+ production rush-charge)) 0))
+      (define discount (min raw-discount dcap))
+      (define subtotal (+ (- production discount) setup-fee))
+      (define delivery (select (>= subtotal free-delivery-threshold) 0 delivery-fee))
+      (define tax (* tax-rate (+ subtotal delivery)))
+      (define total (round-money (+ subtotal delivery tax)))
+      (struct :production production :rush rush-charge :discount discount :subtotal subtotal :delivery delivery :tax tax :total total))
+    shared-rule))
+
+(define quote-result-1 (compute-quote quantity-1 rush-1 member-1 discount-cap-1))
+
+(-> ((slot :production) quote-1) ((slot :production) quote-result-1))
+(-> ((slot :rush) quote-1) ((slot :rush) quote-result-1))
+(-> ((slot :discount) quote-1) ((slot :discount) quote-result-1))
+(-> ((slot :subtotal) quote-1) ((slot :subtotal) quote-result-1))
+(-> ((slot :delivery) quote-1) ((slot :delivery) quote-result-1))
+(-> ((slot :tax) quote-1) ((slot :tax) quote-result-1))
+(-> ((slot :total) quote-1) ((slot :total) quote-result-1))
+
+(-> user-output-1
+  (str "Quote for " quantity-1 " copies (standard, nonmember):\n"
+       "  Production: $" ((slot :production) quote-result-1) "\n"
+       "  Rush charge: $" ((slot :rush) quote-result-1) "\n"
+       "  Discount: $" ((slot :discount) quote-result-1) "\n"
+       "  Subtotal (incl. setup): $" ((slot :subtotal) quote-result-1) "\n"
+       "  Delivery: $" ((slot :delivery) quote-result-1) "\n"
+       "  Tax: $" ((slot :tax) quote-result-1) "\n"
+       "  Total: $" ((slot :total) quote-result-1)))
+
+(-> self-check-1
+  (let [prod ((slot :production) quote-result-1)
+        rush ((slot :rush) quote-result-1)
+        disc ((slot :discount) quote-result-1)
+        sub ((slot :subtotal) quote-result-1)
+        del ((slot :delivery) quote-result-1)
+        tax ((slot :tax) quote-result-1)
+        tot ((slot :total) quote-result-1)]
+    (and (= sub (+ (- prod disc) setup-fee))
+         (= del (select (>= sub free-delivery-threshold) 0 delivery-fee))
+         (= tax (* tax-rate (+ sub del)))
+         (= tot (round-money (+ sub del tax)))
+         (= prod (* quantity-1 tier-one-price))
+         (= rush 0)
+         (= disc 0))))

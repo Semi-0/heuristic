@@ -1,0 +1,41 @@
+{
+  "measurement": "Approximate provider round-trip time from original file timestamps; excludes environment startup, source admission and mutation checks. Different task and number of questions from inventory experiments; not directly comparable.",
+  "rounds": [
+    {
+      "question": 1,
+      "context_mtime_ns": 1793959752697193607,
+      "response_mtime_ns": 1793959806421525796,
+      "provider_seconds": 53.724332189,
+      "source_characters": 1407
+    },
+    {
+      "question": 2,
+      "context_mtime_ns": 1793959836244521471,
+      "response_mtime_ns": 1793959867078371860,
+      "provider_seconds": 30.833850389,
+      "source_characters": 1493
+    },
+    {
+      "question": 3,
+      "context_mtime_ns": 1793959895935575978,
+      "response_mtime_ns": 1793959921981201023,
+      "provider_seconds": 26.045625045,
+      "source_characters": 1493
+    },
+    {
+      "question": 4,
+      "context_mtime_ns": 1793959953292402719,
+      "response_mtime_ns": 1793959983966716600,
+      "provider_seconds": 30.674313881,
+      "source_characters": 1493
+    },
+    {
+      "question": 5,
+      "context_mtime_ns": 1793960016168415574,
+      "response_mtime_ns": 1793960048906329625,
+      "provider_seconds": 32.737914051,
+      "source_characters": 1493
+    }
+  ],
+  "total_provider_seconds": 174.016035555
+}

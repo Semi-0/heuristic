@@ -1,0 +1,81 @@
+{
+  "measurement": "Approximate provider round-trip latencies from original context and response file timestamps; excludes setup, gate processing, admission and mutations.",
+  "rounds": [
+    {
+      "question": 1,
+      "analysis": {
+        "context_mtime_ns": 1793964633099680807,
+        "response_mtime_ns": 1793964674589262185,
+        "seconds": 41.489581378
+      },
+      "implementation": {
+        "context_mtime_ns": 1793964682078562524,
+        "response_mtime_ns": 1793964750855527795,
+        "seconds": 68.776965271
+      },
+      "sum_seconds": 110.26654664899999
+    },
+    {
+      "question": 2,
+      "analysis": {
+        "context_mtime_ns": 1793964801255161191,
+        "response_mtime_ns": 1793964835390820664,
+        "seconds": 34.135659473
+      },
+      "implementation": {
+        "context_mtime_ns": 1793964843204056469,
+        "response_mtime_ns": 1793964878894019127,
+        "seconds": 35.689962658
+      },
+      "sum_seconds": 69.82562213099999
+    },
+    {
+      "question": 3,
+      "analysis": {
+        "context_mtime_ns": 1793964928453403776,
+        "response_mtime_ns": 1793964960021597732,
+        "seconds": 31.568193956
+      },
+      "implementation": {
+        "context_mtime_ns": 1793964966818707731,
+        "response_mtime_ns": 1793964996931304382,
+        "seconds": 30.112596651
+      },
+      "sum_seconds": 61.680790607
+    },
+    {
+      "question": 4,
+      "analysis": {
+        "context_mtime_ns": 1793965047317954686,
+        "response_mtime_ns": 1793965080803147331,
+        "seconds": 33.485192645
+      },
+      "implementation": {
+        "context_mtime_ns": 1793965089326428072,
+        "response_mtime_ns": 1793965119705576283,
+        "seconds": 30.379148211
+      },
+      "sum_seconds": 63.864340856
+    },
+    {
+      "question": 5,
+      "analysis": {
+        "context_mtime_ns": 1793965173165006916,
+        "response_mtime_ns": 1793965214267370635,
+        "seconds": 41.102363719
+      },
+      "implementation": {
+        "context_mtime_ns": 1793965221626898488,
+        "response_mtime_ns": 1793965244995881773,
+        "seconds": 23.368983285
+      },
+      "sum_seconds": 64.471347004
+    }
+  ],
+  "analysis_seconds": 181.78099117099998,
+  "implementation_seconds": 188.32765607599998,
+  "total_seconds": 370.10864724699996,
+  "one_phase_baseline_seconds": 174.016035555,
+  "limits": "One session per condition. Procedure and number of requests changed together; not randomized or interleaved, no causal timing claim.",
+  "change_percent": 112.68651826631367
+}

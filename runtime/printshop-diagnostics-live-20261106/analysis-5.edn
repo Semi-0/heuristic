@@ -1,0 +1,12 @@
+
+
+{:outputs "A quote struct with :production :rush :discount :subtotal :delivery :tax :total for order-5, a text reply to user-output-5, and a boolean to self-check-5"
+ :facts "quantity-5=720, rush-5=true, member-5=true, discount-cap-5=75 (promotional, raised from default 40). Shared rules: tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, free-delivery-threshold=250, delivery-fee=12, tax-rate=0.08"
+ :unknowns "none"
+ :units "dollars and cents; quantities in copies"
+ :rules "Progressive tiers: first 100 at $2, next 400 at $1.60, remaining 220 at $1.30. Rush adds 20% of production. Member discount is 10% of (production+rush), capped at discount-cap (here $75). Add setup-fee after discount. Delivery waived if subtotal>=250. Tax 8% on subtotal+delivery. Round only final total."
+ :branches "720>100+400 so all three tiers apply. rush?=true so rush charge applies. member?=true so discount applies, capped at 75. Subtotal after discount+setup will be well above 250 so delivery=0."
+ :operators "compute-quote [qty rush? member? dcap] — fully implements the pricing pipeline with progressive tiers, rush, member discount with cap, setup, delivery threshold, tax, and rounding. Accepts dcap as parameter so the promotional $75 cap is handled by passing discount-cap-5. No other callable needed."
+ :operator "compute-quote"
+ :tests "Independent check: (1) production = 100*2 + 400*1.60 + 220*1.30 = 1126 (verifies tier split for 720); (2) rush = 0.20*1126 = 225.20; (3) raw discount = 0.10*(1126+225.20) = 135.12, capped to min(135.12,75)=75 (verifies promotional cap binds); (4) subtotal = (1126-75)+25 = 1076; (5) delivery = 0 since 1076>=250; (6) tax = 0.08*1076 = 86.08; (7) total = round-money(1076+0+86.08) = 1162.08. These checks use explicit arithmetic independent of compute-quote internals and would catch tier miscount, wrong cap, missing setup, wrong delivery branch, or premature rounding."
+ :decision :reuse}

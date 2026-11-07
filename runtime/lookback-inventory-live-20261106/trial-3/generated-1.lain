@@ -1,0 +1,11 @@
+
+
+(define total-1 (* boxes-1 items-per-box-1))
+(define usable-1 (* total-1 (- 1 (/ damage-percent-1 100))))
+(define margin-1 (- usable-1 order-quantity-1))
+(define fulfillment-1 (>= usable-1 order-quantity-1))
+(-> total-1 observed-total-1)
+(-> usable-1 observed-usable-1)
+(-> margin-1 observed-margin-1)
+(-> fulfillment-1 observed-fulfillment-1)
+(-> (str "Total items are computable from boxes and items-per-box. Usable stock, margin, and fulfillment status all depend on damage-percent-1, which has not been reported. Once a damage percentage is supplied, usable equals total times one minus that percentage over one hundred, margin equals usable minus order-quantity, and fulfillment is whether usable meets or exceeds order-quantity. Until then those three remain unknown.") user-output-1)

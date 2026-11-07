@@ -1,0 +1,37 @@
+
+
+(define quote-result-2 (compute-quote quantity-2 rush-2 member-2 discount-cap-2))
+
+(-> ((slot :production) quote-2) ((slot :production) quote-result-2))
+(-> ((slot :rush) quote-2) ((slot :rush) quote-result-2))
+(-> ((slot :discount) quote-2) ((slot :discount) quote-result-2))
+(-> ((slot :subtotal) quote-2) ((slot :subtotal) quote-result-2))
+(-> ((slot :delivery) quote-2) ((slot :delivery) quote-result-2))
+(-> ((slot :tax) quote-2) ((slot :tax) quote-result-2))
+(-> ((slot :total) quote-2) ((slot :total) quote-result-2))
+
+(-> user-output-2
+  (str "Quote for " quantity-2 " copies (rush, member):\n"
+       "  Production: $" ((slot :production) quote-result-2) "\n"
+       "  Rush charge: $" ((slot :rush) quote-result-2) "\n"
+       "  Discount: $" ((slot :discount) quote-result-2) "\n"
+       "  Subtotal (incl. setup): $" ((slot :subtotal) quote-result-2) "\n"
+       "  Delivery: $" ((slot :delivery) quote-result-2) "\n"
+       "  Tax: $" ((slot :tax) quote-result-2) "\n"
+       "  Total: $" ((slot :total) quote-result-2)))
+
+(-> self-check-2
+  (let [prod ((slot :production) quote-result-2)
+        rush ((slot :rush) quote-result-2)
+        disc ((slot :discount) quote-result-2)
+        sub ((slot :subtotal) quote-result-2)
+        del ((slot :delivery) quote-result-2)
+        tax ((slot :tax) quote-result-2)
+        tot ((slot :total) quote-result-2)]
+    (and (= prod (+ (* tier-one-limit tier-one-price) (* (- quantity-2 tier-one-limit) tier-two-price)))
+         (= rush (* rush-rate prod))
+         (= disc (min (* member-rate (+ prod rush)) discount-cap-2))
+         (= sub (+ (- prod disc) setup-fee))
+         (= del (select (>= sub free-delivery-threshold) 0 delivery-fee))
+         (= tax (* tax-rate (+ sub del)))
+         (= tot (round-money (+ sub del tax))))))

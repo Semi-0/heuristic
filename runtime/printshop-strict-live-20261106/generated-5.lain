@@ -1,0 +1,49 @@
+
+
+(define result-5 (compute-quote-1 order-5 pricing))
+
+(-> ((slot :production) result-5) ((slot :production) quote-5))
+(-> ((slot :rush) result-5) ((slot :rush) quote-5))
+(-> ((slot :discount) result-5) ((slot :discount) quote-5))
+(-> ((slot :subtotal) result-5) ((slot :subtotal) quote-5))
+(-> ((slot :delivery) result-5) ((slot :delivery) quote-5))
+(-> ((slot :tax) result-5) ((slot :tax) quote-5))
+(-> ((slot :total) result-5) ((slot :total) quote-5))
+
+(-> (str "Quote for " ((slot :quantity) order-5) " copies (member, rush, promotional cap $75):\n"
+         "  Production: $" ((slot :production) result-5) "\n"
+         "  Rush: $" ((slot :rush) result-5) "\n"
+         "  Discount: $" ((slot :discount) result-5) "\n"
+         "  Subtotal (incl. setup): $" ((slot :subtotal) result-5) "\n"
+         "  Delivery: $" ((slot :delivery) result-5) "\n"
+         "  Tax (8%): $" ((slot :tax) result-5) "\n"
+         "  Total: $" ((slot :total) result-5))
+    user-output-5)
+
+(define check-5
+  (and
+    (= ((slot :production) result-5)
+       (+ (* 100 ((slot :tier-one-price) pricing))
+          (* 400 ((slot :tier-two-price) pricing))
+          (* 220 ((slot :tier-three-price) pricing))))
+    (= ((slot :rush) result-5)
+       (* ((slot :production) result-5) ((slot :rush-rate) pricing)))
+    (= ((slot :discount) result-5)
+       (min (* (+ ((slot :production) result-5) ((slot :rush) result-5))
+               ((slot :member-rate) pricing))
+            ((slot :discount-cap) order-5)))
+    (= ((slot :discount) result-5) ((slot :discount-cap) order-5))
+    (> (* (+ ((slot :production) result-5) ((slot :rush) result-5))
+          ((slot :member-rate) pricing))
+       ((slot :discount-cap) order-5))
+    (= ((slot :subtotal) result-5)
+       (+ ((slot :production) result-5) ((slot :rush) result-5)
+          (- ((slot :discount) result-5)) ((slot :setup-fee) pricing)))
+    (>= ((slot :subtotal) result-5) ((slot :free-delivery-threshold) pricing))
+    (= ((slot :delivery) result-5) 0)
+    (= ((slot :tax) result-5)
+       (* ((slot :subtotal) result-5) ((slot :tax-rate) pricing)))
+    (= ((slot :total) result-5)
+       (round-money (+ ((slot :subtotal) result-5) ((slot :tax) result-5))))))
+
+(-> check-5 self-check-5)

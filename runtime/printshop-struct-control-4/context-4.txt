@@ -1,0 +1,127 @@
+# Live environment
+
+## role-cell
+Work carefully from the question and available facts, and verify your result. Return executable Lain source using the provided inputs and operators. Source is admitted into one persistent lexical child.
+
+## methodology-cell
+1. Understand the problem. What is the unknown? What are the data and conditions? Separate known facts, estimates, assumptions and missing information. Identify what is being asked and whether the available information suffices.
+2. Explore examples and related problems. Have you seen a related problem? Consider simpler cases, boundary cases, and alternative representations. Identify quantities, units, relationships and dependencies.
+3. Decompose and construct a solution. Break the problem into manageable parts, relate unknowns to known quantities, and connect the parts into a coherent solution. Choose an approach appropriate to the problem.
+Inspect the operators and computations already available in your environment. Can any solve this problem or a useful part of it? If an existing operator almost fits, consider adapting or generalizing it. If something is missing, consider constructing an operator that solves a meaningful class of similar problems, with varying quantities supplied as inputs. Keep assumptions and dependencies explicit, and check the operator on the current problem. Prefer the simplest useful generalization; avoid adding abstraction without a clear purpose.
+4. Verify. Check the result against the original question, units, conditions and examples. Check each conclusion's dependencies, what happens when information changes or is withdrawn, and whether unrelated information matters. Qualify estimates and unresolved conclusions. Encouragement is not evidence of correctness. These stages do not require a prose reasoning transcript.
+
+## output-format-cell
+Return complete executable Lain forms only, without Markdown fences. Existing parent ports must be connected with ->, not redefined. order-N and pricing are input structs. quote-N is an existing output struct with slots :production, :rush, :discount, :subtotal, :delivery, :tax, :total. Expose the computed breakdown by connecting values to those slots. user-output-N is the existing text reply port. self-check-N is an optional boolean port for any verification you construct. N is the current round, 1 through 5. Computed answers must come from Lain operations on input cells, not hardcoded answers. Only final total is rounded to cents.
+
+## context-cell
+One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history contain actual prior source and user/reply messages. Return new forms for the current ask. You may construct test cases or consistency checks using the available operators and connect a boolean result to self-check-N. The parent supplies no quote formula or solved example.
+
+## language-cell
+(define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expression, including a struct. (struct :key value ...) constructs connected fields. Read a field with ((slot :key) object). Write an existing field with (-> computed-value ((slot :key) output-object)). + - * / min max >= <= = str and round-money are support-aware operations. (select condition then-value else-value) selects a branch. round-money rounds to two decimals, half up; use it only on the final amount. str builds text from connected values. Unknown inputs leave dependent computations unresolved. ttms-premise-closure attaches a premise to a callable; invocation carries it to results. Example: (define f (ttms-premise-closure (network [x] (+ x 2)) some-premise)). inspect:premises accepts (cell:reference binding). The struct operators and primitive documentation are capabilities, not prebuilt pricing solutions.
+
+## rules-cell
+Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price each; remaining copies at tier-three-price each. Rush service adds rush-rate times production cost. Members receive member-rate times production plus rush charges as discount, capped by the order discount-cap; nonmembers receive no discount. Add setup-fee after discount. Delivery costs delivery-fee, waived when subtotal after discount and setup is at least free-delivery-threshold. Apply tax-rate to the entire amount including delivery. Final total includes tax and is rounded half up to cents; intermediate values are not rounded.
+
+## metadata-cell
+pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :question premise. question premises identify the corresponding requested quote. shared-rule identifies the validity premise for the general pricing rules. Keep independent orders separate. A promotional discount-cap belongs only to the order carrying it. delivery-note is unrelated. Quote output slots are production cost, rush charge, discount amount, subtotal after setup, delivery charge, tax amount, and final rounded total. Future orders are unknown until asked.
+
+## ask
+Quote 90 copies for a member using rush service. Show the charges and final total.
+
+## written-code
+["(define quote-fn\n (ttms-premise-closure\n  (network [o p]\n   (define qty ((slot :quantity) o))\n   (define first-count (min qty ((slot :tier-one-limit) p)))\n   (define remaining (max 0 (- qty first-count)))\n   (define second-count (min remaining ((slot :tier-two-count) p)))\n   (define third-count (max 0 (- remaining second-count)))\n   (define production (+ (* first-count ((slot :tier-one-price) p)) (* second-count ((slot :tier-two-price) p)) (* third-count ((slot :tier-three-price) p))))\n   (define rush (select ((slot :rush?) o) (* production ((slot :rush-rate) p)) 0))\n   (define discount (select ((slot :member?) o) (min (* (+ production rush) ((slot :member-rate) p)) ((slot :discount-cap) o)) 0))\n   (define subtotal (+ (- (+ production rush) discount) ((slot :setup-fee) p)))\n   (define delivery (select (>= subtotal ((slot :free-delivery-threshold) p)) 0 ((slot :delivery-fee) p)))\n   (define tax (* (+ subtotal delivery) ((slot :tax-rate) p)))\n   (define total (round-money (+ subtotal delivery tax)))\n   (struct :production production :rush rush :discount discount :subtotal subtotal :delivery delivery :tax tax :total total))\n  shared-rule))\n(define q1 ((ttms-premise-closure quote-fn question-1) order-1 pricing))\n(-> ((slot :production) q1) ((slot :production) quote-1))\n(-> ((slot :rush) q1) ((slot :rush) quote-1))\n(-> ((slot :discount) q1) ((slot :discount) quote-1))\n(-> ((slot :subtotal) q1) ((slot :subtotal) quote-1))\n(-> ((slot :delivery) q1) ((slot :delivery) quote-1))\n(-> ((slot :tax) q1) ((slot :tax) quote-1))\n(-> ((slot :total) q1) ((slot :total) quote-1))\n(-> (str \"Total: \" ((slot :total) q1)) user-output-1)\n(-> (= ((slot :total) q1) (round-money (+ ((slot :subtotal) q1) ((slot :delivery) q1) ((slot :tax) q1)))) self-check-1)\n" "(define q2 ((ttms-premise-closure quote-fn question-2) order-2 pricing))\n(-> ((slot :production) q2) ((slot :production) quote-2))\n(-> ((slot :rush) q2) ((slot :rush) quote-2))\n(-> ((slot :discount) q2) ((slot :discount) quote-2))\n(-> ((slot :subtotal) q2) ((slot :subtotal) quote-2))\n(-> ((slot :delivery) q2) ((slot :delivery) quote-2))\n(-> ((slot :tax) q2) ((slot :tax) quote-2))\n(-> ((slot :total) q2) ((slot :total) quote-2))\n(-> (str \"Total: \" ((slot :total) q2)) user-output-2)\n(-> (= ((slot :total) q2) (round-money (+ ((slot :subtotal) q2) ((slot :delivery) q2) ((slot :tax) q2)))) self-check-2)\n" "(define q3 ((ttms-premise-closure quote-fn question-3) order-3 pricing))\n(-> ((slot :production) q3) ((slot :production) quote-3))\n(-> ((slot :rush) q3) ((slot :rush) quote-3))\n(-> ((slot :discount) q3) ((slot :discount) quote-3))\n(-> ((slot :subtotal) q3) ((slot :subtotal) quote-3))\n(-> ((slot :delivery) q3) ((slot :delivery) quote-3))\n(-> ((slot :tax) q3) ((slot :tax) quote-3))\n(-> ((slot :total) q3) ((slot :total) quote-3))\n(-> (str \"Total: \" ((slot :total) q3)) user-output-3)\n(-> (= ((slot :total) q3) (round-money (+ ((slot :subtotal) q3) ((slot :delivery) q3) ((slot :tax) q3)))) self-check-3)\n"]
+
+## history
+[{:role "user", :content "Quote 80 copies for a nonmember using standard service. Show the charges and final total."} {:role "assistant", :content "Total: 212.76"} {:role "user", :content "Quote 240 copies for a member using rush service. Show the charges and final total."} {:role "assistant", :content "Total: 533.30"} {:role "user", :content "Quote 720 copies for a member using standard service. Show the charges and final total."} {:role "assistant", :content "Total: 1199.88"} {:role "user", :content "Quote 90 copies for a member using rush service. Show the charges and final total."}]
+
+## Binding directory
+- q1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "22889426-2e19-3526-b11a-2e4c67f663b0"}
+- q2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "f853a543-74a4-3d38-806a-7acf7d8bd8de"}
+- q3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "00bdb7d0-90a4-34d8-b7e6-40ffb928f74e"}
+- quote-fn [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "8ed31ab0-3cf2-337b-850f-ef6d42b99e26"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- struct [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9054fc34-0286-3d4c-8271-a11522b21fed"}
+- slot [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "4dd2cd77-3bf6-30bd-9f86-486b3d81a234"}
+- round-money [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7de2a527-8a1a-3286-a0ff-343cd821b2a0"}
+- max [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "5d95cf18-2ff9-3e0d-95cb-fe4492fb005e"}
+- min [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "86129593-c116-30fa-8c1b-7e7842755755"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- select [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "b6cbdf96-11c5-363e-ae84-4bb745a76d3d"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- = [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7a47665d-5634-3bbb-9379-ea409a51b201"}
+- <= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9aea5e7a-a49f-378f-80ce-865ca7f73d26"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- history [known]: vector with 7 elements | reference #propagators.ids.NodeId{:uuid #uuid "108e4163-0807-33c6-9928-598aa35fe400"}
+- question-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ec49d416-3bbe-3e01-8fc2-deec6b922744"}
+- discount-cap-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ab700233-b4b8-305b-800b-e430f53ce332"}
+- member-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "bf8250cf-beae-3733-aea0-72089bd0f8cd"}
+- rush-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "d8483d5a-b403-31cb-a02f-6f2ceb0d980b"}
+- quantity-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ecbe95fc-34f1-3f1e-a14a-f2b807384af8"}
+- self-check-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "6b0a78b4-c8d5-3853-b6fb-61a0363db8c5"}
+- user-output-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "5f928a4b-4225-3e6a-894d-f19da3250051"}
+- quote-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "39158c31-ca92-3b05-9c2d-c574436320ae"}
+- order-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "5bf89fdb-7b3d-37b0-a180-e1af6a363c8b"}
+- question-4 [known]: Quote 90 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "4d95bbe9-34eb-3f0b-b228-5f5b1c005ee9"}
+- discount-cap-4 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "433b1db2-8e60-363b-b1e7-2b14cc9764f2"}
+- member-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "bbf55b97-9647-3e82-94c3-7372b40e3787"}
+- rush-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "e8ac02c2-63a6-3f3b-9c6f-81f69a919b27"}
+- quantity-4 [known]: 90 | reference #propagators.ids.NodeId{:uuid #uuid "7c44c302-2e98-396f-bbbf-bba88782e2b2"}
+- self-check-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "c55ee9e0-a8ae-3e7c-94f6-24170b5b9c4b"}
+- user-output-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "62ec2880-8764-38af-8b63-8daa0c29821d"}
+- quote-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "533356c2-0a44-312f-97e7-f3a3e2d94560"}
+- order-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "fc53bf22-1d64-3f24-9e30-0579db9d7e68"}
+- question-3 [known]: Quote 720 copies for a member using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "11d92690-b175-3b9e-8436-ba795b893e50"}
+- discount-cap-3 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "fc555d9e-bf5f-3d28-90b0-0c0c7ae61685"}
+- member-3 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "f65da821-a589-3b7c-a17b-9df2978633bd"}
+- rush-3 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "7a37defb-6c8b-3f51-ba09-5a8a261cd208"}
+- quantity-3 [known]: 720 | reference #propagators.ids.NodeId{:uuid #uuid "e0a08c87-83d4-3592-8bac-bd2a6a6be319"}
+- self-check-3 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "0725aa53-fe10-3a98-b8d4-2d7b578c152a"}
+- user-output-3 [known]: Total: 1199.88 | reference #propagators.ids.NodeId{:uuid #uuid "a3eca2f7-f652-3475-9938-4736523ebc56"}
+- quote-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "485b3a25-4156-3db6-bf34-ef98a669a227"}
+- order-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "7b2b558c-a8a0-35f3-ab8d-081b103ac02e"}
+- question-2 [known]: Quote 240 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "f4846a5f-bed6-36ad-975b-a0e492c9dd73"}
+- discount-cap-2 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "8a7d1c29-754f-3236-8c4b-adc24add4de0"}
+- member-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "f67d429b-c4aa-3de8-b2b3-0bcd272dd8f6"}
+- rush-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "7905f973-9412-3ee9-8458-fb90eba58cbe"}
+- quantity-2 [known]: 240 | reference #propagators.ids.NodeId{:uuid #uuid "0b192177-e593-30f7-9889-b2205e562608"}
+- self-check-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "5d180af4-1efa-348a-b720-3bf6dfdcd8a8"}
+- user-output-2 [known]: Total: 533.30 | reference #propagators.ids.NodeId{:uuid #uuid "3ae37e50-aa64-3abd-a9b6-a17b63300935"}
+- quote-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "a5b34b26-13c7-3556-b89d-87e6de1e2ed5"}
+- order-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "b855126a-99fb-3707-93f5-1eba052bfcab"}
+- question-1 [known]: Quote 80 copies for a nonmember using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "def6311f-e5df-38b1-81d3-1a50bc7313f0"}
+- discount-cap-1 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "00a62836-c11e-359f-96eb-ad362791a6ad"}
+- member-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "eade270c-a7fb-3ca4-8ee6-e2a9708af32c"}
+- rush-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "c900df03-287e-36af-b9f1-f4f0068d2b34"}
+- quantity-1 [known]: 80 | reference #propagators.ids.NodeId{:uuid #uuid "af411a76-ab48-3fd6-a49b-1747ba29e7f3"}
+- self-check-1 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "ee96c44a-e5d3-333e-8dc3-e47444e854e0"}
+- user-output-1 [known]: Total: 212.76 | reference #propagators.ids.NodeId{:uuid #uuid "4e1a0fc2-0bc1-3ee8-98e6-930ef9bdc71c"}
+- quote-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "17648ec5-8b41-3a53-90c0-d53ae5ec157e"}
+- order-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "f21d839a-69e8-37c3-9011-58b7d755f8cf"}
+- tax-rate [known]: 0.08M | reference #propagators.ids.NodeId{:uuid #uuid "d64b7f35-751b-3660-9a6b-2a6d5dc9bfbf"}
+- free-delivery-threshold [known]: 250 | reference #propagators.ids.NodeId{:uuid #uuid "f7f07a85-fb63-38ee-a7af-d8ab6d1970c8"}
+- delivery-fee [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "e2e4caab-3e67-3807-b0b1-62bcab00bd66"}
+- setup-fee [known]: 25 | reference #propagators.ids.NodeId{:uuid #uuid "a34bae16-7db7-39a0-841f-140f4a352db8"}
+- member-rate [known]: 0.10M | reference #propagators.ids.NodeId{:uuid #uuid "aa6238d5-4092-33ac-ae1a-fe41b0ad7793"}
+- rush-rate [known]: 0.20M | reference #propagators.ids.NodeId{:uuid #uuid "ce791808-9052-3e00-8349-890e7fc3a7ab"}
+- tier-three-price [known]: 1.30M | reference #propagators.ids.NodeId{:uuid #uuid "87c601ca-236b-3a41-9237-e7fc6166604e"}
+- tier-two-price [known]: 1.60M | reference #propagators.ids.NodeId{:uuid #uuid "35c251c3-8607-320a-9000-08ec6410a2e8"}
+- tier-one-price [known]: 2 | reference #propagators.ids.NodeId{:uuid #uuid "1f2f1d36-124a-3c82-8fc4-cf20320bb216"}
+- tier-two-count [known]: 400 | reference #propagators.ids.NodeId{:uuid #uuid "78c5db6a-e0ed-31bb-9b6c-7102c6feb4e0"}
+- tier-one-limit [known]: 100 | reference #propagators.ids.NodeId{:uuid #uuid "2ff5b923-fddf-3272-8f8f-47dd845c0d80"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "ef8aa044-18af-3ccc-afcc-c7cf1b5bd33b"}
+- shared-rule [known]: Fictional print-shop rules | reference #propagators.ids.NodeId{:uuid #uuid "d92bbb16-0dd5-3b23-a895-19e01f50b819"}
+- pricing [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "65b55e7e-e365-32b7-989f-49b74e4dde65"}
+- written-code [known]: vector with 3 elements | reference #propagators.ids.NodeId{:uuid #uuid "b507b2cc-da67-3b4c-b7de-92837781a96d"}
+- ask [known]: Quote 90 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "79f1cfc2-b8fe-32f6-8ab9-fbaba5b178b0"}
+- methodology-cell [known]: 1. Understand the problem. What is the unknown? What are the data and conditions? Separate known facts, estimates, assumptions and missing information. Identify | reference #propagators.ids.NodeId{:uuid #uuid "eeef174f-b631-33f6-92e9-cf8ec58a5db4"}
+- metadata-cell [known]: pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :questi | reference #propagators.ids.NodeId{:uuid #uuid "e000b59b-adc9-3d92-86d3-e3bf1569b6af"}
+- rules-cell [known]: Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price eac | reference #propagators.ids.NodeId{:uuid #uuid "fb2e7e97-5b78-3358-9de7-1be561a4a7a1"}
+- language-cell [known]: (define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expres | reference #propagators.ids.NodeId{:uuid #uuid "5b4387c4-6f98-323c-8152-10c6ba4c0a50"}
+- context-cell [known]: One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history cont | reference #propagators.ids.NodeId{:uuid #uuid "867e1d69-d86c-3b0c-af4a-40d8d0436026"}
+- output-format-cell [known]: Return complete executable Lain forms only, without Markdown fences. Existing parent ports must be connected with ->, not redefined. order-N and pricing are inp | reference #propagators.ids.NodeId{:uuid #uuid "01065f7a-d8db-3dfc-8525-6071d6e4aa6e"}
+- role-cell [known]: Work carefully from the question and available facts, and verify your result. Return executable Lain source using the provided inputs and operators. Source is a | reference #propagators.ids.NodeId{:uuid #uuid "55fa1227-a3b1-3f38-acdc-f18df7aaf7df"}

@@ -1,0 +1,1 @@
+{:two-requests-per-real-trial true, :source-reducers-preserved true, :fresh-sessions true, :unchanged-values-and-semantic-supports true, :unchanged-source true, :completed-replays true, :completed-real-trials true, :reply-reducers-preserved true, :six-provider-requests true, :replay-only true, :fresh-scoped-children true, :persistent-workers true}

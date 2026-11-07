@@ -1,0 +1,295 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-printshop.ayLCw4/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+WARNING: ancestors already refers to: #'clojure.core/ancestors in namespace: user, being replaced by: #'user/ancestors
+:round-1 {observed-tax-3 :unknown, user-output-5 :unknown, observed-subtotal-4 :unknown, observed-tax-5 :unknown, observed-subtotal-3 :unknown, user-output-2 :unknown, observed-rush-1 0, observed-total-4 :unknown, user-output-3 :unknown, observed-tax-1 15.7600M, observed-production-1 160.00M, user-output-4 :unknown, observed-production-4 :unknown, observed-discount-4 :unknown, observed-subtotal-1 185.00M, observed-discount-1 0, self-check-5 :unknown, self-check-1 true, observed-delivery-1 12, observed-rush-3 :unknown, self-check-4 :unknown, observed-tax-2 :unknown, observed-rush-4 :unknown, user-output-1 Production: $160.00
+Rush: $0
+Discount: $0
+Subtotal: $185.00
+Delivery: $12
+Tax: $15.7600
+Total: $212.76, observed-production-2 :unknown, observed-subtotal-5 :unknown, observed-rush-5 :unknown, observed-delivery-3 :unknown, self-check-3 :unknown, observed-discount-2 :unknown, observed-delivery-2 :unknown, observed-delivery-4 :unknown, observed-delivery-5 :unknown, observed-discount-5 :unknown, observed-discount-3 :unknown, self-check-2 :unknown, observed-subtotal-2 :unknown, observed-total-2 :unknown, observed-tax-4 :unknown, observed-total-3 :unknown, observed-production-5 :unknown, observed-total-5 :unknown, observed-rush-2 :unknown, observed-total-1 212.76M, observed-production-3 :unknown}
+:round-2 {observed-tax-3 :unknown, user-output-5 :unknown, observed-subtotal-4 :unknown, observed-tax-5 :unknown, observed-subtotal-3 :unknown, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 :unknown, user-output-3 :unknown, observed-tax-1 15.7600M, observed-production-1 160.00M, user-output-4 :unknown, observed-production-4 :unknown, observed-discount-4 :unknown, observed-subtotal-1 185.00M, observed-discount-1 0, self-check-5 :unknown, self-check-1 true, observed-delivery-1 12, observed-rush-3 :unknown, self-check-4 :unknown, observed-tax-2 25.936000M, observed-rush-4 :unknown, user-output-1 Production: $160.00
+Rush: $0
+Discount: $0
+Subtotal: $185.00
+Delivery: $12
+Tax: $15.7600
+Total: $212.76, observed-production-2 424.00M, observed-subtotal-5 :unknown, observed-rush-5 :unknown, observed-delivery-3 :unknown, self-check-3 :unknown, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 :unknown, observed-delivery-5 :unknown, observed-discount-5 :unknown, observed-discount-3 :unknown, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 :unknown, observed-total-3 :unknown, observed-production-5 :unknown, observed-total-5 :unknown, observed-rush-2 84.8000M, observed-total-1 212.76M, observed-production-3 :unknown}
+:round-3 {observed-tax-3 88.8800M, user-output-5 :unknown, observed-subtotal-4 :unknown, observed-tax-5 :unknown, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 :unknown, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 15.7600M, observed-production-1 160.00M, user-output-4 :unknown, observed-production-4 :unknown, observed-discount-4 :unknown, observed-subtotal-1 185.00M, observed-discount-1 0, self-check-5 :unknown, self-check-1 true, observed-delivery-1 12, observed-rush-3 0, self-check-4 :unknown, observed-tax-2 25.936000M, observed-rush-4 :unknown, user-output-1 Production: $160.00
+Rush: $0
+Discount: $0
+Subtotal: $185.00
+Delivery: $12
+Tax: $15.7600
+Total: $212.76, observed-production-2 424.00M, observed-subtotal-5 :unknown, observed-rush-5 :unknown, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 :unknown, observed-delivery-5 :unknown, observed-discount-5 :unknown, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 :unknown, observed-total-3 1199.88M, observed-production-5 :unknown, observed-total-5 :unknown, observed-rush-2 84.8000M, observed-total-1 212.76M, observed-production-3 1126.00M}
+:round-4 {observed-tax-3 88.8800M, user-output-5 :unknown, observed-subtotal-4 147.400000M, observed-tax-5 :unknown, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 15.7600M, observed-production-1 160.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 185.00M, observed-discount-1 0, self-check-5 :unknown, self-check-1 true, observed-delivery-1 12, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 Production: $160.00
+Rush: $0
+Discount: $0
+Subtotal: $185.00
+Delivery: $12
+Tax: $15.7600
+Total: $212.76, observed-production-2 424.00M, observed-subtotal-5 :unknown, observed-rush-5 :unknown, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 :unknown, observed-discount-5 :unknown, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 :unknown, observed-total-5 :unknown, observed-rush-2 84.8000M, observed-total-1 212.76M, observed-production-3 1126.00M}
+:round-5 {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 15.7600M, observed-production-1 160.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 185.00M, observed-discount-1 0, self-check-5 true, self-check-1 true, observed-delivery-1 12, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 Production: $160.00
+Rush: $0
+Discount: $0
+Subtotal: $185.00
+Delivery: $12
+Tax: $15.7600
+Total: $212.76, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 212.76M, observed-production-3 1126.00M}
+:quantity-corrected {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:promotion-removed {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $40
+Subtotal: $885.8000
+Delivery: $0
+Tax: $70.864000
+Total: $956.66, observed-subtotal-4 147.400000M, observed-tax-5 70.864000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 885.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 40, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 956.66M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:promotion-restored {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:quantity-withdrawn {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 :contradictory, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 :contradictory, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 true, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 :contradictory, observed-subtotal-2 324.2000M, observed-total-2 :contradictory, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:quantity-restored {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:question-withdrawn {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:question-restored {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+:unrelated-change {observed-tax-3 88.8800M, user-output-5 Production: $1126.00
+Rush: $225.2000
+Discount: $75
+Subtotal: $850.8000
+Delivery: $0
+Tax: $68.064000
+Total: $918.86, observed-subtotal-4 147.400000M, observed-tax-5 68.064000M, observed-subtotal-3 1111.00M, user-output-2 Production: $424.00
+Rush: $84.8000
+Discount: $40
+Subtotal: $324.2000
+Delivery: $0
+Tax: $25.936000
+Total: $350.14, observed-rush-1 0, observed-total-4 172.15M, user-output-3 Production: $1126.00
+Rush: $0
+Discount: $40
+Subtotal: $1111.00
+Delivery: $0
+Tax: $88.8800
+Total: $1199.88, observed-tax-1 :contradictory, observed-production-1 232.00M, user-output-4 Production: $180.00
+Rush: $36.0000
+Discount: $21.600000
+Subtotal: $147.400000
+Delivery: $12
+Tax: $12.75200000
+Total: $172.15, observed-production-4 180.00M, observed-discount-4 21.600000M, observed-subtotal-1 257.00M, observed-discount-1 0, self-check-5 true, self-check-1 :contradictory, observed-delivery-1 0, observed-rush-3 0, self-check-4 true, observed-tax-2 25.936000M, observed-rush-4 36.0000M, user-output-1 :contradictory, observed-production-2 424.00M, observed-subtotal-5 850.8000M, observed-rush-5 225.2000M, observed-delivery-3 0, self-check-3 true, observed-discount-2 40, observed-delivery-2 0, observed-delivery-4 12, observed-delivery-5 0, observed-discount-5 75, observed-discount-3 40, self-check-2 true, observed-subtotal-2 324.2000M, observed-total-2 350.14M, observed-tax-4 12.75200000M, observed-total-3 1199.88M, observed-production-5 1126.00M, observed-total-5 918.86M, observed-rush-2 84.8000M, observed-total-1 :contradictory, observed-production-3 1126.00M}
+{:cleanup {:status :closed}}
+{:operational-status :completed, :stable-identity true}

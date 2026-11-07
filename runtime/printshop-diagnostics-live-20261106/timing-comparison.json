@@ -1,0 +1,177 @@
+{
+  "measurement": "Approximate provider round-trip seconds from original context/response file timestamps; excludes setup, admission, feedback publication and mutation checks.",
+  "limits": "One nonrandomized session per condition. Different prompts and output lengths; server load and caching uncontrolled. Neither a causal speed estimate nor time to a correct solution.",
+  "conditions": {
+    "struct_baseline": {
+      "requests": 5,
+      "expected_requests": 5,
+      "calls": [
+        {
+          "request": 1,
+          "phase": "implementation",
+          "seconds": 53.724332189,
+          "context_bytes": 18181
+        },
+        {
+          "request": 2,
+          "phase": "implementation",
+          "seconds": 30.833850389,
+          "context_bytes": 21585
+        },
+        {
+          "request": 3,
+          "phase": "implementation",
+          "seconds": 26.045625045,
+          "context_bytes": 25158
+        },
+        {
+          "request": 4,
+          "phase": "implementation",
+          "seconds": 30.674313881,
+          "context_bytes": 28682
+        },
+        {
+          "request": 5,
+          "phase": "implementation",
+          "seconds": 32.737914051,
+          "context_bytes": 32635
+        }
+      ],
+      "total_provider_seconds": 174.016035555
+    },
+    "strict": {
+      "requests": 10,
+      "expected_requests": 10,
+      "calls": [
+        {
+          "request": 1,
+          "phase": "analysis",
+          "seconds": 41.489581378,
+          "context_bytes": 18605
+        },
+        {
+          "request": 2,
+          "phase": "implementation",
+          "seconds": 68.776965271,
+          "context_bytes": 20806
+        },
+        {
+          "request": 3,
+          "phase": "analysis",
+          "seconds": 34.135659473,
+          "context_bytes": 22918
+        },
+        {
+          "request": 4,
+          "phase": "implementation",
+          "seconds": 35.689962658,
+          "context_bytes": 25065
+        },
+        {
+          "request": 5,
+          "phase": "analysis",
+          "seconds": 31.568193956,
+          "context_bytes": 26249
+        },
+        {
+          "request": 6,
+          "phase": "implementation",
+          "seconds": 30.112596651,
+          "context_bytes": 28304
+        },
+        {
+          "request": 7,
+          "phase": "analysis",
+          "seconds": 33.485192645,
+          "context_bytes": 28671
+        },
+        {
+          "request": 8,
+          "phase": "implementation",
+          "seconds": 30.379148211,
+          "context_bytes": 30683
+        },
+        {
+          "request": 9,
+          "phase": "analysis",
+          "seconds": 41.102363719,
+          "context_bytes": 31617
+        },
+        {
+          "request": 10,
+          "phase": "implementation",
+          "seconds": 23.368983285,
+          "context_bytes": 33850
+        }
+      ],
+      "total_provider_seconds": 370.10864724699996
+    },
+    "strict_diagnostics": {
+      "requests": 10,
+      "expected_requests": 10,
+      "calls": [
+        {
+          "request": 1,
+          "phase": "analysis",
+          "seconds": 37.804549199,
+          "context_bytes": 19229
+        },
+        {
+          "request": 2,
+          "phase": "implementation",
+          "seconds": 48.031134418,
+          "context_bytes": 21403
+        },
+        {
+          "request": 3,
+          "phase": "analysis",
+          "seconds": 50.170990548,
+          "context_bytes": 31097
+        },
+        {
+          "request": 4,
+          "phase": "implementation",
+          "seconds": 59.099218362,
+          "context_bytes": 33496
+        },
+        {
+          "request": 5,
+          "phase": "analysis",
+          "seconds": 44.302340594,
+          "context_bytes": 41754
+        },
+        {
+          "request": 6,
+          "phase": "implementation",
+          "seconds": 29.438958976,
+          "context_bytes": 43658
+        },
+        {
+          "request": 7,
+          "phase": "analysis",
+          "seconds": 42.43749377,
+          "context_bytes": 52313
+        },
+        {
+          "request": 8,
+          "phase": "implementation",
+          "seconds": 30.504072049,
+          "context_bytes": 54326
+        },
+        {
+          "request": 9,
+          "phase": "analysis",
+          "seconds": 40.361539973,
+          "context_bytes": 63203
+        },
+        {
+          "request": 10,
+          "phase": "implementation",
+          "seconds": 33.967551908,
+          "context_bytes": 65296
+        }
+      ],
+      "total_provider_seconds": 416.117849797
+    }
+  }
+}

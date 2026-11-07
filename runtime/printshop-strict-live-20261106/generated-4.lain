@@ -1,0 +1,45 @@
+
+
+(define result-4 (compute-quote-1 order-4 pricing))
+
+(-> ((slot :production) result-4) ((slot :production) quote-4))
+(-> ((slot :rush) result-4) ((slot :rush) quote-4))
+(-> ((slot :discount) result-4) ((slot :discount) quote-4))
+(-> ((slot :subtotal) result-4) ((slot :subtotal) quote-4))
+(-> ((slot :delivery) result-4) ((slot :delivery) quote-4))
+(-> ((slot :tax) result-4) ((slot :tax) quote-4))
+(-> ((slot :total) result-4) ((slot :total) quote-4))
+
+(-> (str "Quote for " ((slot :quantity) order-4) " copies (member, rush):\n"
+         "  Production: $" ((slot :production) result-4) "\n"
+         "  Rush: $" ((slot :rush) result-4) "\n"
+         "  Discount: $" ((slot :discount) result-4) "\n"
+         "  Subtotal (incl. setup): $" ((slot :subtotal) result-4) "\n"
+         "  Delivery: $" ((slot :delivery) result-4) "\n"
+         "  Tax (8%): $" ((slot :tax) result-4) "\n"
+         "  Total: $" ((slot :total) result-4))
+    user-output-4)
+
+(define check-4
+  (and
+    (= ((slot :production) result-4)
+       (* ((slot :quantity) order-4) ((slot :tier-one-price) pricing)))
+    (= ((slot :rush) result-4)
+       (* ((slot :production) result-4) ((slot :rush-rate) pricing)))
+    (= ((slot :discount) result-4)
+       (min (* (+ ((slot :production) result-4) ((slot :rush) result-4))
+               ((slot :member-rate) pricing))
+            ((slot :discount-cap) order-4)))
+    (< ((slot :discount) result-4) ((slot :discount-cap) order-4))
+    (= ((slot :subtotal) result-4)
+       (+ ((slot :production) result-4) ((slot :rush) result-4)
+          (- ((slot :discount) result-4)) ((slot :setup-fee) pricing)))
+    (< ((slot :subtotal) result-4) ((slot :free-delivery-threshold) pricing))
+    (= ((slot :delivery) result-4) ((slot :delivery-fee) pricing))
+    (= ((slot :tax) result-4)
+       (* (+ ((slot :subtotal) result-4) ((slot :delivery) result-4))
+          ((slot :tax-rate) pricing)))
+    (= ((slot :total) result-4)
+       (round-money (+ ((slot :subtotal) result-4) ((slot :delivery) result-4) ((slot :tax) result-4))))))
+
+(-> check-4 self-check-4)

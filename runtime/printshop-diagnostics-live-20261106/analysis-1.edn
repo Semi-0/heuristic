@@ -1,0 +1,12 @@
+
+
+{:outputs "A quote-1 struct with :production :rush :discount :subtotal :delivery :tax :total fields, a text reply to user-output-1, and a boolean to self-check-1"
+ :facts "quantity-1=80, member-1=false, rush-1=false, discount-cap-1=40, tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08, shared-rule premise available"
+ :unknowns "none"
+ :units "dollars for all monetary values, copies for quantity"
+ :rules "Progressive tiers: first 100 at $2, next 400 at $1.60, rest at $1.30. Rush adds 0.20*production. Member discount = 0.10*(production+rush) capped at discount-cap; nonmember discount=0. Add setup-fee after discount. Delivery=12 unless subtotal-after-discount-and-setup >= 250. Tax=0.08*(subtotal+delivery). Total=round-money(subtotal+delivery+tax)."
+ :branches "Tier selection by quantity (<=100, <=500, >500); rush vs standard; member vs nonmember; free-delivery threshold check"
+ :operators "pricing compound holds numeric rule parameters but no computation network. struct/slot for output construction. select for branching. +,-,*,/ for arithmetic. min/max for caps. >= for threshold. round-money for final rounding. ttms-premise-closure to attach shared-rule. No existing callable implements the full quote formula."
+ :operator "construct a network (e.g. compute-quote) taking quantity, rush?, member?, discount-cap and returning a struct with :production :rush :discount :subtotal :delivery :tax :total"
+ :tests "Verify production for 80 copies equals 80*2=160 (all in tier-one). Verify rush=0 for standard. Verify discount=0 for nonmember. Verify subtotal=160+25=185. Verify delivery=12 since 185<250. Verify tax=(185+12)*0.08=15.76. Verify total=round-money(212.76)=212.76. Cross-check by computing total independently: 160+0+0+25+12+15.76=212.76. Also test tier boundary: 100 copies should give 200 production; 101 should give 200+1.60=201.60. Test member discount cap: if discount would exceed cap, use cap."
+ :decision :construct}

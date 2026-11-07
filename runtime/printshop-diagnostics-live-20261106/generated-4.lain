@@ -1,0 +1,37 @@
+
+
+(define quote-result-4 (compute-quote quantity-4 rush-4 member-4 discount-cap-4))
+
+(-> ((slot :production) quote-4) ((slot :production) quote-result-4))
+(-> ((slot :rush) quote-4) ((slot :rush) quote-result-4))
+(-> ((slot :discount) quote-4) ((slot :discount) quote-result-4))
+(-> ((slot :subtotal) quote-4) ((slot :subtotal) quote-result-4))
+(-> ((slot :delivery) quote-4) ((slot :delivery) quote-result-4))
+(-> ((slot :tax) quote-4) ((slot :tax) quote-result-4))
+(-> ((slot :total) quote-4) ((slot :total) quote-result-4))
+
+(-> user-output-4
+  (str "Quote for " quantity-4 " copies (rush, member):\n"
+       "  Production: $" ((slot :production) quote-result-4) "\n"
+       "  Rush charge: $" ((slot :rush) quote-result-4) "\n"
+       "  Discount: $" ((slot :discount) quote-result-4) "\n"
+       "  Subtotal (incl. setup): $" ((slot :subtotal) quote-result-4) "\n"
+       "  Delivery: $" ((slot :delivery) quote-result-4) "\n"
+       "  Tax: $" ((slot :tax) quote-result-4) "\n"
+       "  Total: $" ((slot :total) quote-result-4)))
+
+(-> self-check-4
+  (let [prod ((slot :production) quote-result-4)
+        rush ((slot :rush) quote-result-4)
+        disc ((slot :discount) quote-result-4)
+        sub ((slot :subtotal) quote-result-4)
+        del ((slot :delivery) quote-result-4)
+        tax ((slot :tax) quote-result-4)
+        tot ((slot :total) quote-result-4)]
+    (and (= prod (* quantity-4 tier-one-price))
+         (= rush (* rush-rate prod))
+         (= disc (min (* member-rate (+ prod rush)) discount-cap-4))
+         (= sub (+ (- prod disc) setup-fee))
+         (= del (select (>= sub free-delivery-threshold) 0 delivery-fee))
+         (= tax (* tax-rate (+ sub del)))
+         (= tot (round-money (+ sub del tax))))))

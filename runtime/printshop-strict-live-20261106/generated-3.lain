@@ -1,0 +1,43 @@
+
+
+(define result-3 (compute-quote-1 order-3 pricing))
+
+(-> ((slot :production) result-3) ((slot :production) quote-3))
+(-> ((slot :rush) result-3) ((slot :rush) quote-3))
+(-> ((slot :discount) result-3) ((slot :discount) quote-3))
+(-> ((slot :subtotal) result-3) ((slot :subtotal) quote-3))
+(-> ((slot :delivery) result-3) ((slot :delivery) quote-3))
+(-> ((slot :tax) result-3) ((slot :tax) quote-3))
+(-> ((slot :total) result-3) ((slot :total) quote-3))
+
+(-> (str "Quote for " ((slot :quantity) order-3) " copies (member, standard service):\n"
+         "  Production: $" ((slot :production) result-3) "\n"
+         "  Rush: $" ((slot :rush) result-3) "\n"
+         "  Discount: $" ((slot :discount) result-3) "\n"
+         "  Subtotal (incl. setup): $" ((slot :subtotal) result-3) "\n"
+         "  Delivery: $" ((slot :delivery) result-3) "\n"
+         "  Tax (8%): $" ((slot :tax) result-3) "\n"
+         "  Total: $" ((slot :total) result-3))
+    user-output-3)
+
+(define check-3
+  (and
+    (= ((slot :production) result-3)
+       (+ (* 100 ((slot :tier-one-price) pricing))
+          (* 400 ((slot :tier-two-price) pricing))
+          (* 220 ((slot :tier-three-price) pricing))))
+    (= ((slot :rush) result-3) 0)
+    (= ((slot :discount) result-3)
+       (min (* ((slot :production) result-3) ((slot :member-rate) pricing))
+            ((slot :discount-cap) order-3)))
+    (= ((slot :discount) result-3) ((slot :discount-cap) order-3))
+    (= ((slot :subtotal) result-3)
+       (+ ((slot :production) result-3) (- ((slot :discount) result-3)) ((slot :setup-fee) pricing)))
+    (= ((slot :delivery) result-3) 0)
+    (>= ((slot :subtotal) result-3) ((slot :free-delivery-threshold) pricing))
+    (= ((slot :tax) result-3)
+       (* ((slot :subtotal) result-3) ((slot :tax-rate) pricing)))
+    (= ((slot :total) result-3)
+       (round-money (+ ((slot :subtotal) result-3) ((slot :tax) result-3))))))
+
+(-> check-3 self-check-3)

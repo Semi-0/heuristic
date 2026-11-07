@@ -1,0 +1,8 @@
+{:operational-status :completed, :error nil, :provider-requests 0, :self-checks {1 true, 2 true, 3 true, 4 true, 5 true}}
+:reused {2 [quote-fn], 3 [quote-fn], 4 [quote-fn], 5 [quote-fn]}
+:failed [{:check :quantity-correction, :expected 277.56M, :actual :unknown, :pass false} {:check :question-restoration, :expected 277.56M, :actual :unknown, :pass false}]
+Execution error (AssertionError) at user/eval148 (evaluate_printshop_struct.clj:79).
+Assert failed: (every? :pass (clojure.core/deref checks))
+
+Full report at:
+/tmp/clojure-1764750518815170122.edn
