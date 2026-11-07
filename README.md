@@ -2,14 +2,17 @@
 
 The current local conversation experiment is documented in
 [Environment-constructed conversation](docs/environment-conversation.md).
-`soul-refined.lain` imports the existing model and supplies its bootstrap context
-and operator documentation through lexical environment bindings. Run
+`soul-refined.lain` defines the reusable composition and imports the existing model.
+`examples/lain/conversation.lain` creates the model and loads the independent
+`environments/conversation.lain` seed. Bootstrap context and operator documentation
+are supplied through lexical environment bindings. See
+[the runtime separation](docs/2026-11-07-clear-runtime-composition.md). Run
 `tools/test_module.sh soul` and `tools/test_module.sh operator-examples` for focused checks and `tools/probe_soul.sh` for the
 real-model construction and three conversation rounds. Live acceptance is
 reported in that experiment's evidence; deterministic tests alone do not establish it.
 
 The migration notes below describe the earlier integration path and its recorded
-limitations. Its historical tests do not establish acceptance of the current
+limitations; references there to the old root entry or streaming compiler are historical. Its historical tests do not establish acceptance of the current
 entry point.
 
 This is an unfinished Lain-first migration. The immutable foundations pass their focused tests, but the canonical coded-conversation test does not yet deliver its first reply. Do not treat this checkout as acceptance of the orchestration plan. Current results and remaining work are recorded in [runtime/verification.json](runtime/verification.json) and [runtime/verification.log](runtime/verification.log).

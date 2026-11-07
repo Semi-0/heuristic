@@ -1,0 +1,6 @@
+;; completed-response is the full model result, including completion status and
+;; request identity, not just its text. Admission rejects failed/truncated replies.
+;; The existing native admission boundary owns reading, compilation and receipts.
+(define incremental-compile
+  (network [completed-response target]
+    (source:admit completed-response target (cell:reference completed-response))))

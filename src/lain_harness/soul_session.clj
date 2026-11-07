@@ -223,7 +223,7 @@
     (try
       (host/extend! owner (extension owner journal))
       (host/extend! owner (runtime/message-extension {:owner owner}))
-      (host/extend! owner (model/declaration root "soul-refined.lain" options))
+      (host/extend! owner (model/declaration root "examples/lain/conversation.lain" options))
       (host/observe! owner ::deliveries
                      (fn [current]
                        (let [network (session/network current)

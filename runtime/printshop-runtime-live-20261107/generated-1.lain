@@ -1,0 +1,99 @@
+ (- discount))
+
+Actually, looking at the operators: "+ - * / min max >= <= = str and round-money are support-aware operations." These are likely n-ary. So `(- discount)` might not work as unary negation. Let me use `(- 0 discount)` or restructure.
+
+Actually, let me just write: (+ production rush-charge setup-fee (- 0 discount))
+
+Or: (+ production rush-charge setup-fee (* -1 discount))
+
+Hmm, but there's no unary minus mentioned. Let me use: (- (+ production rush-charge setup-fee) discount)
+
+That's cleaner: subtotal = (production + rush + setup) - discount
+
+Let me also verify the `select` usage. For rush:
+(select rush? (* rush-rate production) 0)
+
+This should work since rush? is a boolean (false in this case).
+
+For delivery:
+(select (>= subtotal free-delivery-threshold) 0 delivery-fee)
+
+This checks if subtotal >= threshold, then delivery is 0, else delivery-fee.
+
+Let me finalize the implementation. I'll also add a self-check.
+
+For the self-check, I can verify that the total equals 212.76:
+(-> (= ((slot :total) quote-result) 212.76) self-check-1)
+
+Wait, but the instructions say "Computed answers must come from Lain operations on input cells, not hardcoded answers." So I shouldn't hardcode 212.76 in a self-check either. Let me skip the self-check or make it a structural check.
+
+Actually, re-reading: "You may construct test cases or consistency checks using the available operators and connect a boolean result to self-check-N." A self-check that verifies internal consistency (like total = subtotal + delivery + tax) would be fine.
+
+Let me write the final implementation.
+
+One more thing - I need to check if the pricing struct actually has slots named :tier-one-limit, etc. The binding directory shows these as individual bindings AND pricing as a compound. The metadata says "pricing exposes the shared numeric rules." I'll assume the pricing struct has these slots.
+
+Actually, looking more carefully, the individual bindings (tier-one-limit, tier-one-price, etc.) are at the top level. The pricing compound might have them as slots too. Since the generalization-record says to read from the pricing struct, I'll use ((slot :tier-one-limit) pricing) etc.
+
+But wait - if those are already bound as top-level cells, I could also just reference them directly. However, the generalization-record specifically says to read from the pricing struct for reusability. Let me use the struct slots.
+
+Let me write the final code now.
+
+
+(define print-quote
+  (ttms-premise-closure
+    (network [order pricing]
+      (define quantity ((slot :quantity) order))
+      (define rush? ((slot :rush?) order))
+      (define member? ((slot :member?) order))
+      (define discount-cap ((slot :discount-cap) order))
+      (define tier-one-limit ((slot :tier-one-limit) pricing))
+      (define tier-one-price ((slot :tier-one-price) pricing))
+      (define tier-two-count ((slot :tier-two-count) pricing))
+      (define tier-two-price ((slot :tier-two-price) pricing))
+      (define tier-three-price ((slot :tier-three-price) pricing))
+      (define rush-rate ((slot :rush-rate) pricing))
+      (define member-rate ((slot :member-rate) pricing))
+      (define setup-fee ((slot :setup-fee) pricing))
+      (define delivery-fee ((slot :delivery-fee) pricing))
+      (define free-delivery-threshold ((slot :free-delivery-threshold) pricing))
+      (define tax-rate ((slot :tax-rate) pricing))
+      (define tier1-copies (min quantity tier-one-limit))
+      (define tier2-copies (min (max (- quantity tier-one-limit) 0) tier-two-count))
+      (define tier3-copies (max (- quantity tier-one-limit tier-two-count) 0))
+      (define production (+ (* tier1-copies tier-one-price) (* tier2-copies tier-two-price) (* tier3-copies tier-three-price)))
+      (define rush-charge (select rush? (* rush-rate production) 0))
+      (define raw-discount (select member? (* member-rate (+ production rush-charge)) 0))
+      (define discount (min raw-discount discount-cap))
+      (define subtotal (- (+ production rush-charge setup-fee) discount))
+      (define delivery (select (>= subtotal free-delivery-threshold) 0 delivery-fee))
+      (define tax (* tax-rate (+ subtotal delivery)))
+      (define total (round-money (+ subtotal delivery tax)))
+      (struct :production production :rush rush-charge :discount discount :subtotal subtotal :delivery delivery :tax tax :total total))
+    shared-rule))
+
+(define quote-result (print-quote order-1 pricing))
+
+(-> ((slot :production) quote-result) ((slot :production) quote-1))
+(-> ((slot :rush) quote-result) ((slot :rush) quote-1))
+(-> ((slot :discount) quote-result) ((slot :discount) quote-1))
+(-> ((slot :subtotal) quote-result) ((slot :subtotal) quote-1))
+(-> ((slot :delivery) quote-result) ((slot :delivery) quote-1))
+(-> ((slot :tax) quote-result) ((slot :tax) quote-1))
+(-> ((slot :total) quote-result) ((slot :total) quote-1))
+
+(-> (str "Quote for " ((slot :quantity) order-1) " copies (standard, nonmember):\n"
+        "Production: $" ((slot :production) quote-result) "\n"
+        "Rush surcharge: $" ((slot :rush) quote-result) "\n"
+        "Member discount: $" ((slot :discount) quote-result) "\n"
+        "Subtotal (incl. setup): $" ((slot :subtotal) quote-result) "\n"
+        "Delivery: $" ((slot :delivery) quote-result) "\n"
+        "Tax: $" ((slot :tax) quote-result) "\n"
+        "Total: $" ((slot :total) quote-result))
+    user-output-1)
+
+(-> (= ((slot :total) quote-result)
+       (round-money (+ ((slot :subtotal) quote-result)
+                       ((slot :delivery) quote-result)
+                       ((slot :tax) quote-result))))
+    self-check-1)

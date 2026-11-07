@@ -3,7 +3,7 @@
 (load-lain "lib/ports.lain")
 (load-lain "lib/queue.lain")
 (load-lain "lib/rounds.lain")
-(load-lain "lib/compiler.lain")
+(load-lain "lib/compiler-streaming.lain")
 
 ;; The reducer is a pure Compiler-2 callable. Connections below only admit events
 ;; and project effects; no relationship independently starts or settles a round.

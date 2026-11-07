@@ -45,7 +45,7 @@
 (load-lain "lib/queue.lain")
 (load-lain "lib/rounds.lain")
 (load-lain "lib/observations.lain")
-(load-lain "lib/compiler.lain")
+(load-lain "lib/compiler-streaming.lain")
 (load-lain "lib/model.lain")
 
 (load-primitive-environment "lain_harness/value_metadata.clj" :lain-harness.value-metadata/value:kind 1)

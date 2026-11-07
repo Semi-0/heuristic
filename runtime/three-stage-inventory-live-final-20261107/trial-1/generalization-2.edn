@@ -1,0 +1,17 @@
+
+
+{:outputs "total items, usable stock, margin (surplus/shortage), fulfillment boolean for shipment-2"
+ :facts "boxes-2=15, items-per-box-2=24, damage-percent-2=5 (inspection-confirmed), order-quantity-2=350"
+ :unknowns "none; all inputs are known"
+ :units "boxes (count), items-per-box (count), damage-percent (percent 0-100), order-quantity (items), total (items), usable (items), margin (items)"
+ :relations "total = boxes * items-per-box; usable = total * (1 - damage-percent/100); margin = usable - order-quantity; fulfillment = usable >= order-quantity"
+ :operators "+ - * / >= str"
+ :operator "none"
+ :status "all inputs known; computation is fully determined"
+ :steps "1. Compute total-2 = 15*24 = 360. 2. Compute usable-2 = 360*(1-5/100) = 342. 3. Compute margin-2 = 342-350 = -8 (shortage). 4. Compute fulfillment-2 = 342>=350 = false. 5. Connect results to observed ports and text port."
+ :tests "Verify total-2=360, usable-2=342, margin-2=-8, fulfillment-2=false. Check that margin is negative indicating shortage. Confirm fulfillment is false since 342<350."
+ :decision :reuse
+ :problem-class "Shipment fulfillment: given a box count, items per box, a damage percentage, and an order quantity, compute total items, usable stock after damage, surplus or shortage relative to the order, and a boolean indicating whether the order can be fulfilled."
+ :parameters "boxes (count), items-per-box (count), damage-percent (percent 0-100), order-quantity (items). These four quantities vary between shipments; the arithmetic relationships connecting them to the four outputs are fixed."
+ :captured "The four arithmetic identities: total = boxes * items-per-box; usable = total * (1 - damage-percent/100); margin = usable - order-quantity; fulfillment = usable >= order-quantity. These are mathematical definitions, not empirical assumptions. The percentage-to-fraction conversion (divide by 100) is also fixed. No shipment-specific constants are captured; each application reads its own named cells."
+ :interface "Direct arithmetic using existing operators (*, -, /, >=, str) applied to the named input cells, mirroring the shipment-1 pattern exactly. No new callable is warranted: the computation is four lines of primitive arithmetic, and wrapping it in a network would add indirection without reducing complexity for the two shipments present. The existing operators are already general; the only thing that changes between problems is which cells feed them. Reuse means applying the same operator sequence to the -2 suffixed cells."}

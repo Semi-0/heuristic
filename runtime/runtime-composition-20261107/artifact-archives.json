@@ -1,0 +1,240 @@
+[
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/evidence.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/evidence.edn.gz",
+    "bytes": 13012556,
+    "archive_bytes": 1051275,
+    "sha256": "975d5e4d7475534851966cd4eb352ce66ac0d404f98e013523d4f29c974c8509"
+  },
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/graph-1.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/graph-1.edn.gz",
+    "bytes": 15210555,
+    "archive_bytes": 3080770,
+    "sha256": "9e0926e1892fe0db5a8b7fd88133d49ba8761888ee6e64c31594e8334ac0f007"
+  },
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/graph-2.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/graph-2.edn.gz",
+    "bytes": 15735277,
+    "archive_bytes": 3186715,
+    "sha256": "31aa2c8227b10b1801b25a1686cf0fc285193a1b0bf98b7eaa034803ab2b6ed1"
+  },
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/graph-3.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/graph-3.edn.gz",
+    "bytes": 16259999,
+    "archive_bytes": 3291350,
+    "sha256": "f0c731d899c1bfc2cdf8cadfeb59677292395fcc5919029d8e43f9a651c5a9db"
+  },
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/graph-4.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/graph-4.edn.gz",
+    "bytes": 16784721,
+    "archive_bytes": 3396384,
+    "sha256": "f53addf9e9d2a62a726ad2d0bb79754fc0e8d48805266d7515443cda553256d4"
+  },
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/graph-5.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/graph-5.edn.gz",
+    "bytes": 17309443,
+    "archive_bytes": 3500690,
+    "sha256": "2fe6b3b0081217a14596a60daef5d8fcaa24230a55fdcdf81d916c04083fc5ae"
+  },
+  {
+    "path": "runtime/printshop-runtime-replay-shared-20261107/snapshots.edn",
+    "archive": "runtime/printshop-runtime-replay-shared-20261107/snapshots.edn.gz",
+    "bytes": 5851687,
+    "archive_bytes": 157446,
+    "sha256": "fdceae249ee80a3b128bed0e292868f9f8f06044a6d5af519442edd8c9385570"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/evidence.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/evidence.edn.gz",
+    "bytes": 13590892,
+    "archive_bytes": 1062574,
+    "sha256": "1f34edb6be29b54f0cb7ec4e2276f16fd351704bfa0152f0b65d12bef80dd33f"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/graph-1.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/graph-1.edn.gz",
+    "bytes": 15230807,
+    "archive_bytes": 3099022,
+    "sha256": "415faa80cbd883cf77c117f059791ee0b0b9cef6511fac0731beffd3d8ecba79"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/graph-2.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/graph-2.edn.gz",
+    "bytes": 15883066,
+    "archive_bytes": 3233352,
+    "sha256": "44127cf5791d6ed07780175dc5e284b2e7041b25bcc08c7520280bb11b0365dd"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/graph-3.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/graph-3.edn.gz",
+    "bytes": 16535325,
+    "archive_bytes": 3367097,
+    "sha256": "131ce6cf63b1c4b9a34052166fab6a651202bb149f53036b2a462f8da00c5af4"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/graph-4.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/graph-4.edn.gz",
+    "bytes": 17187584,
+    "archive_bytes": 3500839,
+    "sha256": "32b3a5c03ca45692e9921232e5de8385598fe2efe0da7e9e24f09f72daef69fa"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/graph-5.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/graph-5.edn.gz",
+    "bytes": 17839843,
+    "archive_bytes": 3634792,
+    "sha256": "202163c74231c8a392bc057714fca2f0ce126c8cee890a575285881621535885"
+  },
+  {
+    "path": "runtime/printshop-three-stage-control-final-20261107/snapshots.edn",
+    "archive": "runtime/printshop-three-stage-control-final-20261107/snapshots.edn.gz",
+    "bytes": 6248113,
+    "archive_bytes": 163659,
+    "sha256": "0781e61d892d937ed5b345779b6809de23a77e9e0548ee98f3def8bcc1cfb0ea"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/evidence.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/evidence.edn.gz",
+    "bytes": 12951484,
+    "archive_bytes": 1041843,
+    "sha256": "e6fbe2549761fb78c5f74831e7f8577641c35c014bff4cdc506413d4b2f95537"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/graph-1.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/graph-1.edn.gz",
+    "bytes": 15093862,
+    "archive_bytes": 3070680,
+    "sha256": "b72cf58f2e0ee421bf036795925384d2b4bf65e5d3ca5232ea663750facca518"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/graph-2.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/graph-2.edn.gz",
+    "bytes": 15618584,
+    "archive_bytes": 3175379,
+    "sha256": "390b9486bb9111215deda40f97147754992035869c4eeedf4029222918e762b0"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/graph-3.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/graph-3.edn.gz",
+    "bytes": 16143306,
+    "archive_bytes": 3280317,
+    "sha256": "e36af1c303f719e363562ce3127431eeb78aaf717557fecfd23cbb9ef8afe95b"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/graph-4.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/graph-4.edn.gz",
+    "bytes": 16668028,
+    "archive_bytes": 3386400,
+    "sha256": "3a821e7e455abee7bcc2455d3e167f0c25e3c2924ac58f658e36ed7f3d2e37c8"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/graph-5.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/graph-5.edn.gz",
+    "bytes": 17192750,
+    "archive_bytes": 3492563,
+    "sha256": "c3b13f580ceda0adf3fe360dfd5818982a4ae4f56f98d409ccc1f95338db888f"
+  },
+  {
+    "path": "runtime/printshop-three-stage-live-20261107/snapshots.edn",
+    "archive": "runtime/printshop-three-stage-live-20261107/snapshots.edn.gz",
+    "bytes": 5851687,
+    "archive_bytes": 158859,
+    "sha256": "b23686c29fc40c522dca7c01dda57b3dfd3852f2f6ad67c41dfa16e3f48edf30"
+  },
+  {
+    "path": "runtime/three-stage-inventory-control-20261107/control-reuse/evidence.edn",
+    "archive": "runtime/three-stage-inventory-control-20261107/control-reuse/evidence.edn.gz",
+    "bytes": 2352691,
+    "archive_bytes": 221441,
+    "sha256": "01c37c30399e9a7c901b22718891f9a906fd554f59b05ac84df7d2c8bcf17f8e"
+  },
+  {
+    "path": "runtime/three-stage-inventory-control-20261107/control-reuse/graph-1.edn",
+    "archive": "runtime/three-stage-inventory-control-20261107/control-reuse/graph-1.edn.gz",
+    "bytes": 9594278,
+    "archive_bytes": 1948443,
+    "sha256": "7a6be3b243619900cb8e2bbe3b1e332a50e1954dd20bb6bfb7c1049ee5bd281c"
+  },
+  {
+    "path": "runtime/three-stage-inventory-control-20261107/control-reuse/graph-2.edn",
+    "archive": "runtime/three-stage-inventory-control-20261107/control-reuse/graph-2.edn.gz",
+    "bytes": 9771519,
+    "archive_bytes": 1983816,
+    "sha256": "e6d5663cd7b567120391d153d0382651de92f2b52f04a8011546e769d29cca5f"
+  },
+  {
+    "path": "runtime/three-stage-inventory-control-final-20261107/control-reuse/evidence.edn",
+    "archive": "runtime/three-stage-inventory-control-final-20261107/control-reuse/evidence.edn.gz",
+    "bytes": 2352612,
+    "archive_bytes": 220974,
+    "sha256": "83ee630db20b9b70671de036a467061c30575e0ff3037d52536b46276f54e116"
+  },
+  {
+    "path": "runtime/three-stage-inventory-control-final-20261107/control-reuse/graph-1.edn",
+    "archive": "runtime/three-stage-inventory-control-final-20261107/control-reuse/graph-1.edn.gz",
+    "bytes": 9594278,
+    "archive_bytes": 1946755,
+    "sha256": "0a5f6392e487ad994eef275ef83d4cea461b52e2462cd0337ab5f726641fd88d"
+  },
+  {
+    "path": "runtime/three-stage-inventory-control-final-20261107/control-reuse/graph-2.edn",
+    "archive": "runtime/three-stage-inventory-control-final-20261107/control-reuse/graph-2.edn.gz",
+    "bytes": 9771519,
+    "archive_bytes": 1981962,
+    "sha256": "266c899603561860724beec1fcd20afde1bb8bcd1492f1293791561c59758a75"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-20261107/trial-1/graph-1.edn",
+    "archive": "runtime/three-stage-inventory-live-20261107/trial-1/graph-1.edn.gz",
+    "bytes": 9493274,
+    "archive_bytes": 1925381,
+    "sha256": "5b7e858dc4fd53cdb0fd2e5973f3530b5311d7966e3615181ee46a55934d62f2"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-final-20261107/trial-1/evidence.edn",
+    "archive": "runtime/three-stage-inventory-live-final-20261107/trial-1/evidence.edn.gz",
+    "bytes": 1010886,
+    "archive_bytes": 113214,
+    "sha256": "7a2a79e61c7c97c41a94a3a98954056b6cff906420f8e8373738482d365cb95a"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-final-20261107/trial-1/graph-1.edn",
+    "archive": "runtime/three-stage-inventory-live-final-20261107/trial-1/graph-1.edn.gz",
+    "bytes": 9493274,
+    "archive_bytes": 1926355,
+    "sha256": "eac45f056993552fe8d3744f2e5765c6f5299736bd249b45d0338ef7f022d0f1"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-final-20261107/trial-2/evidence.edn",
+    "archive": "runtime/three-stage-inventory-live-final-20261107/trial-2/evidence.edn.gz",
+    "bytes": 1010886,
+    "archive_bytes": 113218,
+    "sha256": "b79cc23f611c6e1ddd14ea3d7da94f917c6136b796ca1f467f1aeccc128f50a0"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-final-20261107/trial-2/graph-1.edn",
+    "archive": "runtime/three-stage-inventory-live-final-20261107/trial-2/graph-1.edn.gz",
+    "bytes": 9493274,
+    "archive_bytes": 1926505,
+    "sha256": "8c636c8656724c68cffc2d521c67d1886c2209288e6e4fe9ceea7266d2b02c2c"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-final-20261107/trial-3/evidence.edn",
+    "archive": "runtime/three-stage-inventory-live-final-20261107/trial-3/evidence.edn.gz",
+    "bytes": 1010886,
+    "archive_bytes": 113209,
+    "sha256": "13e791a730d2e4e0648cc5737df4afb15608fa628ed914594999d7ee46677d6f"
+  },
+  {
+    "path": "runtime/three-stage-inventory-live-final-20261107/trial-3/graph-1.edn",
+    "archive": "runtime/three-stage-inventory-live-final-20261107/trial-3/graph-1.edn.gz",
+    "bytes": 9493274,
+    "archive_bytes": 1925926,
+    "sha256": "443a846d41155a1f90f630f2610ef2815c455617b8cf90af16e58183e3a192e0"
+  }
+]

@@ -11,6 +11,8 @@ The guide and examples are copied from the local Lain source tree at `projects/d
 
 ## Experiment records
 
+- [Three-stage interface generalization](2026-11-07-three-stage-generalization-experiment.md): explicit class/parameter decisions, optional abstraction, and primitive-composition protocol limits.
+
 - [Requiring executable checks](2026-11-07-executable-checks-experiment.md): actual test construction, invalid-source failures, duplicate test formulas, and stale expectations.
 
 - [Explicit analysis and inventory implementation](2026-11-07-planned-inventory-experiment.md): three two-stage trials, visible look-back decisions, and independent correctness checks.
@@ -28,3 +30,5 @@ The guide and examples are copied from the local Lain source tree at `projects/d
 
 - [Our first working Lain model IO experiment — November 4, 2026](2026-11-04-first-model-io-experiment.md): the journey from behaviors and model wiring to a live reply and semantic trace, including failed approaches, corrected diagnoses, and remaining bugs.
 - [Model IO experiment](model-io.md): implementation, verification commands, and hosted editor details.
+
+- [Clear runtime composition](2026-11-07-clear-runtime-composition.md): runtime definition, independent seeds and completed-response compilation.

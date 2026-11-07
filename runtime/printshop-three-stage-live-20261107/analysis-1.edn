@@ -1,0 +1,13 @@
+
+
+{:outputs "A quote struct (quote-1) with slots :production, :rush, :discount, :subtotal, :delivery, :tax, :total and a text reply (user-output-1) showing the charges and final total."
+ :facts "quantity-1=80, member-1=false, rush-1=false, discount-cap-1=40, tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60M, tier-three-price=1.30M, rush-rate=0.20M, member-rate=0.10M, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08M. All 80 copies fall within tier-one-limit (100), so production = 80*2 = 160. Nonmember means no discount. Standard service means no rush charge. Subtotal after discount+setup = 160+25 = 185 < 250, so delivery fee applies. Tax applies to (subtotal+delivery). Final total rounded to cents."
+ :unknowns "None for this question; all inputs are known. Future orders (2-5) are unknown."
+ :units "Dollars for all monetary values; copies for quantity; rates are dimensionless multipliers."
+ :relations "production = tiered(quantity); rush-charge = rush-rate * production if rush?; discount = member-rate * (production + rush-charge) if member? capped at discount-cap, else 0; subtotal = production + rush-charge - discount + setup-fee; delivery = delivery-fee if subtotal < free-delivery-threshold else 0; tax = tax-rate * (subtotal + delivery); total = round-money(subtotal + delivery + tax)."
+ :operators "+ - * / min max select = >= <= str round-money struct slot -> network define ttms-premise-closure"
+ :operator "none"
+ :status "ready"
+ :steps "1. Compute tiered production cost for 80 copies (all in tier-one). 2. Rush charge = 0 (standard). 3. Discount = 0 (nonmember). 4. Subtotal = production + rush - discount + setup-fee. 5. Delivery = 12 since subtotal < 250. 6. Tax = 0.08 * (subtotal + delivery). 7. Total = round-money(subtotal + delivery + tax). 8. Connect to quote-1 slots and user-output-1."
+ :tests "Verify production=160, rush=0, discount=0, subtotal=185, delivery=12, tax=15.76, total=212.76. Check that a quantity of 150 would split across tiers. Check member discount capping. Check free-delivery waiver at threshold."
+ :decision :construct}

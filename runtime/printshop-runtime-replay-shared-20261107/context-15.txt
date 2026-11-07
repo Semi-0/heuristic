@@ -1,0 +1,204 @@
+# Live environment
+
+## phase
+implementation
+
+## analysis-record
+
+
+{:outputs "production, rush charge, discount, subtotal, delivery, tax, total (rounded to cents) for 720 copies, member, rush, discount-cap $75"
+ :facts "quantity-5=720, rush-5=true, member-5=true, discount-cap-5=75 (promotion), tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08. compute-quote already defined as (network [quantity rush? member? discount-cap] ...)"
+ :unknowns "Computed production, rush, discount, subtotal, delivery, tax, total for this specific order"
+ :units "dollars for prices/fees/charges, copies for quantity, dimensionless multipliers for rates"
+ :relations "progressive tier pricing; rush = rush-rate * production; discount = min(member-rate*(production+rush), discount-cap); subtotal = production+rush+setup-discount; delivery waived if subtotal>=threshold; tax = tax-rate*(subtotal+delivery); total = round-money(subtotal+delivery+tax)"
+ :operators "compute-quote (existing callable), min, max, select, +, -, *, round-money, str, struct, slot, ->"
+ :operator "compute-quote"
+ :status "ready"
+ :steps "Invoke compute-quote with quantity-5, rush-5, member-5, discount-cap-5. Connect resulting struct slots to quote-5. Build text reply for user-output-5."
+ :tests "Verify discount is capped at 75 (raw would be 135.12); verify delivery is 0 since subtotal exceeds 250; verify total rounds correctly"
+ :decision :reuse}
+
+## generalization-record
+
+
+{:outputs "production, rush charge, discount, subtotal, delivery, tax, total (rounded to cents) for 720 copies, member, rush, discount-cap $75"
+ :facts "quantity-5=720, rush-5=true, member-5=true, discount-cap-5=75 (promotion), tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08. compute-quote already defined as (network [quantity rush? member? discount-cap] ...)"
+ :unknowns "Computed production, rush, discount, subtotal, delivery, tax, total for this specific order"
+ :units "dollars for prices/fees/charges, copies for quantity, dimensionless multipliers for rates"
+ :relations "progressive tier pricing; rush = rush-rate * production; discount = min(member-rate*(production+rush), discount-cap); subtotal = production+rush+setup-discount; delivery waived if subtotal>=threshold; tax = tax-rate*(subtotal+delivery); total = round-money(subtotal+delivery+tax)"
+ :operators "compute-quote (existing callable), min, max, select, +, -, *, round-money, str, struct, slot, ->"
+ :operator "compute-quote"
+ :status "ready"
+ :steps "Invoke compute-quote with quantity-5, rush-5, member-5, discount-cap-5. Connect resulting struct slots to quote-5. Build text reply for user-output-5."
+ :tests "Verify discount is capped at 75 (raw would be 135.12); verify delivery is 0 since subtotal exceeds 250; verify total rounds correctly"
+ :decision :reuse
+ :problem-class "Print-shop quote computation: given a quantity, service options (rush, membership), and a discount cap, compute a full charge breakdown using progressive tier pricing, surcharges, discounts, fees, and tax. The class covers any combination of these four inputs under a fixed rule set."
+ :parameters "quantity (copies), rush? (boolean), member? (boolean), discount-cap (dollars). These four values vary per order and are the only inputs that change between questions."
+ :captured "The pricing rule constants (tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08) and the structural relationships (progressive tiers, rush surcharge formula, discount formula with cap, delivery waiver logic, tax application, final rounding) are fixed assumptions embedded in the compute-quote network body. They remain valid across all orders unless the shop changes its rules."
+ :interface "Direct reuse of the existing compute-quote callable. It already exposes quantity, rush?, member?, and discount-cap as parameters, so the $75 promotional cap is simply a different argument value—no adaptation or construction is needed. The network encapsulates all rule logic and returns a struct with the seven output slots. This is the simplest suitable interface; generalizing further (e.g., parameterizing tier boundaries or rates) would add complexity without addressing any observed variation in the problem set."}
+
+## inspection-feedback
+State: unknown. unknown
+
+## role-cell
+Work carefully from the question and available facts. Follow phase: analyze the problem, design or select a computational interface, then implement and apply it in the persistent lexical child.
+
+## procedure-cell
+Use three stages.
+1. ANALYSIS: identify outputs, knowns, unknowns, units and relationships. Inspect available operators, previous source and visible outcomes. Separate observations from assumptions. Do not implement yet.
+2. GENERALIZATION: consider whether these relationships describe a useful class of problems. Inspect existing operators first. If a prior computation is tied to particular inputs, consider whether exposing some dependencies as parameters would make it useful more generally. Identify which quantities vary between problems and which assumptions can remain captured. Choose direct reuse, adaptation, or construction of the simplest suitable interface. Generalization is optional: explain when it adds unnecessary complexity. A callable's existence does not prove correctness; account for its available results and unresolved dependencies. Do not prescribe an imperative propagation sequence or implement yet.
+3. IMPLEMENTATION: construct or invoke the chosen computational interface and connect it to the current question's outputs. A network definition is a callable; actually invoke it to obtain results. Preserve question-specific premises on each application without accidentally capturing a previous question into all future uses. Use supported operations on input cells. Text claims should follow computed results when information changes. The host, rather than a mandatory model-written test suite, evaluates correctness and actual reuse.
+
+## output-format-cell
+Read phase first. ANALYSIS phase: return only one EDN map with nonempty string fields :outputs :facts :unknowns :units :relations :operators :operator :status :steps :tests, and :decision equal to :reuse, :adapt, :compose or :construct. Identify the problem and available computations. Use "none" when appropriate. Your decision is provisional until the generalization stage. :tests describes possible host-verifiable cases, not a requirement to generate tests.
+GENERALIZATION phase: analysis-record contains your unchanged analysis. Return one EDN map with the same fields and four additional nonempty string fields: :problem-class, :parameters, :captured, :interface. Decide whether an existing operator fits, can be adapted, or whether a new operator is useful. Explain the scope of the computational interface and why it fits. The :operator field names a selected existing callable when there is one, a proposed new callable, or "none" for direct primitive composition. Use :compose for composing existing primitives without selecting a retained application callable. The host records candidate availability but does not block implementation solely because a callable is not named; actual reuse is evaluated from source and runtime evidence. Distinguish variable inputs from captured assumptions. Generalization is optional; the simplest suitable interface is preferred. Use "none" if no useful generalization is warranted. Do not return executable source during either planning phase.
+IMPLEMENTATION phase: analysis-record and generalization-record contain your unchanged records. Implement the final interface decision in executable Lain and apply it to the current inputs. Connect actual computed observations and a text answer to the existing parent ports. If observations invalidate the design, record the discrepancy in inspection-feedback and make the necessary correction. Model-generated tests are not required; an independent host evaluator checks the results and actual reuse. Follow the source format below only in this phase.
+
+Return complete executable Lain forms only, without Markdown fences. Existing parent ports must be connected with ->, not redefined. order-N and pricing are input structs. quote-N is an existing output struct with slots :production, :rush, :discount, :subtotal, :delivery, :tax, :total. Expose the computed breakdown by connecting values to those slots. user-output-N is the existing text reply port. self-check-N is an optional boolean port for any verification you construct. N is the current round, 1 through 5. Computed answers must come from Lain operations on input cells, not hardcoded answers. Only final total is rounded to cents.
+Only implementation source is admitted. Model-generated tests are optional, not required; the host checks correctness and reuse.
+
+## context-cell
+One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history contain actual prior source and user/reply messages. Return new forms for the current ask. You may construct test cases or consistency checks using the available operators and connect a boolean result to self-check-N. The parent supplies no quote formula or solved example.
+
+## language-cell
+(define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expression, including a struct. (struct :key value ...) constructs connected fields. Read a field with ((slot :key) object). Write an existing field with (-> computed-value ((slot :key) output-object)). + - * / min max >= <= = str and round-money are support-aware operations. (select condition then-value else-value) selects a branch. round-money rounds to two decimals, half up; use it only on the final amount. str builds text from connected values. Unknown inputs leave dependent computations unresolved. ttms-premise-closure attaches a premise to a callable; invocation carries it to results. Example: (define f (ttms-premise-closure (network [x] (+ x 2)) some-premise)). inspect:premises accepts (cell:reference binding). The struct operators and primitive documentation are capabilities, not prebuilt pricing solutions.
+
+## rules-cell
+Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price each; remaining copies at tier-three-price each. Rush service adds rush-rate times production cost. Members receive member-rate times production plus rush charges as discount, capped by the order discount-cap; nonmembers receive no discount. Add setup-fee after discount. Delivery costs delivery-fee, waived when subtotal after discount and setup is at least free-delivery-threshold. Apply tax-rate to the entire amount including delivery. Final total includes tax and is rounded half up to cents; intermediate values are not rounded.
+
+## metadata-cell
+pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :question premise. question premises identify the corresponding requested quote. shared-rule identifies the validity premise for the general pricing rules. Keep independent orders separate. A promotional discount-cap belongs only to the order carrying it. delivery-note is unrelated. Quote output slots are production cost, rush charge, discount amount, subtotal after setup, delivery charge, tax amount, and final rounded total. Future orders are unknown until asked.
+
+## ask
+For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show the charges and final total.
+
+## written-code
+["\n\n(define compute-quote\n  (network [quantity rush? member? discount-cap]\n    (define tier1-copies (min quantity tier-one-limit))\n    (define tier2-copies (min (max (- quantity tier-one-limit) 0) tier-two-count))\n    (define tier3-copies (max (- quantity tier-one-limit tier-two-count) 0))\n    (define production (+ (* tier1-copies tier-one-price)\n                          (* tier2-copies tier-two-price)\n                          (* tier3-copies tier-three-price)))\n    (define rush-charge (select rush? (* rush-rate production) 0))\n    (define raw-discount (select member? (* member-rate (+ production rush-charge)) 0))\n    (define discount (min raw-discount discount-cap))\n    (define subtotal (+ production rush-charge setup-fee (- discount)))\n    (define delivery (select (>= subtotal free-delivery-threshold) 0 delivery-fee))\n    (define tax (* tax-rate (+ subtotal delivery)))\n    (define total (round-money (+ subtotal delivery tax)))\n    (struct :production production :rush rush-charge :discount discount :subtotal subtotal :delivery delivery :tax tax :total total)))\n\n(define quote-result-1 (compute-quote quantity-1 rush-1 member-1 discount-cap-1))\n\n(-> ((slot :production) quote-result-1) ((slot :production) quote-1))\n(-> ((slot :rush) quote-result-1) ((slot :rush) quote-1))\n(-> ((slot :discount) quote-result-1) ((slot :discount) quote-1))\n(-> ((slot :subtotal) quote-result-1) ((slot :subtotal) quote-1))\n(-> ((slot :delivery) quote-result-1) ((slot :delivery) quote-1))\n(-> ((slot :tax) quote-result-1) ((slot :tax) quote-1))\n(-> ((slot :total) quote-result-1) ((slot :total) quote-1))\n\n(-> (str \"Quote for 80 copies (nonmember, standard service):\\n\"\n         \"Production: $\" ((slot :production) quote-result-1) \"\\n\"\n         \"Rush charge: $\" ((slot :rush) quote-result-1) \"\\n\"\n         \"Discount: $\" ((slot :discount) quote-result-1) \"\\n\"\n         \"Subtotal (incl. setup): $\" ((slot :subtotal) quote-result-1) \"\\n\"\n         \"Delivery: $\" ((slot :delivery) quote-result-1) \"\\n\"\n         \"Tax (8%): $\" ((slot :tax) quote-result-1) \"\\n\"\n         \"Total: $\" ((slot :total) quote-result-1))\n    user-output-1)" "\n\n(define quote-result-2 (compute-quote quantity-2 rush-2 member-2 discount-cap-2))\n\n(-> ((slot :production) quote-result-2) ((slot :production) quote-2))\n(-> ((slot :rush) quote-result-2) ((slot :rush) quote-2))\n(-> ((slot :discount) quote-result-2) ((slot :discount) quote-2))\n(-> ((slot :subtotal) quote-result-2) ((slot :subtotal) quote-2))\n(-> ((slot :delivery) quote-result-2) ((slot :delivery) quote-2))\n(-> ((slot :tax) quote-result-2) ((slot :tax) quote-2))\n(-> ((slot :total) quote-result-2) ((slot :total) quote-2))\n\n(-> (str \"Quote for 240 copies (member, rush service):\\n\"\n         \"Production: $\" ((slot :production) quote-result-2) \"\\n\"\n         \"Rush charge: $\" ((slot :rush) quote-result-2) \"\\n\"\n         \"Discount: $\" ((slot :discount) quote-result-2) \" (capped at $\" discount-cap-2 \")\\n\"\n         \"Subtotal (incl. setup): $\" ((slot :subtotal) quote-result-2) \"\\n\"\n         \"Delivery: $\" ((slot :delivery) quote-result-2) \"\\n\"\n         \"Tax (8%): $\" ((slot :tax) quote-result-2) \"\\n\"\n         \"Total: $\" ((slot :total) quote-result-2))\n    user-output-2)" "\n\n(define quote-result-3 (compute-quote quantity-3 rush-3 member-3 discount-cap-3))\n\n(-> ((slot :production) quote-result-3) ((slot :production) quote-3))\n(-> ((slot :rush) quote-result-3) ((slot :rush) quote-3))\n(-> ((slot :discount) quote-result-3) ((slot :discount) quote-3))\n(-> ((slot :subtotal) quote-result-3) ((slot :subtotal) quote-3))\n(-> ((slot :delivery) quote-result-3) ((slot :delivery) quote-3))\n(-> ((slot :tax) quote-result-3) ((slot :tax) quote-3))\n(-> ((slot :total) quote-result-3) ((slot :total) quote-3))\n\n(-> (str \"Quote for 720 copies (member, standard service):\\n\"\n         \"Production: $\" ((slot :production) quote-result-3) \"\\n\"\n         \"Rush charge: $\" ((slot :rush) quote-result-3) \"\\n\"\n         \"Discount: $\" ((slot :discount) quote-result-3) \" (capped at $\" discount-cap-3 \")\\n\"\n         \"Subtotal (incl. setup): $\" ((slot :subtotal) quote-result-3) \"\\n\"\n         \"Delivery: $\" ((slot :delivery) quote-result-3) \"\\n\"\n         \"Tax (8%): $\" ((slot :tax) quote-result-3) \"\\n\"\n         \"Total: $\" ((slot :total) quote-result-3))\n    user-output-3)" "\n\n(define quote-result-4 (compute-quote quantity-4 rush-4 member-4 discount-cap-4))\n\n(-> ((slot :production) quote-result-4) ((slot :production) quote-4))\n(-> ((slot :rush) quote-result-4) ((slot :rush) quote-4))\n(-> ((slot :discount) quote-result-4) ((slot :discount) quote-4))\n(-> ((slot :subtotal) quote-result-4) ((slot :subtotal) quote-4))\n(-> ((slot :delivery) quote-result-4) ((slot :delivery) quote-4))\n(-> ((slot :tax) quote-result-4) ((slot :tax) quote-4))\n(-> ((slot :total) quote-result-4) ((slot :total) quote-4))\n\n(-> (str \"Quote for 90 copies (member, rush service):\\n\"\n         \"Production: $\" ((slot :production) quote-result-4) \"\\n\"\n         \"Rush charge: $\" ((slot :rush) quote-result-4) \"\\n\"\n         \"Discount: $\" ((slot :discount) quote-result-4) \" (capped at $\" discount-cap-4 \")\\n\"\n         \"Subtotal (incl. setup): $\" ((slot :subtotal) quote-result-4) \"\\n\"\n         \"Delivery: $\" ((slot :delivery) quote-result-4) \"\\n\"\n         \"Tax (8%): $\" ((slot :tax) quote-result-4) \"\\n\"\n         \"Total: $\" ((slot :total) quote-result-4))\n    user-output-4)"]
+
+## history
+[{:role "user", :content "Quote 80 copies for a nonmember using standard service. Show the charges and final total."} {:role "assistant", :content "Quote for 80 copies (nonmember, standard service):\nProduction: $160.00\nRush charge: $0\nDiscount: $0\nSubtotal (incl. setup): $185.00\nDelivery: $12\nTax (8%): $15.7600\nTotal: $212.76"} {:role "user", :content "Quote 240 copies for a member using rush service. Show the charges and final total."} {:role "assistant", :content "Quote for 240 copies (member, rush service):\nProduction: $424.00\nRush charge: $84.8000\nDiscount: $40 (capped at $40)\nSubtotal (incl. setup): $493.8000\nDelivery: $0\nTax (8%): $39.504000\nTotal: $533.30"} {:role "user", :content "Quote 720 copies for a member using standard service. Show the charges and final total."} {:role "assistant", :content "Quote for 720 copies (member, standard service):\nProduction: $1126.00\nRush charge: $0\nDiscount: $40 (capped at $40)\nSubtotal (incl. setup): $1111.00\nDelivery: $0\nTax (8%): $88.8800\nTotal: $1199.88"} {:role "user", :content "Quote 90 copies for a member using rush service. Show the charges and final total."} {:role "assistant", :content "Quote for 90 copies (member, rush service):\nProduction: $180.00\nRush charge: $36.0000\nDiscount: $21.600000 (capped at $40)\nSubtotal (incl. setup): $219.400000\nDelivery: $12\nTax (8%): $18.51200000\nTotal: $249.91"} {:role "user", :content "For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show the charges and final total."}]
+
+## Binding directory
+- compute-quote [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39b6be29-d9bb-3443-8f4c-fefcf4d53e04"}
+- quote-result-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "ae474e4d-53be-312d-a7ca-8f554ddf812d"}
+- quote-result-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "ad32eca3-b212-3786-be2e-8e2477859f45"}
+- quote-result-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "27124a35-7ff4-3221-bfea-0dd7a488af13"}
+- quote-result-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "5c31d76d-b351-3a9e-8247-566cf7b8ba75"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- struct [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "658215e0-da86-32ca-a2d2-a726302a4c64"}
+- slot [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "e019e5bc-ef6d-38f4-93c8-40b438f26f06"}
+- round-money [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7de2a527-8a1a-3286-a0ff-343cd821b2a0"}
+- max [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "5d95cf18-2ff9-3e0d-95cb-fe4492fb005e"}
+- min [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "86129593-c116-30fa-8c1b-7e7842755755"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- select [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "b6cbdf96-11c5-363e-ae84-4bb745a76d3d"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- = [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7a47665d-5634-3bbb-9379-ea409a51b201"}
+- <= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9aea5e7a-a49f-378f-80ce-865ca7f73d26"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- history [known]: vector with 9 elements | reference #propagators.ids.NodeId{:uuid #uuid "d8f6c777-9f07-35e3-8d18-2c9efb63b3fe"}
+- question-5 [known]: For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show t | reference #propagators.ids.NodeId{:uuid #uuid "fc01ea99-aa22-3c88-bf9f-0dabc1cc088c"}
+- discount-cap-5 [known]: 75 | reference #propagators.ids.NodeId{:uuid #uuid "62345ab5-7f90-3db1-af72-574dcae3a98a"}
+- member-5 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "315d63d8-8eb5-3ce2-8a57-c4909facb5f0"}
+- rush-5 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "beb7fdf1-8a2a-3a01-b5d0-07eca7dd9006"}
+- quantity-5 [known]: 720 | reference #propagators.ids.NodeId{:uuid #uuid "cbfcc359-3546-344c-9dfc-b9d259c7b3c5"}
+- self-check-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "929d723f-28e0-389c-b27e-b0fbca1f0536"}
+- user-output-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "4b8d013f-23a0-3ef0-83e7-3bbafa76a682"}
+- quote-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "613c2e65-0391-3298-8423-c000614ce207"}
+- order-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "8765fec6-4bc6-3272-a784-63f4b0e489c9"}
+- question-4 [known]: Quote 90 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "c5ca23e9-b02c-31e8-a8b6-0f5276ccd140"}
+- discount-cap-4 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "322705b6-1bf4-3562-86af-3971bb7d9b3f"}
+- member-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "5cea6894-bd7b-39b4-90de-11f79bde54f8"}
+- rush-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "796e41b9-7270-3f91-851b-2be269177b07"}
+- quantity-4 [known]: 90 | reference #propagators.ids.NodeId{:uuid #uuid "d5b123a0-167c-3cd0-8e86-d2f06c072370"}
+- self-check-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ae829bcc-4373-3309-8c30-3ad40e9197d2"}
+- user-output-4 [known]: Quote for 90 copies (member, rush service):
+Production: $180.00
+Rush charge: $36.0000
+Discount: $21.600000 (capped at $40)
+Subtotal (incl. setup): $219.400000
+D | reference #propagators.ids.NodeId{:uuid #uuid "476b594a-bd4b-39c6-8a6b-a8e479d91b84"}
+- quote-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "c1402399-4379-372c-9aeb-618101d8451f"}
+- order-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "2a07281f-4776-37fc-993a-3d33e7c39de8"}
+- question-3 [known]: Quote 720 copies for a member using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "fe1f2b23-22f1-3c2f-a25a-30f3f70e93f2"}
+- discount-cap-3 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "2b55a75e-4930-321e-8a35-76c09429756d"}
+- member-3 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "95b77e7d-dde5-38e5-ae07-b09ab6eb0968"}
+- rush-3 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "465b34df-1d88-36b7-83f1-c312761070dc"}
+- quantity-3 [known]: 720 | reference #propagators.ids.NodeId{:uuid #uuid "3dcc6da0-6a7e-3f5b-83eb-b7fb199f7242"}
+- self-check-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "7f6c773e-f8d9-3047-a33f-6d8d340efd97"}
+- user-output-3 [known]: Quote for 720 copies (member, standard service):
+Production: $1126.00
+Rush charge: $0
+Discount: $40 (capped at $40)
+Subtotal (incl. setup): $1111.00
+Delivery: $ | reference #propagators.ids.NodeId{:uuid #uuid "b5852b1c-b3fb-3154-b235-9d5177cacee9"}
+- quote-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "bdf68cc9-3b0e-318f-bdd4-5414b1372eb1"}
+- order-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "88d72fde-4141-392e-b013-256d17eafbd5"}
+- question-2 [known]: Quote 240 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "b6dc70f5-f76f-320b-8bd7-182c75394333"}
+- discount-cap-2 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "aad28263-8b3b-31b9-9361-509bf6c3d201"}
+- member-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "b76f995b-fe8e-3569-8c61-d62745b721f7"}
+- rush-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "d48723fb-82db-37cb-a860-1cede781df39"}
+- quantity-2 [known]: 240 | reference #propagators.ids.NodeId{:uuid #uuid "acbf4e19-e0cd-36fb-b950-1bfc0b8866e3"}
+- self-check-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "1f0792c7-f0c9-35a6-a386-9ad4257b9cab"}
+- user-output-2 [known]: Quote for 240 copies (member, rush service):
+Production: $424.00
+Rush charge: $84.8000
+Discount: $40 (capped at $40)
+Subtotal (incl. setup): $493.8000
+Delivery: | reference #propagators.ids.NodeId{:uuid #uuid "b4688afa-da43-37bd-8755-b46de7a532a3"}
+- quote-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "13cfd5a1-9773-32e9-bfad-f71d86580a65"}
+- order-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "df7f3792-afe0-3a27-8a3c-c2ba59baca8f"}
+- question-1 [known]: Quote 80 copies for a nonmember using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "123d9f4e-2c3e-3c9d-af51-8bcbbb840ff2"}
+- discount-cap-1 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "b10abd92-ea89-32e1-ac4a-c5d1fc066b2c"}
+- member-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "816c14d3-8cd6-3984-bc9e-2c75a071d6bc"}
+- rush-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "775a2ecb-9a0b-3e59-92c8-b812c5babdce"}
+- quantity-1 [known]: 80 | reference #propagators.ids.NodeId{:uuid #uuid "f82cf65b-2784-3565-9704-2bd38f3d6cd1"}
+- self-check-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "9ccca692-5809-31c8-9233-dbe793bcef7e"}
+- user-output-1 [known]: Quote for 80 copies (nonmember, standard service):
+Production: $160.00
+Rush charge: $0
+Discount: $0
+Subtotal (incl. setup): $185.00
+Delivery: $12
+Tax (8%): $15. | reference #propagators.ids.NodeId{:uuid #uuid "88358064-8801-36dd-a115-0d7ec8774247"}
+- quote-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "e0d338d4-6319-3966-8d39-76db72fdd423"}
+- order-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "79cc8615-79ec-39d6-a274-b15295dd31a8"}
+- tax-rate [known]: 0.08M | reference #propagators.ids.NodeId{:uuid #uuid "ebdd0a67-8d54-311b-8c27-b16591a7c1c0"}
+- free-delivery-threshold [known]: 250 | reference #propagators.ids.NodeId{:uuid #uuid "96164954-2f9e-320e-9521-c2422afa4b1a"}
+- delivery-fee [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "49d4542c-aada-3956-8064-4b0017adbdf8"}
+- setup-fee [known]: 25 | reference #propagators.ids.NodeId{:uuid #uuid "7795c552-e02b-383f-82f0-18428e75facf"}
+- member-rate [known]: 0.10M | reference #propagators.ids.NodeId{:uuid #uuid "dbd1eb2d-44b8-3fd0-8085-639aa0d7429a"}
+- rush-rate [known]: 0.20M | reference #propagators.ids.NodeId{:uuid #uuid "fb7a131c-d392-3c6f-ba9a-cd9afd242179"}
+- tier-three-price [known]: 1.30M | reference #propagators.ids.NodeId{:uuid #uuid "14d26955-284f-3a0e-a067-c2f4cf4eabb1"}
+- tier-two-price [known]: 1.60M | reference #propagators.ids.NodeId{:uuid #uuid "5da6f089-c668-3e6d-8bc7-60d24fc62d97"}
+- tier-one-price [known]: 2 | reference #propagators.ids.NodeId{:uuid #uuid "1dc2c893-17b0-3075-8c57-6a54bbc75a46"}
+- tier-two-count [known]: 400 | reference #propagators.ids.NodeId{:uuid #uuid "6c475ea1-e741-3aa6-9588-0ee318be4666"}
+- tier-one-limit [known]: 100 | reference #propagators.ids.NodeId{:uuid #uuid "91e87111-a300-37dc-8ab2-2ae8897e2e8e"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "1f90d99a-1b96-3927-9f01-55d1cdc0a497"}
+- shared-rule [known]: Fictional print-shop rules | reference #propagators.ids.NodeId{:uuid #uuid "cc273659-98fa-3ffa-a7b7-5d1e9ddb5a3e"}
+- pricing [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "3ed45fc7-f535-36c9-8f4e-48b52063da1d"}
+- written-code [known]: vector with 4 elements | reference #propagators.ids.NodeId{:uuid #uuid "87d712a6-473e-3b20-8f01-a71938e3f2db"}
+- ask [known]: For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show t | reference #propagators.ids.NodeId{:uuid #uuid "d334f06f-c5e0-3305-b587-8be27f1e7770"}
+- procedure-cell [known]: Use three stages.
+1. ANALYSIS: identify outputs, knowns, unknowns, units and relationships. Inspect available operators, previous source and visible outcomes. S | reference #propagators.ids.NodeId{:uuid #uuid "be0af621-1302-3d1c-8256-ed01884fac35"}
+- metadata-cell [known]: pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :questi | reference #propagators.ids.NodeId{:uuid #uuid "75ba8e42-527f-37a1-a650-def8927682f6"}
+- rules-cell [known]: Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price eac | reference #propagators.ids.NodeId{:uuid #uuid "28e1bf7b-87b3-344e-a51b-805b1d6423b9"}
+- language-cell [known]: (define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expres | reference #propagators.ids.NodeId{:uuid #uuid "280be78d-887a-38e4-b438-bf782c6b0c75"}
+- context-cell [known]: One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history cont | reference #propagators.ids.NodeId{:uuid #uuid "761adcf2-09a6-312a-8395-4daad9edcc70"}
+- output-format-cell [known]: Read phase first. ANALYSIS phase: return only one EDN map with nonempty string fields :outputs :facts :unknowns :units :relations :operators :operator :status : | reference #propagators.ids.NodeId{:uuid #uuid "553f8463-ea8d-30f4-ad09-8a0b1fd14be8"}
+- role-cell [known]: Work carefully from the question and available facts. Follow phase: analyze the problem, design or select a computational interface, then implement and apply it | reference #propagators.ids.NodeId{:uuid #uuid "606d8218-2511-3472-bf02-ce367504f1db"}
+- analysis-record [known]: 
+
+{:outputs "production, rush charge, discount, subtotal, delivery, tax, total (rounded to cents) for 720 copies, member, rush, discount-cap $75"
+ :facts "quant | reference #propagators.ids.NodeId{:uuid #uuid "e9a89bef-121e-3ae9-a804-16239373fc9f"}
+- phase [known]: implementation | reference #propagators.ids.NodeId{:uuid #uuid "bf9d2053-263d-3df4-abde-99dbae71bc55"}
+- inspection-feedback [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "6154295b-5f18-33f1-b42e-e58e6cb48852"}
+- generalization-record [known]: 
+
+{:outputs "production, rush charge, discount, subtotal, delivery, tax, total (rounded to cents) for 720 copies, member, rush, discount-cap $75"
+ :facts "quant | reference #propagators.ids.NodeId{:uuid #uuid "abd40632-3ca0-3408-8460-0dbf6b7356cd"}

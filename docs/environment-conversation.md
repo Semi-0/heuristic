@@ -1,9 +1,21 @@
 # Environment-constructed conversation
 
-`soul-refined.lain` is the local experiment entry point. It imports the existing
-`model-refined.lain` definition and creates one model. Importing the model file
-alone creates neither a worker nor a request. The runnable display demonstration
-is `examples/lain/model-refined-demo.lain`.
+`soul-refined.lain` defines the reusable runtime and imports the existing
+`model-refined.lain`. Importing either file starts no model or request. The runnable
+entry is `examples/lain/conversation.lain`: it creates one model, loads
+`environments/conversation.lain`, composes the runtime, and loads the optional
+second-stage request policy from `experiments/conversation-bootstrap.lain`.
+The model display demonstration remains `examples/lain/model-refined-demo.lain`.
+
+The runtime takes an environment interface with `:bindings` and `:request` ports.
+It creates one lexical child, connects the supplied request to the model input,
+and sends full completed model responses to `incremental-compile`. That adapter
+uses existing `source:admit`; completion status and request identity remain
+available for rejection and receipts. The returned `:environment`, `:model`, and
+`:compilation` ports expose the live child, model and admission results.
+Environment content, request selection and trigger policy live outside this
+composition. Legacy streaming-parser helpers remain in
+`lib/compiler-streaming.lain` for their existing consumers.
 
 The four default bindings are `context-cell`, `language-introduction-cell`,
 `observe-cell`, and `memory-cell`. Capabilities are additional lexical binding

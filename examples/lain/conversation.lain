@@ -1,0 +1,12 @@
+;; Runnable conversation experiment; importing soul-refined alone starts no IO.
+(load-lain "soul-refined.lain")
+
+(define m (model))
+(define model:request
+  (network [request] (io-model:input ((slot :worker) m) request)))
+(load-lain "environments/conversation.lain")
+(define running-runtime (runtime runtime-environment m))
+(define generated-environment ((slot :environment) running-runtime))
+(-> ((slot :compilation) running-runtime) observe-cell)
+
+(load-lain "experiments/conversation-bootstrap.lain")

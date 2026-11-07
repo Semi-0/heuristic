@@ -1,0 +1,6 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-printshop-three-stage.lJi3Ih/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+Operational failure: Compiler extension failed: Compiler session propagation budget exhausted
+{:cleanup {:status :closed}}
+{:operational-status :failed, :error "Compiler extension failed: Compiler session propagation budget exhausted", :data {:message "Compiler session propagation budget exhausted", :data {:steps 63263, :max-steps 300000, :timeout-ms 180000}, :form (io-model:input ((slot :worker) m) generalization-request-2), :source "(io-model:input ((slot :worker) m) generalization-request-2)", :origin {:file "experiments/printshop-three-stage-requests.lain"}}}

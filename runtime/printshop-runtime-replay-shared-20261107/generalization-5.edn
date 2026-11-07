@@ -1,0 +1,17 @@
+
+
+{:outputs "production, rush charge, discount, subtotal, delivery, tax, total (rounded to cents) for 720 copies, member, rush, discount-cap $75"
+ :facts "quantity-5=720, rush-5=true, member-5=true, discount-cap-5=75 (promotion), tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08. compute-quote already defined as (network [quantity rush? member? discount-cap] ...)"
+ :unknowns "Computed production, rush, discount, subtotal, delivery, tax, total for this specific order"
+ :units "dollars for prices/fees/charges, copies for quantity, dimensionless multipliers for rates"
+ :relations "progressive tier pricing; rush = rush-rate * production; discount = min(member-rate*(production+rush), discount-cap); subtotal = production+rush+setup-discount; delivery waived if subtotal>=threshold; tax = tax-rate*(subtotal+delivery); total = round-money(subtotal+delivery+tax)"
+ :operators "compute-quote (existing callable), min, max, select, +, -, *, round-money, str, struct, slot, ->"
+ :operator "compute-quote"
+ :status "ready"
+ :steps "Invoke compute-quote with quantity-5, rush-5, member-5, discount-cap-5. Connect resulting struct slots to quote-5. Build text reply for user-output-5."
+ :tests "Verify discount is capped at 75 (raw would be 135.12); verify delivery is 0 since subtotal exceeds 250; verify total rounds correctly"
+ :decision :reuse
+ :problem-class "Print-shop quote computation: given a quantity, service options (rush, membership), and a discount cap, compute a full charge breakdown using progressive tier pricing, surcharges, discounts, fees, and tax. The class covers any combination of these four inputs under a fixed rule set."
+ :parameters "quantity (copies), rush? (boolean), member? (boolean), discount-cap (dollars). These four values vary per order and are the only inputs that change between questions."
+ :captured "The pricing rule constants (tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60, tier-three-price=1.30, rush-rate=0.20, member-rate=0.10, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08) and the structural relationships (progressive tiers, rush surcharge formula, discount formula with cap, delivery waiver logic, tax application, final rounding) are fixed assumptions embedded in the compute-quote network body. They remain valid across all orders unless the shop changes its rules."
+ :interface "Direct reuse of the existing compute-quote callable. It already exposes quantity, rush?, member?, and discount-cap as parameters, so the $75 promotional cap is simply a different argument value—no adaptation or construction is needed. The network encapsulates all rule logic and returns a struct with the seven output slots. This is the simplest suitable interface; generalizing further (e.g., parameterizing tier boundaries or rates) would add complexity without addressing any observed variation in the problem set."}

@@ -1,0 +1,4 @@
+{:end-row 1, :type :duplicate-require, :level :warning, :duplicate-ns clojure.edn, :filename "tools/evaluate_printshop_runtime.clj", :col 12, :end-col 23, :langs (), :message "duplicate require of clojure.edn", :row 1}
+{:end-row 3, :type :duplicate-require, :level :warning, :duplicate-ns lain-harness.model-io-session, :filename "tools/verify_conversation_seed.clj", :col 12, :end-col 41, :langs (), :message "duplicate require of lain-harness.model-io-session", :row 3}
+{:end-row 5, :type :duplicate-require, :level :warning, :duplicate-ns propagators.compiler-2.session, :filename "tools/verify_conversation_seed.clj", :col 12, :end-col 42, :langs (), :message "duplicate require of propagators.compiler-2.session", :row 5}
+{:error 0, :warning 3, :info 0, :type :summary, :duration 208, :files 3}

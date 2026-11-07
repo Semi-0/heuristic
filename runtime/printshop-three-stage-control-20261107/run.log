@@ -1,0 +1,8 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /tmp/lain-printshop-three-stage.411BY9/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+Syntax error compiling at (/tmp/lain-printshop-three-stage.411BY9/tools/probe_printshop_three_stage.clj:129:43).
+Unable to resolve symbol: phase-responses in this context
+
+Full report at:
+/tmp/clojure-6808645982576826765.edn

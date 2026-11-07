@@ -1,0 +1,38 @@
+
+
+(define compute-quote
+  (network [quantity rush? member? discount-cap]
+    (define tier1-copies (min quantity tier-one-limit))
+    (define tier2-copies (min (max (- quantity tier-one-limit) 0) tier-two-count))
+    (define tier3-copies (max (- quantity tier-one-limit tier-two-count) 0))
+    (define production (+ (* tier1-copies tier-one-price)
+                          (* tier2-copies tier-two-price)
+                          (* tier3-copies tier-three-price)))
+    (define rush-charge (select rush? (* rush-rate production) 0))
+    (define raw-discount (select member? (* member-rate (+ production rush-charge)) 0))
+    (define discount (min raw-discount discount-cap))
+    (define subtotal (+ production rush-charge setup-fee (- discount)))
+    (define delivery (select (>= subtotal free-delivery-threshold) 0 delivery-fee))
+    (define tax (* tax-rate (+ subtotal delivery)))
+    (define total (round-money (+ subtotal delivery tax)))
+    (struct :production production :rush rush-charge :discount discount :subtotal subtotal :delivery delivery :tax tax :total total)))
+
+(define quote-result-1 (compute-quote quantity-1 rush-1 member-1 discount-cap-1))
+
+(-> ((slot :production) quote-result-1) ((slot :production) quote-1))
+(-> ((slot :rush) quote-result-1) ((slot :rush) quote-1))
+(-> ((slot :discount) quote-result-1) ((slot :discount) quote-1))
+(-> ((slot :subtotal) quote-result-1) ((slot :subtotal) quote-1))
+(-> ((slot :delivery) quote-result-1) ((slot :delivery) quote-1))
+(-> ((slot :tax) quote-result-1) ((slot :tax) quote-1))
+(-> ((slot :total) quote-result-1) ((slot :total) quote-1))
+
+(-> (str "Quote for 80 copies (nonmember, standard service):\n"
+         "Production: $" ((slot :production) quote-result-1) "\n"
+         "Rush charge: $" ((slot :rush) quote-result-1) "\n"
+         "Discount: $" ((slot :discount) quote-result-1) "\n"
+         "Subtotal (incl. setup): $" ((slot :subtotal) quote-result-1) "\n"
+         "Delivery: $" ((slot :delivery) quote-result-1) "\n"
+         "Tax (8%): $" ((slot :tax) quote-result-1) "\n"
+         "Total: $" ((slot :total) quote-result-1))
+    user-output-1)

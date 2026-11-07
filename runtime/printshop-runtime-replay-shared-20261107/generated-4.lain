@@ -1,0 +1,21 @@
+
+
+(define quote-result-4 (compute-quote quantity-4 rush-4 member-4 discount-cap-4))
+
+(-> ((slot :production) quote-result-4) ((slot :production) quote-4))
+(-> ((slot :rush) quote-result-4) ((slot :rush) quote-4))
+(-> ((slot :discount) quote-result-4) ((slot :discount) quote-4))
+(-> ((slot :subtotal) quote-result-4) ((slot :subtotal) quote-4))
+(-> ((slot :delivery) quote-result-4) ((slot :delivery) quote-4))
+(-> ((slot :tax) quote-result-4) ((slot :tax) quote-4))
+(-> ((slot :total) quote-result-4) ((slot :total) quote-4))
+
+(-> (str "Quote for 90 copies (member, rush service):\n"
+         "Production: $" ((slot :production) quote-result-4) "\n"
+         "Rush charge: $" ((slot :rush) quote-result-4) "\n"
+         "Discount: $" ((slot :discount) quote-result-4) " (capped at $" discount-cap-4 ")\n"
+         "Subtotal (incl. setup): $" ((slot :subtotal) quote-result-4) "\n"
+         "Delivery: $" ((slot :delivery) quote-result-4) "\n"
+         "Tax (8%): $" ((slot :tax) quote-result-4) "\n"
+         "Total: $" ((slot :total) quote-result-4))
+    user-output-4)

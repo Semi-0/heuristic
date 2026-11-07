@@ -1,0 +1,149 @@
+# Live environment
+
+## phase
+analysis
+
+## analysis-record
+No analysis submitted for this question yet.
+
+## generalization-record
+No interface decision submitted for this question yet.
+
+## inspection-feedback
+State: unknown. unknown
+
+## role-cell
+Work carefully from the question and available facts. Follow phase: analyze the problem, design or select a computational interface, then implement and apply it in the persistent lexical child.
+
+## procedure-cell
+Use three stages.
+1. ANALYSIS: identify outputs, knowns, unknowns, units and relationships. Inspect available operators, previous source and visible outcomes. Separate observations from assumptions. Do not implement yet.
+2. GENERALIZATION: consider whether these relationships describe a useful class of problems. Inspect existing operators first. If a prior computation is tied to particular inputs, consider whether exposing some dependencies as parameters would make it useful more generally. Identify which quantities vary between problems and which assumptions can remain captured. Choose direct reuse, adaptation, or construction of the simplest suitable interface. Generalization is optional: explain when it adds unnecessary complexity. A callable's existence does not prove correctness; account for its available results and unresolved dependencies. Do not prescribe an imperative propagation sequence or implement yet.
+3. IMPLEMENTATION: construct or invoke the chosen computational interface and connect it to the current question's outputs. A network definition is a callable; actually invoke it to obtain results. Preserve question-specific premises on each application without accidentally capturing a previous question into all future uses. Use supported operations on input cells. Text claims should follow computed results when information changes. The host, rather than a mandatory model-written test suite, evaluates correctness and actual reuse.
+
+## output-format-cell
+Read phase first. ANALYSIS phase: return only one EDN map with nonempty string fields :outputs :facts :unknowns :units :relations :operators :operator :status :steps :tests, and :decision equal to :reuse, :adapt, :compose or :construct. Identify the problem and available computations. Use "none" when appropriate. Your decision is provisional until the generalization stage. :tests describes possible host-verifiable cases, not a requirement to generate tests.
+GENERALIZATION phase: analysis-record contains your unchanged analysis. Return one EDN map with the same fields and four additional nonempty string fields: :problem-class, :parameters, :captured, :interface. Decide whether an existing operator fits, can be adapted, or whether a new operator is useful. Explain the scope of the computational interface and why it fits. The :operator field names a selected existing callable when there is one, a proposed new callable, or "none" for direct primitive composition. Use :compose for composing existing primitives without selecting a retained application callable. The host records candidate availability but does not block implementation solely because a callable is not named; actual reuse is evaluated from source and runtime evidence. Distinguish variable inputs from captured assumptions. Generalization is optional; the simplest suitable interface is preferred. Use "none" if no useful generalization is warranted. Do not return executable source during either planning phase.
+IMPLEMENTATION phase: analysis-record and generalization-record contain your unchanged records. Implement the final interface decision in executable Lain and apply it to the current inputs. Connect actual computed observations and a text answer to the existing parent ports. If observations invalidate the design, record the discrepancy in inspection-feedback and make the necessary correction. Model-generated tests are not required; an independent host evaluator checks the results and actual reuse. Follow the source format below only in this phase.
+
+Return complete executable Lain forms only, without Markdown fences. Existing parent ports must be connected with ->, not redefined. order-N and pricing are input structs. quote-N is an existing output struct with slots :production, :rush, :discount, :subtotal, :delivery, :tax, :total. Expose the computed breakdown by connecting values to those slots. user-output-N is the existing text reply port. self-check-N is an optional boolean port for any verification you construct. N is the current round, 1 through 5. Computed answers must come from Lain operations on input cells, not hardcoded answers. Only final total is rounded to cents.
+Only implementation source is admitted. Model-generated tests are optional, not required; the host checks correctness and reuse.
+
+## context-cell
+One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history contain actual prior source and user/reply messages. Return new forms for the current ask. You may construct test cases or consistency checks using the available operators and connect a boolean result to self-check-N. The parent supplies no quote formula or solved example.
+
+## language-cell
+(define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expression, including a struct. (struct :key value ...) constructs connected fields. Read a field with ((slot :key) object). Write an existing field with (-> computed-value ((slot :key) output-object)). + - * / min max >= <= = str and round-money are support-aware operations. (select condition then-value else-value) selects a branch. round-money rounds to two decimals, half up; use it only on the final amount. str builds text from connected values. Unknown inputs leave dependent computations unresolved. ttms-premise-closure attaches a premise to a callable; invocation carries it to results. Example: (define f (ttms-premise-closure (network [x] (+ x 2)) some-premise)). inspect:premises accepts (cell:reference binding). The struct operators and primitive documentation are capabilities, not prebuilt pricing solutions.
+
+## rules-cell
+Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price each; remaining copies at tier-three-price each. Rush service adds rush-rate times production cost. Members receive member-rate times production plus rush charges as discount, capped by the order discount-cap; nonmembers receive no discount. Add setup-fee after discount. Delivery costs delivery-fee, waived when subtotal after discount and setup is at least free-delivery-threshold. Apply tax-rate to the entire amount including delivery. Final total includes tax and is rounded half up to cents; intermediate values are not rounded.
+
+## metadata-cell
+pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :question premise. question premises identify the corresponding requested quote. shared-rule identifies the validity premise for the general pricing rules. Keep independent orders separate. A promotional discount-cap belongs only to the order carrying it. delivery-note is unrelated. Quote output slots are production cost, rush charge, discount amount, subtotal after setup, delivery charge, tax amount, and final rounded total. Future orders are unknown until asked.
+
+## ask
+For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show the charges and final total.
+
+## written-code
+["(define quote-fn\n (ttms-premise-closure\n  (network [o p]\n   (define qty ((slot :quantity) o))\n   (define first-count (min qty ((slot :tier-one-limit) p)))\n   (define remaining (max 0 (- qty first-count)))\n   (define second-count (min remaining ((slot :tier-two-count) p)))\n   (define third-count (max 0 (- remaining second-count)))\n   (define production (+ (* first-count ((slot :tier-one-price) p)) (* second-count ((slot :tier-two-price) p)) (* third-count ((slot :tier-three-price) p))))\n   (define rush (select ((slot :rush?) o) (* production ((slot :rush-rate) p)) 0))\n   (define discount (select ((slot :member?) o) (min (* (+ production rush) ((slot :member-rate) p)) ((slot :discount-cap) o)) 0))\n   (define subtotal (+ (- (+ production rush) discount) ((slot :setup-fee) p)))\n   (define delivery (select (>= subtotal ((slot :free-delivery-threshold) p)) 0 ((slot :delivery-fee) p)))\n   (define tax (* (+ subtotal delivery) ((slot :tax-rate) p)))\n   (define total (round-money (+ subtotal delivery tax)))\n   (struct :production production :rush rush :discount discount :subtotal subtotal :delivery delivery :tax tax :total total))\n  shared-rule))\n(define q1 ((ttms-premise-closure quote-fn question-1) order-1 pricing))\n(-> ((slot :production) q1) ((slot :production) quote-1))\n(-> ((slot :rush) q1) ((slot :rush) quote-1))\n(-> ((slot :discount) q1) ((slot :discount) quote-1))\n(-> ((slot :subtotal) q1) ((slot :subtotal) quote-1))\n(-> ((slot :delivery) q1) ((slot :delivery) quote-1))\n(-> ((slot :tax) q1) ((slot :tax) quote-1))\n(-> ((slot :total) q1) ((slot :total) quote-1))\n(-> (str \"Total: \" ((slot :total) q1)) user-output-1)\n(-> (= ((slot :total) q1) (round-money (+ ((slot :subtotal) q1) ((slot :delivery) q1) ((slot :tax) q1)))) self-check-1)\n" "(define q2 ((ttms-premise-closure quote-fn question-2) order-2 pricing))\n(-> ((slot :production) q2) ((slot :production) quote-2))\n(-> ((slot :rush) q2) ((slot :rush) quote-2))\n(-> ((slot :discount) q2) ((slot :discount) quote-2))\n(-> ((slot :subtotal) q2) ((slot :subtotal) quote-2))\n(-> ((slot :delivery) q2) ((slot :delivery) quote-2))\n(-> ((slot :tax) q2) ((slot :tax) quote-2))\n(-> ((slot :total) q2) ((slot :total) quote-2))\n(-> (str \"Total: \" ((slot :total) q2)) user-output-2)\n(-> (= ((slot :total) q2) (round-money (+ ((slot :subtotal) q2) ((slot :delivery) q2) ((slot :tax) q2)))) self-check-2)\n" "(define q3 ((ttms-premise-closure quote-fn question-3) order-3 pricing))\n(-> ((slot :production) q3) ((slot :production) quote-3))\n(-> ((slot :rush) q3) ((slot :rush) quote-3))\n(-> ((slot :discount) q3) ((slot :discount) quote-3))\n(-> ((slot :subtotal) q3) ((slot :subtotal) quote-3))\n(-> ((slot :delivery) q3) ((slot :delivery) quote-3))\n(-> ((slot :tax) q3) ((slot :tax) quote-3))\n(-> ((slot :total) q3) ((slot :total) quote-3))\n(-> (str \"Total: \" ((slot :total) q3)) user-output-3)\n(-> (= ((slot :total) q3) (round-money (+ ((slot :subtotal) q3) ((slot :delivery) q3) ((slot :tax) q3)))) self-check-3)\n" "(define q4 ((ttms-premise-closure quote-fn question-4) order-4 pricing))\n(-> ((slot :production) q4) ((slot :production) quote-4))\n(-> ((slot :rush) q4) ((slot :rush) quote-4))\n(-> ((slot :discount) q4) ((slot :discount) quote-4))\n(-> ((slot :subtotal) q4) ((slot :subtotal) quote-4))\n(-> ((slot :delivery) q4) ((slot :delivery) quote-4))\n(-> ((slot :tax) q4) ((slot :tax) quote-4))\n(-> ((slot :total) q4) ((slot :total) quote-4))\n(-> (str \"Total: \" ((slot :total) q4)) user-output-4)\n(-> (= ((slot :total) q4) (round-money (+ ((slot :subtotal) q4) ((slot :delivery) q4) ((slot :tax) q4)))) self-check-4)\n"]
+
+## history
+[{:role "user", :content "Quote 80 copies for a nonmember using standard service. Show the charges and final total."} {:role "assistant", :content "Total: 212.76"} {:role "user", :content "Quote 240 copies for a member using rush service. Show the charges and final total."} {:role "assistant", :content "Total: 533.30"} {:role "user", :content "Quote 720 copies for a member using standard service. Show the charges and final total."} {:role "assistant", :content "Total: 1199.88"} {:role "user", :content "Quote 90 copies for a member using rush service. Show the charges and final total."} {:role "assistant", :content "Total: 249.91"} {:role "user", :content "For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show the charges and final total."}]
+
+## Binding directory
+- q1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "32c54fff-74a0-34cb-8441-752cb5f9bdfa"}
+- q2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "d26165bb-2dff-3857-8867-c91404401370"}
+- q3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "d0076162-de7a-313a-bc1a-4d53d0973774"}
+- q4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "cafa4565-3cc1-3626-8ff1-af776668bbf7"}
+- quote-fn [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "084b8bc4-fba5-312a-acfd-39e6e6a48592"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- struct [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9054fc34-0286-3d4c-8271-a11522b21fed"}
+- slot [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "4dd2cd77-3bf6-30bd-9f86-486b3d81a234"}
+- round-money [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7de2a527-8a1a-3286-a0ff-343cd821b2a0"}
+- max [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "5d95cf18-2ff9-3e0d-95cb-fe4492fb005e"}
+- min [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "86129593-c116-30fa-8c1b-7e7842755755"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- select [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "b6cbdf96-11c5-363e-ae84-4bb745a76d3d"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- = [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7a47665d-5634-3bbb-9379-ea409a51b201"}
+- <= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9aea5e7a-a49f-378f-80ce-865ca7f73d26"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- history [known]: vector with 9 elements | reference #propagators.ids.NodeId{:uuid #uuid "108e4163-0807-33c6-9928-598aa35fe400"}
+- question-5 [known]: For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show t | reference #propagators.ids.NodeId{:uuid #uuid "44d32997-1001-3fff-ac96-033d2af44bfa"}
+- discount-cap-5 [known]: 75 | reference #propagators.ids.NodeId{:uuid #uuid "f724156a-f249-3df1-98b6-b60f534b1e7f"}
+- member-5 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "eb4a0971-31d7-3671-967d-3f243a44e346"}
+- rush-5 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "fc77621d-9d96-3bde-8e62-0b6fe28ac449"}
+- quantity-5 [known]: 720 | reference #propagators.ids.NodeId{:uuid #uuid "1726ec23-007c-301a-9b43-72cd58fd258f"}
+- self-check-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "b129e349-0e9e-31f7-b0ec-7685fde09a8a"}
+- user-output-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "14c2cceb-0d8a-3777-a695-db00917c8d15"}
+- quote-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "d3cce5cb-f955-31b4-bfbc-5566cee96f12"}
+- order-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "4306c527-2bbf-3dfd-b6a0-c1c245074516"}
+- question-4 [known]: Quote 90 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "4cc77061-ca23-38fb-b5b6-2717a3f2182f"}
+- discount-cap-4 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "b464d871-bc2f-34b0-a139-f8a72cfb833e"}
+- member-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "5f7428b6-a36f-381e-865b-d8bc243e5dfc"}
+- rush-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "f8560787-7051-3f1a-a016-28e141f8f29e"}
+- quantity-4 [known]: 90 | reference #propagators.ids.NodeId{:uuid #uuid "a049c0d9-715e-3816-9d4a-ee7087ea03d0"}
+- self-check-4 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "b454a38c-e539-3b7e-aa6f-9bf610bd0889"}
+- user-output-4 [known]: Total: 249.91 | reference #propagators.ids.NodeId{:uuid #uuid "08655007-f532-39e2-a7d8-b7eacecc2132"}
+- quote-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "595a24d1-879b-3610-b6ba-9d97329b5020"}
+- order-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "5f688553-bfbb-3a25-b123-e1ce590ed6f1"}
+- question-3 [known]: Quote 720 copies for a member using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "77140a13-1323-318d-af1c-e64b091621dc"}
+- discount-cap-3 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "4621312f-5db6-36bf-bea9-1d882e883585"}
+- member-3 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "a57b9104-6872-39ff-a5d9-6d8b20a5ef53"}
+- rush-3 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "fc1a3bbb-2d4d-3fef-896b-0d244a448f4f"}
+- quantity-3 [known]: 720 | reference #propagators.ids.NodeId{:uuid #uuid "2241a99f-97c9-3a21-aa6f-4453debc8680"}
+- self-check-3 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "c4e26f0c-0524-3320-82b3-a04ea674ed0f"}
+- user-output-3 [known]: Total: 1199.88 | reference #propagators.ids.NodeId{:uuid #uuid "d3a47fb6-7362-316e-ade8-9a817fcc7256"}
+- quote-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "648dd420-c25a-37e4-ba45-df8c514a4890"}
+- order-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "992fcd1c-4389-3a26-b026-89224818e9b0"}
+- question-2 [known]: Quote 240 copies for a member using rush service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "de338b99-a295-3711-ace7-0412a50a6cd4"}
+- discount-cap-2 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "074a27d7-833f-3260-bb67-01258ef129a2"}
+- member-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "085e966c-0519-39a2-8e79-2c15dc8d46c4"}
+- rush-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "6ca09c45-6acd-30ad-9a5e-a61c65d7fdc8"}
+- quantity-2 [known]: 240 | reference #propagators.ids.NodeId{:uuid #uuid "9e21ea82-b245-31d9-b5fc-1aa7f26e1452"}
+- self-check-2 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "5726626d-3e50-3223-b260-b6ba00925bdc"}
+- user-output-2 [known]: Total: 533.30 | reference #propagators.ids.NodeId{:uuid #uuid "95049c6a-f032-31e1-b732-41f2d642f6af"}
+- quote-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "adb921b5-8838-3119-8da8-e6b85bebd5cb"}
+- order-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "abe59552-bb6f-3f64-a6e5-5a258f8d21dd"}
+- question-1 [known]: Quote 80 copies for a nonmember using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "8be5ae4c-9521-361e-acee-703102ffcee8"}
+- discount-cap-1 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "0670ad2e-209c-3abe-b7f7-66a97f900dd9"}
+- member-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "47bff989-5d86-31b1-a1ea-3937b54c3c81"}
+- rush-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "4b9ef075-b9e6-38d9-928b-3c1c2f9eb9ab"}
+- quantity-1 [known]: 80 | reference #propagators.ids.NodeId{:uuid #uuid "f04303b5-ec48-33d2-9be2-d0e5c97482e9"}
+- self-check-1 [known]: true | reference #propagators.ids.NodeId{:uuid #uuid "091f3719-800a-3107-915a-eef540dcded5"}
+- user-output-1 [known]: Total: 212.76 | reference #propagators.ids.NodeId{:uuid #uuid "a61887e5-3a62-300d-a833-480c03efd90f"}
+- quote-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "a5b74463-2c25-3b03-bdeb-e0ba2b7e6003"}
+- order-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "3423eeac-327a-3da6-aee2-43739d032f61"}
+- tax-rate [known]: 0.08M | reference #propagators.ids.NodeId{:uuid #uuid "4036c4c8-41d7-3fbc-93b8-c3437a4f81a7"}
+- free-delivery-threshold [known]: 250 | reference #propagators.ids.NodeId{:uuid #uuid "fefd1550-5f62-37c3-bad4-a853dc755adc"}
+- delivery-fee [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "3c7ebcd8-a819-3c49-b3d7-7cc34df6ad7a"}
+- setup-fee [known]: 25 | reference #propagators.ids.NodeId{:uuid #uuid "7910da48-91cf-3156-b5e1-7d5bcf08df3e"}
+- member-rate [known]: 0.10M | reference #propagators.ids.NodeId{:uuid #uuid "9c11ebad-4c42-3048-99a7-e9165f6112e4"}
+- rush-rate [known]: 0.20M | reference #propagators.ids.NodeId{:uuid #uuid "4912984e-5640-3a2b-be63-f853a68ed831"}
+- tier-three-price [known]: 1.30M | reference #propagators.ids.NodeId{:uuid #uuid "2f900a5f-9e1e-3ada-942d-14407cdda701"}
+- tier-two-price [known]: 1.60M | reference #propagators.ids.NodeId{:uuid #uuid "ef4ecf3e-840c-3f92-951c-21d3ccbc34a6"}
+- tier-one-price [known]: 2 | reference #propagators.ids.NodeId{:uuid #uuid "e20d6ecc-7d5f-3140-8e3d-78269e2ca406"}
+- tier-two-count [known]: 400 | reference #propagators.ids.NodeId{:uuid #uuid "f1d137d6-538b-3c7e-a7cf-eda1b8d736ea"}
+- tier-one-limit [known]: 100 | reference #propagators.ids.NodeId{:uuid #uuid "1c3e1b57-8374-3273-8eb0-0e5ed77006a0"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "fa059878-1d8f-3f6e-9e98-41312683fe75"}
+- shared-rule [known]: Fictional print-shop rules | reference #propagators.ids.NodeId{:uuid #uuid "f47c53a2-4cd6-302d-9bc4-fd4df8255df3"}
+- pricing [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "8e1bce90-a5ea-327b-9f05-150ad1d0b8ae"}
+- written-code [known]: vector with 4 elements | reference #propagators.ids.NodeId{:uuid #uuid "b507b2cc-da67-3b4c-b7de-92837781a96d"}
+- ask [known]: For this order only, a promotion raises the member discount cap to $75. Quote 720 copies for a member using rush service. All other rules stay unchanged. Show t | reference #propagators.ids.NodeId{:uuid #uuid "79f1cfc2-b8fe-32f6-8ab9-fbaba5b178b0"}
+- procedure-cell [known]: Use three stages.
+1. ANALYSIS: identify outputs, knowns, unknowns, units and relationships. Inspect available operators, previous source and visible outcomes. S | reference #propagators.ids.NodeId{:uuid #uuid "50ecacd6-ed92-39fc-a2a4-1ef199e3614a"}
+- metadata-cell [known]: pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :questi | reference #propagators.ids.NodeId{:uuid #uuid "c49c84f0-cfd2-3a25-a549-d8886f781a76"}
+- rules-cell [known]: Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price eac | reference #propagators.ids.NodeId{:uuid #uuid "2c63baea-05d1-3922-b614-deb16d48d39b"}
+- language-cell [known]: (define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expres | reference #propagators.ids.NodeId{:uuid #uuid "550d2ed9-07b6-3825-92a6-8dcd2f617084"}
+- context-cell [known]: One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history cont | reference #propagators.ids.NodeId{:uuid #uuid "491a35aa-5cab-3527-a305-c9031e42c4b7"}
+- output-format-cell [known]: Read phase first. ANALYSIS phase: return only one EDN map with nonempty string fields :outputs :facts :unknowns :units :relations :operators :operator :status : | reference #propagators.ids.NodeId{:uuid #uuid "d7c379d7-2449-322e-8e9c-684e33914a10"}
+- role-cell [known]: Work carefully from the question and available facts. Follow phase: analyze the problem, design or select a computational interface, then implement and apply it | reference #propagators.ids.NodeId{:uuid #uuid "bdef4850-0319-3757-a588-f151032ddb0e"}
+- analysis-record [known]: No analysis submitted for this question yet. | reference #propagators.ids.NodeId{:uuid #uuid "d4855f7d-08f0-32c8-a713-1744dc6572c7"}
+- phase [known]: analysis | reference #propagators.ids.NodeId{:uuid #uuid "cdd0b161-853d-3b81-81ae-033bfdc6b968"}
+- inspection-feedback [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "7b49ced1-6745-3541-a95c-7ac4069ffb48"}
+- generalization-record [known]: No interface decision submitted for this question yet. | reference #propagators.ids.NodeId{:uuid #uuid "25fd8623-9ee6-309a-a553-0c5ae2cc3d4d"}

@@ -105,7 +105,7 @@
                        :memory (metadata/slots network [(connected/payload (session/binding-value current 'memory-cell))])})))
       (spit (str evidence-dir "/soul-experiment.edn")
             (pr-str {:sources (select-keys (session/source-files (host/current-session owner))
-                                           ["soul-refined.lain" "model-refined.lain" "lib/behavior-core.lain" "lib/language-context.lain"])
+                                           ["soul-refined.lain" "examples/lain/conversation.lain" "environments/conversation.lain" "experiments/conversation-bootstrap.lain" "lib/compiler.lain" "model-refined.lain" "lib/behavior-core.lain" "lib/language-context.lain"])
                      :requests @requests :responses @responses :admissions @journal :delivered @deliveries
                      :code-history (observed owner 'code-history-cell)
                      :diagnostics (observed owner 'observe-cell)}))

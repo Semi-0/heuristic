@@ -1,0 +1,8 @@
+;; Optional second phase of the conversation-construction experiment.
+;; Trigger policy is independent of the generic runtime and environment seeding.
+(define construction-request
+  (cell:first
+    (switch (data:record :id "construction"
+                         :text (environment:describe default-environment context-selection-cell))
+            construction-trigger)))
+(model:request construction-request)

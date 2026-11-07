@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE model-behavior — Independent compiled model reducer and connection contracts
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 5 tests containing 30 assertions.
+0 failures, 0 errors.
+MODULE-RESULT model-behavior {:test 5, :pass 30, :fail 0, :error 0}

@@ -1,0 +1,15 @@
+(load-lain "model-refined.lain")
+(load-lain "lib/compiler.lain")
+
+;; Compose an environment, one model, and completed-response compilation.
+;; The seed supplies an environment interface with :bindings and :request ports.
+;; Request text, selection and scheduling policy stay outside this composition.
+(define describe-environment (slot :request))
+(define runtime
+  (network [environment model]
+    (let [e (lexical-child ((slot :bindings) environment))]
+      (-> (describe-environment environment) (model:input model))
+      (struct :environment e
+              :model model
+              :compilation (incremental-compile (model:output model) e)))))
+

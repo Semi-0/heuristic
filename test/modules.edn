@@ -17,6 +17,8 @@
             :namespaces [lain-harness.model-io-test]}
  :transport {:description "Stream framing and native transport contracts"
              :vars [lain-harness.streaming-test/sse-contract]}
+ :runtime-composition {:description "Clear Lain runtime, independent seeds and completed-response admission"
+                       :namespaces [lain-harness.runtime-composition-test]}
  :model-behavior {:description "Independent compiled model reducer and connection contracts"
                   :namespaces [lain-harness.model-behavior-test]}
  :model {:description "Connected Lain model with controlled context and a test output consumer"

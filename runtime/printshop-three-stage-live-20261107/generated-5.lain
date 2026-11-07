@@ -1,0 +1,21 @@
+
+
+(define quote-result-5 (compute-quote quantity-5 rush-5 member-5 discount-cap-5))
+
+(-> ((slot :production) quote-result-5) ((slot :production) quote-5))
+(-> ((slot :rush) quote-result-5) ((slot :rush) quote-5))
+(-> ((slot :discount) quote-result-5) ((slot :discount) quote-5))
+(-> ((slot :subtotal) quote-result-5) ((slot :subtotal) quote-5))
+(-> ((slot :delivery) quote-result-5) ((slot :delivery) quote-5))
+(-> ((slot :tax) quote-result-5) ((slot :tax) quote-5))
+(-> ((slot :total) quote-result-5) ((slot :total) quote-5))
+
+(-> (str "Quote for 720 copies (member, rush service, promotional cap $75):\n"
+         "Production: $" ((slot :production) quote-result-5) "\n"
+         "Rush charge: $" ((slot :rush) quote-result-5) "\n"
+         "Discount: $" ((slot :discount) quote-result-5) " (capped at $" discount-cap-5 ")\n"
+         "Subtotal (incl. setup): $" ((slot :subtotal) quote-result-5) "\n"
+         "Delivery: $" ((slot :delivery) quote-result-5) "\n"
+         "Tax (8%): $" ((slot :tax) quote-result-5) "\n"
+         "Total: $" ((slot :total) quote-result-5))
+    user-output-5)

@@ -2,7 +2,7 @@
 (load-lain "lib/ports.lain")
 (load-lain "lib/queue.lain")
 (load-lain "lib/rounds.lain")
-(load-lain "lib/compiler.lain")
+(load-lain "lib/compiler-streaming.lain")
 (load-lain "lib/model.lain")
 (define test-input)
 (define test-context)

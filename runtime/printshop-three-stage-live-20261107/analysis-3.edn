@@ -1,0 +1,13 @@
+
+
+{:outputs "A quote struct with :production, :rush, :discount, :subtotal, :delivery, :tax, :total for 720 copies, member, standard service, plus a text summary on user-output-3."
+ :facts "quantity-3=720, member-3=true, rush-3=false, discount-cap-3=40. Shared rules: tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60M, tier-three-price=1.30M, rush-rate=0.20M, member-rate=0.10M, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08M. compute-quote network already defined and used in rounds 1 and 2."
+ :unknowns "None; all inputs for this order are known."
+ :units "Dollars for monetary values; copies for quantity; rates are dimensionless multipliers."
+ :relations "Progressive tier pricing on production; rush adds rush-rate*production; member discount is member-rate*(production+rush) capped at discount-cap; setup-fee added after discount; delivery waived if subtotal>=free-delivery-threshold; tax applied to subtotal+delivery; final total rounded half-up to cents."
+ :operators "compute-quote, struct, slot, ->, str, min, max, +, -, *, select, >=, round-money"
+ :operator "compute-quote"
+ :status "ready"
+ :steps "1. Invoke compute-quote with quantity-3, rush-3, member-3, discount-cap-3. 2. Connect each slot of the result struct to the corresponding slot of quote-3. 3. Build a text summary and connect to user-output-3."
+ :tests "Verify production=1126, rush=0, discount=40 (capped), subtotal=1111, delivery=0, tax=88.88, total=1199.88."
+ :decision :reuse}

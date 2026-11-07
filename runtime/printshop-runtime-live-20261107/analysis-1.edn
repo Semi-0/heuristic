@@ -1,0 +1,13 @@
+
+
+{:outputs "A quote struct (quote-1) with slots :production, :rush, :discount, :subtotal, :delivery, :tax, :total, and a text reply (user-output-1) showing the charges and final total.",
+ :facts "quantity-1=80, rush-1=false, member-1=false, discount-cap-1=40. tier-one-limit=100, tier-one-price=2, tier-two-count=400, tier-two-price=1.60M, tier-three-price=1.30M, rush-rate=0.20M, member-rate=0.10M, setup-fee=25, delivery-fee=12, free-delivery-threshold=250, tax-rate=0.08M. No prior source code exists.",
+ :unknowns "None for this question; all inputs are known.",
+ :units "Copies (integer), dollars (decimal), rates (dimensionless fractions).",
+ :relations "Production: progressive tiers. Rush: rush-rate * production if rush. Discount: member-rate * (production+rush) if member, capped by discount-cap. Subtotal: production + rush - discount + setup-fee. Delivery: delivery-fee if subtotal < free-delivery-threshold, else 0. Tax: tax-rate * (subtotal + delivery). Total: subtotal + delivery + tax, rounded to cents.",
+ :operators "struct, slot, +, -, *, /, min, max, select, >=, <=, =, round-money, str, network, define, ttms-premise-closure",
+ :operator "none",
+ :status "ready",
+ :steps "1. Compute progressive production cost for 80 copies (all in tier-one since 80<=100). 2. Compute rush charge (0 since standard). 3. Compute discount (0 since nonmember). 4. Compute subtotal = production + rush - discount + setup-fee. 5. Determine delivery (12 since subtotal < 250). 6. Compute tax = tax-rate * (subtotal + delivery). 7. Compute total = subtotal + delivery + tax, round to cents. 8. Connect all values to quote-1 slots and produce text reply.",
+ :tests "Verify production=160, rush=0, discount=0, subtotal=185, delivery=12, tax=15.76, total=212.76 for this input. A general test with quantity>100 would exercise tier-two.",
+ :decision :construct}

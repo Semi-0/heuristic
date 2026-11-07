@@ -1,0 +1,66 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE compiler — Reader, immutable admission and connected feedback
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+ERROR in (admission-through-immutable-session) (session.clj:375)
+Uncaught exception, not in assertion.
+expected: nil
+  actual: clojure.lang.ExceptionInfo: Source import must be snapshotted before compilation
+{:file "soul-refined.lain", :import "model-refined.lain"}
+ at propagators.compiler_2.session$compile_file_form.invokeStatic (session.clj:375)
+    propagators.compiler_2.session$compile_file_form.invoke (session.clj:368)
+    propagators.compiler_2.session$compile_file$fn__22108.invoke (session.clj:392)
+    clojure.lang.PersistentVector.reduce (PersistentVector.java:418)
+    clojure.core$reduce.invokeStatic (core.clj:6964)
+    clojure.core$reduce.invoke (core.clj:6947)
+    propagators.compiler_2.session$compile_file.invokeStatic (session.clj:392)
+    propagators.compiler_2.session$compile_file.invoke (session.clj:386)
+    clojure.lang.ArraySeq.reduce (ArraySeq.java:119)
+    clojure.core$reduce.invokeStatic (core.clj:6964)
+    clojure.core$reduce.invoke (core.clj:6947)
+    propagators.compiler_2.session$prepare_extension$fn__22119.invoke (session.clj:436)
+    propagators.compiler_2.session$prepare_extension.invokeStatic (session.clj:436)
+    propagators.compiler_2.session$prepare_extension.invoke (session.clj:406)
+    propagators.compiler_2.session$eval22174$fn__22189$fn__22190.invoke (session.clj:612)
+    propagators.compiler_2.session$bounded.invokeStatic (session.clj:93)
+    propagators.compiler_2.session$bounded.invoke (session.clj:70)
+    propagators.compiler_2.session$eval22174$fn__22189.invoke (session.clj:612)
+    propagators.compiler_2.session$eval21660$fn__21661$G__21651__21668.invoke (session.clj:38)
+    propagators.compiler_2.session.host$extend_BANG_$fn__22941.invoke (host.clj:480)
+    propagators.compiler_2.session.host$extend_BANG_.invokeStatic (host.clj:476)
+    propagators.compiler_2.session.host$extend_BANG_.invoke (host.clj:474)
+    lain_harness.immutable_test$fixture.invokeStatic (immutable_test.clj:57)
+    lain_harness.immutable_test$fixture.invoke (immutable_test.clj:53)
+    lain_harness.immutable_test$fn__23331.invokeStatic (immutable_test.clj:146)
+    lain_harness.immutable_test/fn (immutable_test.clj:111)
+    clojure.test$test_var$fn__9898.invoke (test.clj:717)
+    clojure.test$test_var.invokeStatic (test.clj:717)
+    clojure.test$test_var.invoke (test.clj:708)
+    clojure.test$test_vars$fn__9924$fn__9929.invoke (test.clj:735)
+    clojure.test$default_fixture.invokeStatic (test.clj:687)
+    clojure.test$default_fixture.invoke (test.clj:683)
+    clojure.test$test_vars$fn__9924.invoke (test.clj:735)
+    clojure.test$default_fixture.invokeStatic (test.clj:687)
+    clojure.test$default_fixture.invoke (test.clj:683)
+    clojure.test$test_vars.invokeStatic (test.clj:731)
+    clojure.test$test_vars.invoke (test.clj:723)
+    user$run_module_BANG_$fn__679.invoke (run_module.clj:17)
+    user$run_module_BANG_.invokeStatic (run_module.clj:14)
+    user$run_module_BANG_.invoke (run_module.clj:4)
+    user$eval684.invokeStatic (run_module.clj:38)
+    user$eval684.invoke (run_module.clj:27)
+    clojure.lang.Compiler.eval (Compiler.java:7757)
+    clojure.lang.Compiler.load (Compiler.java:8223)
+    clojure.lang.Compiler.loadFile (Compiler.java:8161)
+    clojure.main$load_script.invokeStatic (main.clj:476)
+    clojure.main$script_opt.invokeStatic (main.clj:536)
+    clojure.main$script_opt.invoke (main.clj:531)
+    clojure.main$main.invokeStatic (main.clj:665)
+    clojure.main$main.doInvoke (main.clj:617)
+    clojure.lang.RestFn.applyTo (RestFn.java:140)
+    clojure.lang.Var.applyTo (Var.java:707)
+    clojure.main.main (main.java:40)
+
+Ran 4 tests containing 24 assertions.
+0 failures, 1 errors.
+MODULE-RESULT compiler {:test 4, :pass 23, :fail 0, :error 1}
