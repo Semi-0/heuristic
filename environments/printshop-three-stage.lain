@@ -15,6 +15,7 @@
 (define analysis-record)
 (define generalization-record)
 (define admission-feedback)
+(load-lain "environments/repair-guidance.lain")
 (define recovery-state)
 (define agent-observations)
 (define inspection-feedback recovery-state)
@@ -244,9 +245,13 @@
         e90 (extend-env e89 (env:reference-slot "slot" (cell:reference slot)))
         e91 (extend-env e90 (env:reference-slot "struct" (cell:reference struct)))
         e92 (extend-env e91 (env:reference-slot "cell:reference" (cell:reference cell:reference)))
-        e93 (extend-env e92 (env:reference-slot "inspect:premises" (cell:reference inspect:premises)))]
-    (extend-env e93 (env:reference-slot "admission-result" (cell:reference admission-feedback)))))
+        e93 (extend-env e92 (env:reference-slot "inspect:premises" (cell:reference inspect:premises)))
+        e94 (extend-env e93 (env:reference-slot "repair-policy-cell" (cell:reference repair-policy-cell)))
+        e95 (extend-env e94 (env:reference-slot "system-message" (cell:reference system-message)))]
+    (extend-env e95 (env:reference-slot "admission-result" (cell:reference admission-feedback)))))
 (define selected (|> (seq:empty)
+ (context:include "system-message")
+ (context:include "repair-policy-cell")
  (context:include "phase")
  (context:include "analysis-record")
  (context:include "generalization-record")

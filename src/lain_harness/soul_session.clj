@@ -146,9 +146,12 @@
   (reify ops/EffectInterpreter
     (interpret-effect! [_ owner context {:keys [reply target support]} emit!]
       (let [publish! (fn [receipt]
-                       (emit! (assoc receipt :accepted-forms
-                                     (vec (filter #(and (= (:request-id reply) (:response %))
-                                                        (= :admitted (get-in % [:receipt :status]))) @journal)))))
+                       (let [timestamp (System/currentTimeMillis)]
+                         (emit! (assoc receipt :timestamp-ms timestamp
+                                       :timestamp-utc (str (java.time.Instant/ofEpochMilli timestamp))
+                                       :accepted-forms
+                                       (vec (filter #(and (= (:request-id reply) (:response %))
+                                                          (= :admitted (get-in % [:receipt :status]))) @journal))))))
             cancelled (atom false)
             finished (atom false)
             task (future

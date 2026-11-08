@@ -27,13 +27,17 @@
 
 (define experiment:context
   (network [phase analysis generalization feedback ask]
-    (data:record :phase phase :analysis analysis :generalization generalization :feedback feedback :ask ask)))
+    (data:record :phase phase :analysis analysis :generalization generalization :feedback feedback :ask ask
+                 ;; Reuse the actual immutable attempt diagnostic, including its
+                 ;; admission timestamp, rather than a second derived status.
+                 :system-message feedback)))
 
 (define experiment:rendered-context
   (network [snapshot]
     (let [values (data:get :values snapshot)]
-      (experiment:context (data:get "phase" values) (data:get "analysis-record" values)
-                          (data:get "generalization-record" values) (data:get "inspection-feedback" values) (data:get "ask" values)))))
+      (data:record :phase (data:get "phase" values) :analysis (data:get "analysis-record" values)
+                   :generalization (data:get "generalization-record" values) :feedback (data:get "inspection-feedback" values)
+                   :ask (data:get "ask" values) :system-message (data:get "system-message" values)))))
 
 (define experiment:stage
   (network [environment-reference selected context-reference requests raw-reference request-id time trigger reply-target]
@@ -47,12 +51,15 @@
           view2 (extend-env view1 (env:reference-slot "generalization-record" (cell:reference (data:get :generalization context))))
           view3 (extend-env view2 (env:reference-slot "inspection-feedback" (cell:reference (data:get :feedback context))))
           view4 (extend-env view3 (env:reference-slot "ask" (cell:reference (data:get :ask context))))
-          context-names (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask")
-          values (environment:values view4 context-names reply-target)
+          view5 (extend-env view4 (env:reference-slot "system-message" (cell:reference (data:get :system-message context))))
+          context-names (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask" "system-message")
+          values (environment:values view5 context-names reply-target)
           matching (data:equal? context (experiment:rendered-context (data:record :values values)))
-          snapshot (environment:snapshot-once view4 selected context-names (switch matching matching))
+          snapshot (environment:snapshot-once view5 selected context-names (switch matching matching))
           packet-ready (logic:all trigger matching)
-          outgoing (data:record :id request-id :text (data:get :text snapshot))
+          outgoing (data:record :id request-id :text (data:get :text snapshot)
+                                :messages (seq:of (data:record :role "system" :content (data:get :text snapshot))
+                                                  (data:record :role "user" :content (data:get :ask context))))
           packet (cell:first (switch outgoing packet-ready))
           reply (cell:first (switch raw (data:equal? (data:get :request-id raw) request-id)))]
       (-> (event:point request-id time packet) (cell:input requests))
@@ -60,22 +67,19 @@
       :connected)))
 
 (define experiment:usable?
-  (network [value]
-    (logic:not (logic:any (data:equal? value :unknown) (data:equal? value :contradictory)))))
+  (network [value-input]
+    (let [value (cell:first value-input)]
+      (logic:not (logic:any (data:equal? value :unknown) (data:equal? value :contradictory))))))
 
 (define experiment:ready?
-  (network [observation]
-    (let [o (data:get :outputs observation)
-          s (data:get :supports observation)]
+  (network [observation-input]
+    (let [observation (cell:first observation-input)
+          o (data:get :outputs observation)]
       (logic:all (experiment:usable? (data:get :production o)) (experiment:usable? (data:get :rush o))
                  (experiment:usable? (data:get :discount o)) (experiment:usable? (data:get :subtotal o))
                  (experiment:usable? (data:get :delivery o)) (experiment:usable? (data:get :tax o))
                  (experiment:usable? (data:get :total o)) (experiment:usable? (data:get :reply o))
-                 (set:subset? (data:get :expected-support observation)
-                   (set:intersection (data:get :production s) (data:get :rush s)
-                                     (data:get :discount s) (data:get :subtotal s)
-                                     (data:get :delivery s) (data:get :tax s)
-                                     (data:get :total s) (data:get :reply s)))))))
+                 (data:equal? (seq:count (data:get :missing-supports observation)) 0)))))
 
 (define experiment:attempt
   (network [environment-reference required worker reply receipt-reference request-id correction attempt-target]
@@ -84,10 +88,12 @@
           matching (logic:all (data:equal? (data:get :request-id reply) request-id)
                               (data:equal? (data:get :response receipt) request-id))
           observation (inspect:outputs-once environment required worker
-                        (switch (data:record :reply reply :receipt receipt) matching))]
+                        (switch (data:record :reply reply :receipt receipt) matching))
+          ready (logic:all (data:equal? (data:get :status receipt) :admitted)
+                           (experiment:ready? observation))]
       (-> (cell:first (switch (data:record :response request-id :correction correction :source (data:get :text reply)
                                           :admission receipt :accepted-forms (data:get :accepted-forms receipt)
-                                          :observation observation :ready? (experiment:ready? observation)) matching))
+                                          :observation observation :ready? ready) matching))
           (cell:input attempt-target))
       :connected)))
 

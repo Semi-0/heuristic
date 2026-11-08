@@ -25,6 +25,7 @@
          (assoc view :frame (second key) :name (nth key 2)
                 :value (cond
                          (= 'context (nth key 2)) value
+                         (= 'observation (nth key 2)) (if (map? value) (select-keys value [:outputs :missing-supports :expected-support]) value)
                          (and (= 'snapshot (nth key 2)) (map? value)) (select-keys value [:values])
                          (map? value)
                          (assoc (select-keys value [:id :request-id :status :kind :finish-reason :truncated? :decision :ready?])
@@ -75,8 +76,8 @@
              (primitive 'seq:of vector)
              (primitive 'set:subset? set/subset?)
              (primitive 'set:intersection set/intersection)
-             (primitive 'logic:all (fn [& xs] (every? true? xs)))
-             (primitive 'logic:any (fn [& xs] (boolean (some true? xs))))
+             ['logic:all (cd/boolean-operator 'logic:all false (fn [& xs] (every? true? xs)))]
+             ['logic:any (cd/boolean-operator 'logic:any true (fn [& xs] (boolean (some true? xs))))]
              (primitive 'logic:not not)
              (primitive 'text:prefix? (fn [prefix text] (and (string? text) (str/starts-with? text prefix))))
              ['environment:snapshot

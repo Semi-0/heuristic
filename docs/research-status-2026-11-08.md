@@ -22,7 +22,8 @@ Separate identities matter: session, worker, lexical child, question, provider r
 | Real repair with a host controller | A previous real-model repair condition completed numerical answers. | A second host controller selected phases/retries; retained only as historical evidence. [Orchestration audit](2026-11-07-single-lain-orchestrator-audit.md). |
 | Experimental kernel variant | One controlled run reported 84/84 passing checks. | Its kernel changes were reverted at the user's instruction. It is not current acceptance and its patch must not be installed by a runner. [Historical variant](2026-11-08-runtime-and-dependency-recovery-fixes.md). |
 | Current public-session contracts | Three extension-only tests pass 36 assertions; runtime composition passes two tests / 15 assertions. Eleven closure/selector probes pass. | Controlled compiler/consumer evidence, not a real-model construction result. [API audit](2026-11-08-session-api-audit.md). |
-| Latest single-Lain recovery control | With the completed-context boundary, it reaches analysis, generalization, and initial implementation. Compilation rejects the deliberately invalid suffix and retains the valid prefix. | No repair request is emitted; round one times out. Both controls close cleanly. The five-round experiment remains unsuccessful. [Current cross-check](2026-11-08-unchanged-kernel-cross-check.md). |
+| Earlier single-Lain recovery control | With the completed-context boundary, it reaches analysis, generalization, and initial implementation. Compilation rejects the deliberately invalid suffix and retains the valid prefix. | No repair request was emitted in that condition; round one timed out. [Historical cross-check](2026-11-08-unchanged-kernel-cross-check.md). |
+| Timestamped repair guidance and partial gates | The controlled worker receives analysis, generalization, implementation and two repairs. Accepted definitions survive; the final repair computes 11 and completes without replaying requests. | Controlled transport evidence, not a fresh real-model success or the full five-question print-shop experiment. [Repair guidance](2026-11-08-timestamped-repair-guidance.md). |
 
 ## Corrections to earlier interpretations
 
@@ -30,7 +31,7 @@ The four old experimental closure assertions are not four established failures o
 
 A separate arithmetic limitation does reproduce through the public compiler and extension-only producers. After changing subtotal 185 → 257, `(* (+ subtotal (select (>= subtotal 250) 0 fee)) 0.08M)` becomes contradictory. Equivalent `if` formulations pass initialization, correction, withdrawal, and restoration. A universal selector failure or a need to patch the kernel does not follow.
 
-Immediate context projection works; delayed context projection can become contradictory. Freezing the completed phase context before reading its fields fixes the small reproduction and improves the full control's progress. It does not fix the later recovery stall. Successful admission receipts and retained prefix forms localize that remaining problem after compilation and before the next repair request.
+Immediate context projection works; delayed context projection can become contradictory. Freezing the completed phase context before reading its fields fixes the small reproduction and improves the full control's progress. That earlier condition still stalled after compilation. The subsequent [repair-guidance control](2026-11-08-timestamped-repair-guidance.md) reuses partial Boolean operators and completed observation checks; it sends both repairs and completes the controlled round. A fresh real-model print-shop result remains unverified.
 
 ## Current implementation and reproduction
 

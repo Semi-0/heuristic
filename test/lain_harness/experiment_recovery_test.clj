@@ -49,18 +49,19 @@
                       (let [value (read-value 'round-outcome)]
                         (cond (#{:done :failed} (:status value)) value
                               (> (System/currentTimeMillis) deadline) (throw (ex-info "Lain experiment timed out"
-                                                                                      {:requests (mapv :id @requests) :result value
+                                                                                      {:requests (mapv :id @requests) :result value :computed-result (read-value 'result)
                                                                                        :admission (read-value 'admission-result)
                                                                                        :raw-reply (select-keys (read-value 'raw-model-result) [:request-id :kind :finish-reason :truncated?])
                                                                                        :journal @journal
                                                                                        :bindings (observation/binding-views
                                                                                                   (session/network (host/current-session owner))
-                                                                                                  '#{snapshot context values matching packet-ready packet a a-ok g g-ok})}))
+                                                                                                  '#{snapshot context values matching packet-ready packet a a-ok g g-ok r0 r1 r2 t0 t1 t2 ok0 ok1 ok2 ready o receipt reply observation required worker environment})}))
                               :else (do (Thread/sleep 20) (recur)))))
             count-before (count @requests)]
         ;; The host only supplies/replays external input and observes the outcome.
         (publish!)
         {:outcome outcome :requests @requests :journal @journal :identity identity :target target
+         :system-message (read-value 'system-message)
          :no-replayed-call (= count-before (count @requests)) :worker-unchanged (let [used (mapv #(get-in % [:observation :worker]) (:attempts outcome))]
                                                                                   (or (empty? used) (every? #(= (into {} (read-value 'worker)) (into {} %)) used)))
          :result (read-value 'result)
@@ -89,8 +90,65 @@
     (is (= 11 (:result result)))
     (is (:worker-unchanged result))
     (is (:no-replayed-call result))
+    (doseq [request (:requests result)]
+      (is (= ["system" "user"] (mapv :role (:messages request))))
+      (is (= (:text request) (get-in request [:messages 0 :content])))
+      (is (= "Compute the connected result." (get-in request [:messages 1 :content]))))
+    (let [receipt (get-in attempts [0 :admission])
+          repair (get-in result [:requests 3 :messages 0 :content])]
+      (is (pos-int? (:timestamp-ms receipt)))
+      (is (= (:timestamp-ms receipt) (.toEpochMilli (java.time.Instant/parse (:timestamp-utc receipt)))))
+      (is (str/starts-with? repair "# Live environment\n\n## system-message\n"))
+      (is (str/includes? repair (:timestamp-utc receipt)))
+      (is (str/includes? repair "round-1"))
+      (is (str/includes? repair "Retained forms are already installed"))
+      (is (not (str/includes? repair "separate thinking"))))
+    (is (= "round-1-repair-2" (get-in result [:system-message :response])))
     (is (every? #(= (:identity result) (get-in % [:observation :identity])) attempts))
     (is (every? #(= (:target result) (get-in % [:observation :child])) attempts))))
+
+(deftest logical-gates-decide-with-unfinished-inputs
+  (let [owner (host/open! (experiment-compiler))
+        read-value #(connected/payload (session/binding-value (host/current-session owner) %))]
+    (try
+      (host/extend! owner (observation/facilities))
+      (host/extend-source! owner
+                           "(define missing)
+                            (define rejected (logic:all false missing))
+                            (define accepted (logic:any true missing))
+                            (define waiting (logic:all true missing))")
+      (is (false? (read-value 'rejected)))
+      (is (true? (read-value 'accepted)))
+      (is (= :bool4/nothing (read-value 'waiting)))
+      (host/extend-source! owner "(-> true missing)")
+      (is (false? (read-value 'rejected)))
+      (is (true? (read-value 'accepted)))
+      (is (true? (read-value 'waiting)))
+      (finally (host/close! owner)))))
+
+(deftest readiness-checks-completed-observations
+  (let [owner (host/open! (experiment-compiler))
+        read-value #(connected/payload (session/binding-value (host/current-session owner) %))]
+    (try
+      (host/extend! owner (soul/extension owner (atom [])))
+      (host/extend! owner (observation/facilities))
+      (host/extend-source! owner (slurp (str root "/experiments/phase-orchestration.lain")))
+      (host/extend-source! owner
+                           "(define outputs (data:record :production 11 :rush 11 :discount 11 :subtotal 11
+                                                         :delivery 11 :tax 11 :total 11 :reply 11))
+                            (define missing (data:record :total (seq:of :question-premise)))
+                            (define incomplete (experiment:ready? (data:record :outputs outputs :missing-supports missing)))
+                            (define unknown-value (experiment:usable? :unknown))
+                            (define contradictory-value (experiment:usable? :contradictory))
+                            (define delayed)
+                            (define ready (experiment:ready? delayed))")
+      (is (false? (read-value 'incomplete)))
+      (is (false? (read-value 'unknown-value)))
+      (is (false? (read-value 'contradictory-value)))
+      (is (= :bool4/nothing (read-value 'ready)))
+      (host/extend-source! owner "(-> (data:record :outputs outputs :missing-supports (data:record)) delayed)")
+      (is (true? (read-value 'ready)))
+      (finally (host/close! owner)))))
 
 (deftest lain-stops-after-two-corrections
   (let [result (trial! {"round-1" "(define a 1))" "round-1-repair-1" "(define b 2))" "round-1-repair-2" "(define c 3))"} false)]
