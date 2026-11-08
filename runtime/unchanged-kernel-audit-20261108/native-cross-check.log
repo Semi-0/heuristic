@@ -1,0 +1,74 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+
+Testing propagators.ttms-primitives-test
+
+Ran 2 tests containing 64 assertions.
+0 failures, 0 errors.
+{:suite propagators.ttms-primitives-test, :result {:test 2, :pass 64, :fail 0, :error 0, :type :summary}}
+
+Testing propagators.ttms-branching-test
+
+Ran 7 tests containing 81 assertions.
+0 failures, 0 errors.
+{:suite propagators.ttms-branching-test, :result {:test 7, :pass 81, :fail 0, :error 0, :type :summary}}
+
+Testing propagators.ttms-publication-test
+
+Ran 3 tests containing 22 assertions.
+0 failures, 0 errors.
+{:suite propagators.ttms-publication-test, :result {:test 3, :pass 22, :fail 0, :error 0, :type :summary}}
+
+Testing propagators.premise-transport-test
+
+Ran 10 tests containing 86 assertions.
+0 failures, 0 errors.
+{:suite propagators.premise-transport-test, :result {:test 10, :pass 86, :fail 0, :error 0, :type :summary}}
+
+Testing propagators.experimental.ttms-application-test
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+FAIL in (returned-members-are-gated-without-wrapping-list-structure) (ttms_application_test.clj:102)
+expected: (= #{{:source source, :timestamp 3, :premises-status :active}} (datum/support-of (net/network-cell-strongest recovered member)))
+  actual: (not (= #{{:source #propagators.ids.NodeId{:uuid #uuid "01a1baf6-e269-7435-9233-6984772330ed"}, :timestamp 3, :premises-status :active}} #{}))
+
+FAIL in (returned-members-are-gated-without-wrapping-list-structure) (ttms_application_test.clj:102)
+expected: (= #{{:source source, :timestamp 3, :premises-status :active}} (datum/support-of (net/network-cell-strongest recovered member)))
+  actual: (not (= #{{:source #propagators.ids.NodeId{:uuid #uuid "01a1baf6-e269-7435-9233-6984772330ed"}, :timestamp 3, :premises-status :active}} #{}))
+
+FAIL in (nested-returned-lists-gate-leaf-members) (ttms_application_test.clj:276)
+expected: (not (:ready? (observation/list-snapshot withdrawn nested)))
+  actual: (not (not true))
+
+FAIL in (changing-return-interface-is-rejected-before-merging-structure) (ttms_application_test.clj:238)
+expected: (thrown-with-msg? clojure.lang.ExceptionInfo #"Supported candidates have incompatible return interfaces" (publish network owner 2 :active 1))
+  actual: nil
+
+Ran 16 tests containing 82 assertions.
+4 failures, 0 errors.
+{:suite propagators.experimental.ttms-application-test, :result {:test 16, :pass 78, :fail 4, :error 0, :type :summary}}
+
+Testing propagators.ttms-compound-boundary-test
+
+Ran 11 tests containing 52 assertions.
+0 failures, 0 errors.
+{:suite propagators.ttms-compound-boundary-test, :result {:test 11, :pass 52, :fail 0, :error 0, :type :summary}}
+
+Testing propagators.compiler-2.immutable-session-test
+
+Ran 21 tests containing 149 assertions.
+0 failures, 0 errors.
+{:suite propagators.compiler-2.immutable-session-test, :result {:test 21, :pass 149, :fail 0, :error 0, :type :summary}}
+
+Testing propagators.compiler-2.runtime.session-extension-test
+
+Ran 20 tests containing 65 assertions.
+0 failures, 0 errors.
+{:suite propagators.compiler-2.runtime.session-extension-test, :result {:test 20, :pass 65, :fail 0, :error 0, :type :summary}}
+{:source "(select false 10 20)", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(if false 10 20)", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (network [c] (select c 10 20))) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (network [c] (if c 10 20))) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [c] (select c 10 20)) definition-one)) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [c] (if c 10 20)) definition-one)) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (network [x] (select (>= x 250) 0 12))) (f 185))", :status :completed, :expected 12, :actual 12, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [x] (select (>= x 250) 0 12)) definition-one)) (f 185))", :status :completed, :expected 12, :actual 12, :pass true}

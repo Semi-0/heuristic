@@ -1,10 +1,12 @@
 ;; The model worker is shared; the runtime compiles only completed implementation responses.
 (load-lain "soul-refined.lain")
+(load-lain "experiments/phase-orchestration.lain")
 (define m (model))
 (load-lain "environments/printshop-three-stage.lain")
 (define runtime-model
   (struct :input (model:input m) :output model-result))
 (define running-runtime (runtime runtime-environment runtime-model))
-(define generated-environment ((slot :environment) running-runtime))
+(define generated-environment (cell:first ((slot :environment) running-runtime)))
 (define admission-result ((slot :compilation) running-runtime))
+(-> admission-result admission-feedback)
 (load-lain "experiments/printshop-three-stage-requests.lain")

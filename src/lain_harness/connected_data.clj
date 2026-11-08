@@ -57,6 +57,28 @@
                         (fn [network [v]] (connected/freeze network v)) identity
                         (fn [network inputs _] (mapcat #(value-cells network %) inputs)) false))
 
+(defn observation-once-operator
+  "Observe once when the sampler is ready. Retain bottom while waiting; after
+  publication, old watch notifications do no work and never create new epochs."
+  [name sample watch-cells]
+  (operator/propagator-operator
+   {:name name
+    :activate
+    (fn [network inputs [output] _]
+      (letfn [(activate [_ _ current]
+                (if-not (value/nothing? (net/network-cell-strongest current output))
+                  []
+                  (let [values (mapv #(data/payload (net/network-cell-strongest current %)) inputs)
+                        sampled (if (some value/unusable? values) connected/pending (sample current values))]
+                    (if (= connected/pending sampled)
+                      {:effects [(gur/declare-prop (basis/stable-node-id :sample-once output) name
+                                                   (distinct (concat inputs (watch-cells current inputs values)))
+                                                   [output] activate)
+                                 (gur/bind-name [:session :samples] output
+                                                (basis/stable-node-id :sample-once output))]}
+                      [(message/message output (collection/content {:base sampled :support #{}}))]))))]
+        (activate inputs [output] network)))}))
+
 (defn reference-operator []
   (operator/propagator-operator
    {:name 'cell:reference

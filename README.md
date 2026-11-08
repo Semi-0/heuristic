@@ -1,5 +1,9 @@
 # lain-harness
 
+The current research index is [Heuristic: design, evidence, and status — November 8](docs/research-status-2026-11-08.md). It distinguishes passed historical experiments from the latest unsuccessful recovery control and records the public session API follow-up. The [Tsuki reference brief](docs/handoffs/2026-11-08-heuristic-to-tsuki.md) gathers the relevant design and evidence for cross-project review. Large new evidence files are losslessly archived; extraction instructions are in the index.
+
+The migration narrative below retains earlier design and verification context; use the dated research index for current acceptance status.
+
 The current local conversation experiment is documented in
 [Environment-constructed conversation](docs/environment-conversation.md).
 `soul-refined.lain` defines the reusable composition and imports the existing model.

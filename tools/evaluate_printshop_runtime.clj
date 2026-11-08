@@ -1,4 +1,4 @@
-(require '[clojure.edn :as edn])
+(require '[clojure.edn :as edn] '[clojure.string :as str])
 (def fields ["production" "rush" "discount" "subtotal" "delivery" "tax" "total"])
 (def expected [[160 0 0 185 12 15.76M 212.76M]
                [424 84.8M 40 493.8M 0 39.504M 533.30M]
@@ -28,7 +28,7 @@
       reuse (into {} (for [i (range 2 (inc (count (:rounds e))))
                            :let [prior (take (dec i) (:rounds e)) current (nth (:rounds e) (dec i))
                                  before-ids (set (map :application-id (mapcat :applications prior)))
-                                 g (deps (map :text (take i (:responses e))))
+                                 g (deps (take i (or (:round-sources e) (map :text (:responses e)))))
                                  path (ancestry g (symbol (str "quote-" i)))
                                  candidates (for [r prior [n b] (:bindings r) :when (= :callable (:kind b))
                                                   :let [calls (filter #(and (= (:declaration b) (:declaration %))
@@ -60,15 +60,15 @@
   (doseq [i (range 1 6)]
     (check [:unrelated-invariance i] (select-keys (result :question-restored "total" i) [:value :support])
            (select-keys (result :unrelated-change "total" i) [:value :support])))
-  (check :request-count 15 (count (:requests e)))
+  (check :request-count (+ 15 (count (filter #(str/includes? (:id %) "-repair-") (:requests e)))) (count (:requests e)))
   (check :analysis-count 5 (count (:analyses e)))
   (check :generalization-count 5 (count (:generalizations e)))
   (doseq [[i g] (map-indexed vector (:generalizations e))]
-    (check [:generalization-before-implementation (inc i)] (+ 2 (* 3 i)) (:request-count g)))
-  (check :phase-response-count 15 (count (:phase-responses e)))
+    (check [:generalization-before-implementation (inc i)] (inc (.indexOf (mapv :id (:requests e)) (str "generalization-" (inc i)))) (:request-count g)))
+  (check :phase-response-count (+ 15 (count (filter #(str/includes? (:id %) "-repair-") (:requests e)))) (count (:phase-responses e)))
   (doseq [[i a] (map-indexed vector (:analyses e))]
-    (check [:analysis-before-implementation (inc i)] (inc (* 3 i)) (:request-count a)))
-  (check :source-history (mapv :text (:responses e)) (:written-code e))
+    (check [:analysis-before-implementation (inc i)] (inc (.indexOf (mapv :id (:requests e)) (str "analysis-" (inc i)))) (:request-count a)))
+  (check :source-history (if (contains? e :recovery-attempts) (mapv :source (:recovery-attempts e)) (mapv :text (:responses e))) (:written-code e))
   (check :reply-history (:history (last (:rounds e))) (:history e))
   (check :stable-session true (get-in e [:outcome :stable-identity]))
   (check :persistent-worker 1 (count (set (map :worker (:snapshots e)))))
@@ -81,11 +81,9 @@
     (prn (dissoc report :checks :reuse))
     (prn :reused (into {} (map (fn [[i xs]] [i (mapv :name xs)]) reuse)))
     (prn :failed (vec (remove :pass @checks)))
-    (when (= "control" (:controlled e))
+    (when (#{"control" "recovery-control"} (:controlled e))
       (assert (= :completed (:operational-status report)))
-   ;; Baseline runtime issue already established in the one-phase control.
-      (assert (= #{:quantity-correction :question-restoration}
-                 (set (map :check (remove :pass @checks)))) "Unexpected control failure set")
+      (assert (empty? (remove :pass @checks)) "Control has failing checks")
       (assert (every? seq (vals reuse)))
       (assert (every? true? (vals (:self-checks report))))
-      (println "Strict phase gating, pricing and reuse checks passed; two known baseline mutation failures retained."))))
+      (println "All phase, pricing, dependency, reuse and mutation control checks passed."))))

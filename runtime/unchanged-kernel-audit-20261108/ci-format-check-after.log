@@ -1,0 +1,2 @@
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_lain/6 because it is locked by another process (errno = 11)
+format-check: 18 files; 0 failures

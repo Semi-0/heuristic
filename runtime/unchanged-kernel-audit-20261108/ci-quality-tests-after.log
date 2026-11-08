@@ -1,0 +1,6 @@
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_lain/13 because it is locked by another process (errno = 11)
+
+Testing quality-test
+
+Ran 9 tests containing 27 assertions.
+0 failures, 0 errors.

@@ -14,20 +14,21 @@
 
             [propagators.network :as net]))
 
-(defn local-facts [network e]
-  (let [target (:id e)
-        declared (into {} (map (fn [[name binding]] [name (env/binding-id binding)]))
-                       (get-in e [:frames target :bindings]))
-        live (environment/local-bindings network target)
-        facts (mapv (fn [[name id]]
-                      (let [v (net/network-cell-strongest network id)]
-                        {:name (str name) :cell id :frame target
-                         :state (cond (value/contradiction? v) :contradictory
-                                      (value/nothing? v) :unknown :else :known)
-                         :available (not (value/unusable? v))
-                         :value (if (value/unusable? v) :unavailable (data/payload v)) :premises (datum/support-of v)}))
-                    (sort-by (comp str key) (merge declared live)))]
-    facts))
+(defn local-facts
+  ([network e] (local-facts network e (environment/local-bindings network (:id e))))
+  ([network e live]
+   (let [target (:id e)
+         declared (into {} (map (fn [[name binding]] [name (env/binding-id binding)]))
+                        (get-in e [:frames target :bindings]))
+         facts (mapv (fn [[name id]]
+                       (let [v (net/network-cell-strongest network id)]
+                         {:name (str name) :cell id :frame target
+                          :state (cond (value/contradiction? v) :contradictory
+                                       (value/nothing? v) :unknown :else :known)
+                          :available (not (value/unusable? v))
+                          :value (if (value/unusable? v) :unavailable (data/payload v)) :premises (datum/support-of v)}))
+                     (sort-by (comp str key) (merge declared live)))]
+     facts)))
 
 (defn fact-list [facts]
   (reduce (fn [tail fact] {:car fact :cdr tail}) connected/empty-list (reverse facts)))

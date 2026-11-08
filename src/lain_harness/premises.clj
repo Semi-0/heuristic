@@ -1,7 +1,6 @@
 (ns lain-harness.premises
   (:require [propagators.compiler-2.session :as session]
             [propagators.compiler-2.session.host :as host]
-            [propagators.compiler-2.compiler.basis :as basis]
             [propagators.datastructures.support-collection :as collection]
             [propagators.datastructures.layered-value :as datum]
             [propagators.network :as net]
@@ -12,9 +11,14 @@
   (let [receipt @(host/submit-extension! owner (session/session-extension declaration))]
     (when-not (= :admitted (:status receipt))
       (throw (ex-info (or (:message receipt) "Extension rejected") receipt)))
-  declaration))
+    declaration))
 (defn source! [owner id base]
-  (admit! owner {:id [:premise id] :cells {id (content id base 1 :active)}})
+  ;; Source endpoints are declared by Lain; values enter through publication.
+  (when-not (contains? (net/net-env (session/network (host/current-session owner))) id)
+    (throw (ex-info "Declare the premise source in Lain before publishing" {:id id})))
+  (when-not (= :accepted (host/submit! owner (session/cell-input id (content id base 1 :active))))
+    (throw (ex-info "Premise ingress backpressured" {})))
+  (host/step! owner)
   id)
 (defn publish! [owner id epoch status]
   (let [v (net/network-cell-strongest (session/network (host/current-session owner)) id)

@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is]]
             [lain-harness.model-io-session :as model]
+            [lain-harness.premises :as premises]
             [lain-harness.soul-session :as soul]
             [propagators.compiler-2.session :as session]
             [propagators.compiler-2.session.connected :as connected]
@@ -50,6 +51,11 @@
                        (connected/payload (net/network-cell-strongest
                                            (session/network current)
                                            (session/scoped-binding-cell current target name))))]
+        (is (empty? (:cells (session/session-declarations current)))
+            "Extensions add source and propagators, without pre-seeded cells")
+        (is (every? #(contains? (net/net-env (session/network current)) (:source-result-reference %))
+                    (filter #(= :admitted (get-in % [:receipt :status])) @journal))
+            "Admission refers to canonical source-result cells")
         (is (= 3 (count @requests)))
         (is (not= a b))
         (is (= 7 (value-at a 'retained)))
@@ -65,4 +71,16 @@
         (is (= 11 (connected/payload (net/network-cell-strongest
                                       (session/network current)
                                       (session/scoped-binding-cell current target 'after-update))))))
+      (finally (host/close! owner)))))
+
+(deftest premise-publication-uses-an-existing-lain-endpoint
+  (let [owner (host/open! (model/compiler))]
+    (try
+      (host/extend-source! owner "(define observation)")
+      (let [reference (session/binding-cell (host/current-session owner) 'observation)]
+        (is (= reference (premises/source! owner reference 7)))
+        (is (= 7 (read-value owner 'observation)))
+        (is (empty? (:cells (session/session-declarations (host/current-session owner)))))
+        (is (thrown-with-msg? clojure.lang.ExceptionInfo #"Declare the premise source in Lain"
+                              (premises/source! owner (random-uuid) 9))))
       (finally (host/close! owner)))))

@@ -1,0 +1,1 @@
+Controlled experiment on unchanged kernel: FAILED (Lain outcome timed out in round 1). Cleanup reported :closed. Five-round acceptance was not reached. See run.log and the recorded requests. Source snapshots come from the isolated root; runtime-local-changes.patch is empty. No provider-generated solution was substituted.

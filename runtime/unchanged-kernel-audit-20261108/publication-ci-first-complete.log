@@ -1,0 +1,673 @@
+Starting gx10-lain-pull.service - Run local CI and deploy Lain...
+正拓製到 '/home/lain/.local/share/lain-editor-deploy/releases/0d4fb868a95b4e4ca8c6e11733ad2810/backend'...
+HEAD 目前位於 90f74fc Format supported session compilation and extension tests
+正拓製到 '/home/lain/.local/share/lain-editor-deploy/releases/0d4fb868a95b4e4ca8c6e11733ad2810/frontend'...
+HEAD 目前位於 602eb67 Watch server files and save editor source before Run
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+format-check: 18 files; 0 failures
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+lint: 18 files; 0 failures; 0 total errors; 47 warnings
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+Testing quality-test
+Ran 9 tests containing 27 assertions.
+0 failures, 0 errors.
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+Picked up JAVA_TOOL_OPTIONS: -Xmx4g
+Testing run-tests-policy-test
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+Ran 3 tests containing 28 assertions.
+0 failures, 0 errors.
+run-tests-policy-test: 28 pass, 0 fail, 0 error
+Testing propagators.bool4-test
+Ran 6 tests containing 35 assertions.
+0 failures, 0 errors.
+propagators.bool4-test: 35 pass, 0 fail, 0 error
+Testing propagators.error-layer-test
+Ran 4 tests containing 92 assertions.
+0 failures, 0 errors.
+propagators.error-layer-test: 92 pass, 0 fail, 0 error
+Testing propagators.cell-protocol-test
+Ran 8 tests containing 62 assertions.
+0 failures, 0 errors.
+propagators.cell-protocol-test: 62 pass, 0 fail, 0 error
+Testing propagators.combinator-test
+Ran 2 tests containing 5 assertions.
+0 failures, 0 errors.
+propagators.combinator-test: 5 pass, 0 fail, 0 error
+Testing propagators.compile-2-test
+Ran 89 tests containing 324 assertions.
+0 failures, 0 errors.
+propagators.compile-2-test: 324 pass, 0 fail, 0 error
+Testing propagators.compiler-2-application-runtime-test
+Ran 4 tests containing 8 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-application-runtime-test: 8 pass, 0 fail, 0 error
+Testing propagators.compiler-2.immutable-session-test
+Ran 21 tests containing 149 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.immutable-session-test: 149 pass, 0 fail, 0 error
+Testing propagators.compiler-2.async-operator-builder-test
+Ran 8 tests containing 57 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.async-operator-builder-test: 57 pass, 0 fail, 0 error
+Testing propagators.compiler-2-call-graph-test
+Ran 11 tests containing 36 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-call-graph-test: 36 pass, 0 fail, 0 error
+Testing propagators.compiler-2-block-premise-test
+Ran 3 tests containing 11 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-block-premise-test: 11 pass, 0 fail, 0 error
+Testing propagators.compiler-2-composition-test
+Ran 7 tests containing 34 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-composition-test: 34 pass, 0 fail, 0 error
+Testing propagators.compiler-2-cps-test
+Ran 7 tests containing 35 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-cps-test: 35 pass, 0 fail, 0 error
+Testing propagators.compiler-2-conditional-syntax-test
+Ran 9 tests containing 45 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-conditional-syntax-test: 45 pass, 0 fail, 0 error
+Testing propagators.compiler-2-lazy-conditional-test
+Ran 8 tests containing 39 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-lazy-conditional-test: 39 pass, 0 fail, 0 error
+Testing propagators.compiler-2-empty-list-test
+Ran 3 tests containing 38 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-empty-list-test: 38 pass, 0 fail, 0 error
+Testing propagators.compiler-2-open-apply-test
+Ran 13 tests containing 71 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-open-apply-test: 71 pass, 0 fail, 0 error
+Testing propagators.compiler-2-functional-network-test
+Ran 32 tests containing 74 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-functional-network-test: 74 pass, 0 fail, 0 error
+Testing propagators.compiler-2-supported-compound-if-test
+Ran 7 tests containing 425 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-supported-compound-if-test: 425 pass, 0 fail, 0 error
+Testing propagators.compiler-2-supported-publication-test
+Ran 3 tests containing 17 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-supported-publication-test: 17 pass, 0 fail, 0 error
+Testing propagators.supported-slot-test
+Ran 3 tests containing 26 assertions.
+0 failures, 0 errors.
+propagators.supported-slot-test: 26 pass, 0 fail, 0 error
+Testing propagators.compiler-2-functional-network-gur-test
+Ran 13 tests containing 68 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-functional-network-gur-test: 68 pass, 0 fail, 0 error
+Testing propagators.compiler-2-gur-tms-integration-test
+Ran 5 tests containing 53 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-gur-tms-integration-test: 53 pass, 0 fail, 0 error
+Testing propagators.compiler-2-rest-parameters-test
+Ran 12 tests containing 55 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-rest-parameters-test: 55 pass, 0 fail, 0 error
+Testing propagators.compiler-2-combinator-test
+Ran 22 tests containing 104 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-combinator-test: 104 pass, 0 fail, 0 error
+Testing propagators.how-to-think-in-lain-examples-test
+FAIL in (every-guide-section-has-a-worked-example) (how_to_think_in_lain_examples_test.clj:39)
+section 25 — Verification and Source References
+missing worked example for section 25: Verification and Source References
+expected: (contains? examples n)
+  actual: (not (contains? {7 "Network transformation is compositional abstraction", 20 "Constraints make relationships multidirectional", 1 "Core philosophy: compose relationships, not computations", 24 "Keep the public interface relational", 4 "Declare relationships, not sequences", 15 "Evaluation checklist", 21 "Conditional relationships are still relations", 13 "Practical reasoning procedure", 22 "Meaningful state inside recursive networks", 6 "Coordination operators: `->` vs `<->`", 17 "Connected accessors: lists and objects are networks", 3 "Think like a circuit designer, not a programmer", 12 "Build a vocabulary of small transformations", 2 "The three semantic layers: verbs, relations, sentences", 23 "Inspect a trace before changing the contract", 19 "List-library composition is linear", 11 "Preserve abstraction boundaries", 9 "Make time and history explicit", 5 "Symmetry and multidirectionality", 14 "Anti-patterns: what *not* to do in Lain", 16 "The guiding principle", 10 "Separate domain logic from crosscutting behavior", 18 "Complete lists and open prefixes", 8 "Cells are for meaningful state, not plumbing"} 25))
+Ran 3 tests containing 32 assertions.
+1 failures, 0 errors.
+propagators.how-to-think-in-lain-examples-test: 31 pass, 1 fail, 0 error
+Testing propagators.compiler-2-network-observation-test
+Ran 6 tests containing 18 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-network-observation-test: 18 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.network-observation-test
+Ran 10 tests containing 42 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.network-observation-test: 42 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.semantic-traversal-test
+Ran 12 tests containing 60 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.semantic-traversal-test: 60 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.retained-network-test
+Ran 14 tests containing 64 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.retained-network-test: 64 pass, 0 fail, 0 error
+Testing propagators.observer-test
+Ran 5 tests containing 17 assertions.
+0 failures, 0 errors.
+propagators.observer-test: 17 pass, 0 fail, 0 error
+Testing propagators.compiler-2-organization-test
+Ran 3 tests containing 18 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-organization-test: 18 pass, 0 fail, 0 error
+Testing propagators.compound-object-network-slot-test
+Ran 18 tests containing 71 assertions.
+0 failures, 0 errors.
+propagators.compound-object-network-slot-test: 71 pass, 0 fail, 0 error
+Testing propagators.debug-test
+Ran 2 tests containing 11 assertions.
+0 failures, 0 errors.
+propagators.debug-test: 11 pass, 0 fail, 0 error
+Testing propagators.dispatch-test
+Ran 3 tests containing 6 assertions.
+0 failures, 0 errors.
+propagators.dispatch-test: 6 pass, 0 fail, 0 error
+Testing propagators.experimental.runner-constructor-test
+Ran 10 tests containing 38 assertions.
+0 failures, 0 errors.
+propagators.experimental.runner-constructor-test: 38 pass, 0 fail, 0 error
+Testing propagators.experimental.ttms-view-test
+Ran 10 tests containing 80 assertions.
+0 failures, 0 errors.
+propagators.experimental.ttms-view-test: 80 pass, 0 fail, 0 error
+Testing propagators.experimental.tracer-topology-test
+TOPOLOGY :legacy chain nodes 6 edges 6
+TOPOLOGY :legacy diamond nodes 8 edges 9
+TOPOLOGY :legacy repeated nodes 5 edges 4
+TOPOLOGY :legacy nested nodes 3 edges 2
+TOPOLOGY :legacy cycle nodes 3 edges 3
+TOPOLOGY :legacy bidirectional nodes 3 edges 4
+TOPOLOGY :legacy conditional nodes 5 edges 4
+TOPOLOGY :ttms chain nodes 6 edges 6
+TOPOLOGY :ttms diamond nodes 8 edges 9
+TOPOLOGY :ttms repeated nodes 5 edges 4
+TOPOLOGY :ttms nested nodes 3 edges 2
+TOPOLOGY :ttms cycle nodes 3 edges 3
+TOPOLOGY :ttms bidirectional nodes 3 edges 4
+TOPOLOGY :ttms conditional nodes 5 edges 4
+Ran 3 tests containing 226 assertions.
+0 failures, 0 errors.
+propagators.experimental.tracer-topology-test: 226 pass, 0 fail, 0 error
+Testing propagators.experimental.compound-tracer-test
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+SUBNETWORK expected-edges 4 actual-edges 4 local-labels [x out]
+ROOT-CONNECTION :legacy [source shift RESULT -> -> -> RESULT stage other]
+ROOT-CONNECTION :ttms [source shift RESULT -> -> -> RESULT stage other]
+RECURSIVE-DIFF 1 extra [] missing 0
+RECURSIVE :ttms-observation-only 1 edges 13 {<= 1, RESULT 4, CONSTANT 4, switch 2, out 1, > 1, a 1}
+RECURSIVE-DIFF 3 extra [] missing 0
+RECURSIVE :ttms-observation-only 3 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 2 extra [] missing 0
+RECURSIVE :ttms-observation-only 2 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 4 extra [] missing 0
+RECURSIVE :ttms-observation-only 4 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 1 extra [] missing 0
+RECURSIVE :legacy 1 edges 13 {<= 1, RESULT 4, CONSTANT 4, switch 2, out 1, > 1, a 1}
+RECURSIVE-DIFF 3 extra [] missing 0
+RECURSIVE :legacy 3 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 2 extra [] missing 0
+RECURSIVE :legacy 2 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 4 extra [] missing 0
+RECURSIVE :legacy 4 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 1 extra [] missing 0
+RECURSIVE :ttms 1 edges 13 {RESULT 4, CONSTANT 4, out 1, > 1, switch 2, a 1, <= 1}
+RECURSIVE-DIFF 3 extra [] missing 0
+RECURSIVE :ttms 3 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 2 extra [] missing 0
+RECURSIVE :ttms 2 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+RECURSIVE-DIFF 4 extra [] missing 0
+RECURSIVE :ttms 4 edges 17 {switch 2, a 1, <= 1, down 1, > 1, - 1, CONSTANT 5, out 1, RESULT 5}
+Ran 4 tests containing 270 assertions.
+0 failures, 0 errors.
+propagators.experimental.compound-tracer-test: 270 pass, 0 fail, 0 error
+Testing propagators.experimental.compound-levels-demo-test
+Ran 3 tests containing 29 assertions.
+0 failures, 0 errors.
+propagators.experimental.compound-levels-demo-test: 29 pass, 0 fail, 0 error
+Testing propagators.experimental.functional-web-migration-test
+Ran 4 tests containing 22 assertions.
+0 failures, 0 errors.
+propagators.experimental.functional-web-migration-test: 22 pass, 0 fail, 0 error
+Testing propagators.dataflow-projection-test
+Ran 3 tests containing 15 assertions.
+0 failures, 0 errors.
+propagators.dataflow-projection-test: 15 pass, 0 fail, 0 error
+Testing propagators.relationship-snapshot-test
+Ran 1 tests containing 7 assertions.
+0 failures, 0 errors.
+propagators.relationship-snapshot-test: 7 pass, 0 fail, 0 error
+Testing propagators.experimental.view-xr-test
+Ran 14 tests containing 82 assertions.
+0 failures, 0 errors.
+propagators.experimental.view-xr-test: 82 pass, 0 fail, 0 error
+Testing propagators.install-test
+Ran 12 tests containing 21 assertions.
+0 failures, 0 errors.
+propagators.install-test: 21 pass, 0 fail, 0 error
+Testing propagators.layered-procedure-test
+Ran 16 tests containing 48 assertions.
+0 failures, 0 errors.
+propagators.layered-procedure-test: 48 pass, 0 fail, 0 error
+Testing propagators.layered-dispatcher-test
+Ran 7 tests containing 19 assertions.
+0 failures, 0 errors.
+propagators.layered-dispatcher-test: 19 pass, 0 fail, 0 error
+Testing propagators.layered-arity-test
+Ran 1 tests containing 81 assertions.
+0 failures, 0 errors.
+propagators.layered-arity-test: 81 pass, 0 fail, 0 error
+Testing propagators.layered-support-test
+Ran 7 tests containing 28 assertions.
+0 failures, 0 errors.
+propagators.layered-support-test: 28 pass, 0 fail, 0 error
+Testing propagators.membership-collection-test
+Ran 14 tests containing 299 assertions.
+0 failures, 0 errors.
+propagators.membership-collection-test: 299 pass, 0 fail, 0 error
+Testing propagators.message-lift-test
+Ran 3 tests containing 10 assertions.
+0 failures, 0 errors.
+propagators.message-lift-test: 10 pass, 0 fail, 0 error
+Testing propagators.named-network-test
+Ran 11 tests containing 45 assertions.
+0 failures, 0 errors.
+propagators.named-network-test: 45 pass, 0 fail, 0 error
+Testing propagators.network-patch-test
+Ran 6 tests containing 36 assertions.
+0 failures, 0 errors.
+propagators.network-patch-test: 36 pass, 0 fail, 0 error
+Testing propagators.premise-transport-test
+Ran 10 tests containing 86 assertions.
+0 failures, 0 errors.
+propagators.premise-transport-test: 86 pass, 0 fail, 0 error
+Testing propagators.observation-transport-test
+Ran 7 tests containing 220 assertions.
+0 failures, 0 errors.
+propagators.observation-transport-test: 220 pass, 0 fail, 0 error
+Testing propagators.reducer-cell-test
+Ran 14 tests containing 27 assertions.
+0 failures, 0 errors.
+propagators.reducer-cell-test: 27 pass, 0 fail, 0 error
+Testing propagators.runner-test
+Ran 3 tests containing 12 assertions.
+0 failures, 0 errors.
+propagators.runner-test: 12 pass, 0 fail, 0 error
+Testing propagators.semantic-trace.graph-facts-test
+Ran 15 tests containing 1807 assertions.
+0 failures, 0 errors.
+propagators.semantic-trace.graph-facts-test: 1807 pass, 0 fail, 0 error
+Testing propagators.semantic-trace.history-facts-test
+Ran 4 tests containing 23 assertions.
+0 failures, 0 errors.
+propagators.semantic-trace.history-facts-test: 23 pass, 0 fail, 0 error
+Testing propagators.semantic-trace.capture-test
+Ran 15 tests containing 72 assertions.
+0 failures, 0 errors.
+propagators.semantic-trace.capture-test: 72 pass, 0 fail, 0 error
+Testing propagators.semantic-trace.graph-union-test
+Ran 4 tests containing 12 assertions.
+0 failures, 0 errors.
+propagators.semantic-trace.graph-union-test: 12 pass, 0 fail, 0 error
+Testing propagators.semantic-trace.high-level-test
+Ran 6 tests containing 32 assertions.
+0 failures, 0 errors.
+propagators.semantic-trace.high-level-test: 32 pass, 0 fail, 0 error
+Testing propagators.source-publication-test
+Ran 3 tests containing 11 assertions.
+0 failures, 0 errors.
+propagators.source-publication-test: 11 pass, 0 fail, 0 error
+Testing propagators.compiler-2-tms-bootstrap-test
+Ran 3 tests containing 19 assertions.
+0 failures, 0 errors.
+propagators.compiler-2-tms-bootstrap-test: 19 pass, 0 fail, 0 error
+Testing propagators.structural-records-test
+Ran 4 tests containing 30 assertions.
+0 failures, 0 errors.
+propagators.structural-records-test: 30 pass, 0 fail, 0 error
+Testing propagators.support-test
+Ran 8 tests containing 473 assertions.
+0 failures, 0 errors.
+propagators.support-test: 473 pass, 0 fail, 0 error
+Testing propagators.support-collection-test
+Ran 21 tests containing 834 assertions.
+0 failures, 0 errors.
+propagators.support-collection-test: 834 pass, 0 fail, 0 error
+Testing propagators.support-transport-test
+Ran 6 tests containing 206 assertions.
+0 failures, 0 errors.
+propagators.support-transport-test: 206 pass, 0 fail, 0 error
+Testing propagators.support-glitch-test
+Ran 1 tests containing 41 assertions.
+0 failures, 0 errors.
+propagators.support-glitch-test: 41 pass, 0 fail, 0 error
+Testing propagators.sync-contradiction-test
+Ran 6 tests containing 50 assertions.
+0 failures, 0 errors.
+propagators.sync-contradiction-test: 50 pass, 0 fail, 0 error
+Testing propagators.ttms-branching-test
+Ran 7 tests containing 81 assertions.
+0 failures, 0 errors.
+propagators.ttms-branching-test: 81 pass, 0 fail, 0 error
+Testing propagators.ttms-compound-boundary-test
+Ran 11 tests containing 52 assertions.
+0 failures, 0 errors.
+propagators.ttms-compound-boundary-test: 52 pass, 0 fail, 0 error
+Testing propagators.ttms-primitives-test
+Ran 2 tests containing 64 assertions.
+0 failures, 0 errors.
+propagators.ttms-primitives-test: 64 pass, 0 fail, 0 error
+Testing propagators.ttms-publication-test
+Ran 3 tests containing 22 assertions.
+0 failures, 0 errors.
+propagators.ttms-publication-test: 22 pass, 0 fail, 0 error
+Testing propagators.tms-test
+Ran 13 tests containing 46 assertions.
+0 failures, 0 errors.
+propagators.tms-test: 46 pass, 0 fail, 0 error
+Testing graph.xr-inspection-test
+Ran 7 tests containing 41 assertions.
+0 failures, 0 errors.
+graph.xr-inspection-test: 41 pass, 0 fail, 0 error
+Testing graph.xr-context-stream-test
+Exception in thread "xr-client" clojure.lang.ExceptionInfo: websocket closed {}
+	at graph.xr_server$read_frame.invokeStatic(xr_server.clj:207)
+	at graph.xr_server$read_frame.invoke(xr_server.clj:202)
+	at graph.xr_server$websocket_loop.invokeStatic(xr_server.clj:478)
+	at graph.xr_server$websocket_loop.invoke(xr_server.clj:470)
+	at graph.xr_server$handle_socket$fn__67474.invoke(xr_server.clj:534)
+	at clojure.lang.AFn.run(AFn.java:22)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Ran 2 tests containing 7 assertions.
+0 failures, 0 errors.
+graph.xr-context-stream-test: 7 pass, 0 fail, 0 error
+Testing experiments.synth-test
+Synth runtime: Required example binding missing
+Ran 10 tests containing 53 assertions.
+0 failures, 0 errors.
+experiments.synth-test: 53 pass, 0 fail, 0 error
+Testing propagators.experimental.runner.profiling-test
+ERROR in (profiled-runner-preserves-network-and-quiescence) (Numbers.java:1099)
+expected: (pos? (:transitions (:steps (profiling/report profile))))
+  actual: java.lang.NullPointerException: Cannot invoke "Object.getClass()" because "x" is null
+ at clojure.lang.Numbers.ops (Numbers.java:1099)
+    clojure.lang.Numbers.isPos (Numbers.java:123)
+    clojure.core$pos_QMARK_.invokeStatic (core.clj:1266)
+    clojure.core$pos_QMARK_.invoke (core.clj:1261)
+    clojure.lang.AFn.applyToHelper (AFn.java:154)
+    clojure.lang.AFn.applyTo (AFn.java:144)
+    clojure.core$apply.invokeStatic (core.clj:667)
+    clojure.core$apply.invoke (core.clj:662)
+    propagators.experimental.runner.profiling_test$fn__77371$fn__77391.invoke (profiling_test.clj:37)
+    propagators.experimental.runner.profiling_test$fn__77371.invokeStatic (profiling_test.clj:37)
+    propagators.experimental.runner.profiling_test/fn (profiling_test.clj:26)
+    clojure.test$test_var$fn__9898.invoke (test.clj:717)
+    clojure.test$test_var.invokeStatic (test.clj:717)
+    clojure.test$test_var.invoke (test.clj:708)
+    clojure.test$test_vars$fn__9924$fn__9929.invoke (test.clj:735)
+    clojure.test$default_fixture.invokeStatic (test.clj:687)
+    clojure.test$default_fixture.invoke (test.clj:683)
+    clojure.test$test_vars$fn__9924.invoke (test.clj:735)
+    clojure.test$default_fixture.invokeStatic (test.clj:687)
+    clojure.test$default_fixture.invoke (test.clj:683)
+    clojure.test$test_vars.invokeStatic (test.clj:731)
+    clojure.test$test_vars.invoke (test.clj:723)
+    run_tests$run_selected_tests.invokeStatic (run_tests.clj:307)
+    run_tests$run_selected_tests.invoke (run_tests.clj:297)
+    run_tests$run_suite.invokeStatic (run_tests.clj:315)
+    run_tests$run_suite.invoke (run_tests.clj:313)
+    run_tests$_main$fn__169.invoke (run_tests.clj:336)
+    clojure.core$mapv$fn__8569.invoke (core.clj:7059)
+    clojure.core.protocols$fn__8279.invokeStatic (protocols.clj:167)
+    clojure.core.protocols/fn (protocols.clj:123)
+    clojure.core.protocols$fn__8233$G__8228__8242.invoke (protocols.clj:19)
+    clojure.core.protocols$seq_reduce.invokeStatic (protocols.clj:31)
+    clojure.core.protocols$fn__8266.invokeStatic (protocols.clj:74)
+    clojure.core.protocols/fn (protocols.clj:74)
+    clojure.core.protocols$fn__8207$G__8202__8220.invoke (protocols.clj:13)
+    clojure.core$reduce.invokeStatic (core.clj:6965)
+    clojure.core$mapv.invokeStatic (core.clj:7050)
+    clojure.core$mapv.invoke (core.clj:7050)
+    run_tests$_main.invokeStatic (run_tests.clj:336)
+    run_tests$_main.doInvoke (run_tests.clj:329)
+    clojure.lang.RestFn.applyTo (RestFn.java:140)
+    clojure.lang.Var.applyTo (Var.java:707)
+    clojure.core$apply.invokeStatic (core.clj:667)
+    clojure.main$main_opt.invokeStatic (main.clj:515)
+    clojure.main$main_opt.invoke (main.clj:511)
+    clojure.main$main.invokeStatic (main.clj:665)
+    clojure.main$main.doInvoke (main.clj:617)
+    clojure.lang.RestFn.applyTo (RestFn.java:140)
+    clojure.lang.Var.applyTo (Var.java:707)
+    clojure.main.main (main.java:40)
+FAIL in (profiled-runner-preserves-network-and-quiescence) (profiling_test.clj:38)
+expected: (some (fn* [p1__77370#] (= :runner/patches (:label p1__77370#))) (:timings (profiling/report profile)))
+  actual: (not (some #object[propagators.experimental.runner.profiling_test$fn__77371$fn__77395 0x79083d73 "propagators.experimental.runner.profiling_test$fn__77371$fn__77395@79083d73"] []))
+Ran 3 tests containing 10 assertions.
+1 failures, 1 errors.
+propagators.experimental.runner.profiling-test: 8 pass, 1 fail, 1 error
+Testing leapfrog.pure-test
+Ran 5 tests containing 6 assertions.
+0 failures, 0 errors.
+leapfrog.pure-test: 6 pass, 0 fail, 0 error
+Testing leapfrog.differential-test
+Ran 11 tests containing 28 assertions.
+0 failures, 0 errors.
+leapfrog.differential-test: 28 pass, 0 fail, 0 error
+Testing differential-dataflow.frontier-test
+Ran 5 tests containing 33 assertions.
+0 failures, 0 errors.
+differential-dataflow.frontier-test: 33 pass, 0 fail, 0 error
+Testing differential-dataflow.stream-ops-test
+Ran 6 tests containing 17 assertions.
+0 failures, 0 errors.
+differential-dataflow.stream-ops-test: 17 pass, 0 fail, 0 error
+Testing differential-dataflow.v1-test
+Ran 11 tests containing 26 assertions.
+0 failures, 0 errors.
+differential-dataflow.v1-test: 26 pass, 0 fail, 0 error
+Testing differential-dataflow.graph-test
+Ran 27 tests containing 81 assertions.
+0 failures, 0 errors.
+differential-dataflow.graph-test: 81 pass, 0 fail, 0 error
+Testing differential-dataflow.multiset-test
+Ran 9 tests containing 19 assertions.
+0 failures, 0 errors.
+differential-dataflow.multiset-test: 19 pass, 0 fail, 0 error
+Testing graph.lain-editor.completion-test
+Ran 4 tests containing 28 assertions.
+0 failures, 0 errors.
+graph.lain-editor.completion-test: 28 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.composable-tracer-test
+Ran 5 tests containing 21 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.composable-tracer-test: 21 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.high-level-trace-test
+Ran 3 tests containing 6 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.high-level-trace-test: 6 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.high-level-value-history-test
+Ran 3 tests containing 20 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.high-level-value-history-test: 20 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.retained-relationship-test
+Ran 3 tests containing 38 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.retained-relationship-test: 38 pass, 0 fail, 0 error
+Testing graph.lain-editor.workspace.source-files-test
+Ran 10 tests containing 66 assertions.
+0 failures, 0 errors.
+graph.lain-editor.workspace.source-files-test: 66 pass, 0 fail, 0 error
+Testing graph.lain-editor.workspace.file-service-test
+Ran 4 tests containing 26 assertions.
+0 failures, 0 errors.
+graph.lain-editor.workspace.file-service-test: 26 pass, 0 fail, 0 error
+Testing graph.lain-editor.workspace.file-bridge-test
+Ran 4 tests containing 21 assertions.
+0 failures, 0 errors.
+graph.lain-editor.workspace.file-bridge-test: 21 pass, 0 fail, 0 error
+Testing graph.lain-editor.workspace.commands-test
+Ran 5 tests containing 34 assertions.
+0 failures, 0 errors.
+graph.lain-editor.workspace.commands-test: 34 pass, 0 fail, 0 error
+Testing graph.lain-editor.runtime.slot-spawn-test
+Ran 6 tests containing 38 assertions.
+0 failures, 0 errors.
+graph.lain-editor.runtime.slot-spawn-test: 38 pass, 0 fail, 0 error
+Testing graph.lain-editor.runtime.extension-error-test
+Ran 1 tests containing 12 assertions.
+0 failures, 0 errors.
+graph.lain-editor.runtime.extension-error-test: 12 pass, 0 fail, 0 error
+Testing graph.lain-editor.runtime.detached-session-test
+Ran 3 tests containing 32 assertions.
+0 failures, 0 errors.
+graph.lain-editor.runtime.detached-session-test: 32 pass, 0 fail, 0 error
+Testing graph.lain-editor.runtime.external-session-test
+Ran 3 tests containing 30 assertions.
+0 failures, 0 errors.
+graph.lain-editor.runtime.external-session-test: 30 pass, 0 fail, 0 error
+Testing graph.lain-editor.runtime.managed-session-test
+FAIL in (native-clocks-defer-declared-dependencies-to-the-managed-host) (managed_session_test.clj:227)
+expected: (= 42 (data/payload (compiler/binding-value (host/current-session owner) (quote result))))
+  actual: (not (= 42 :bool4/nothing))
+Ran 8 tests containing 103 assertions.
+1 failures, 0 errors.
+graph.lain-editor.runtime.managed-session-test: 102 pass, 1 fail, 0 error
+Testing graph.lain-editor.runtime.immutable-session-test
+Ran 5 tests containing 46 assertions.
+0 failures, 0 errors.
+graph.lain-editor.runtime.immutable-session-test: 46 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.tracer-directions-test
+Ran 1 tests containing 26 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.tracer-directions-test: 26 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.semantic-scene-test
+Ran 4 tests containing 16 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.semantic-scene-test: 16 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.semantic-gallery-test
+01-unary = true nodes 5 calls [-> not]
+02-binary = 7 nodes 6 calls [+ ->]
+03-three-inputs = 10 nodes 7 calls [combine ->]
+  body combine calls [copy * -> +]
+04-branch-true = 8 nodes 9 calls [:propagator/anonymous :propagator/anonymous ->]
+05-branch-false = 14 nodes 9 calls [:propagator/anonymous :propagator/anonymous ->]
+06-recursion = 10 nodes 6 calls [sum-to ->]
+  body sum-to calls [copy -> :propagator/anonymous :propagator/anonymous <=]
+07-two-outputs = 19 nodes 10 calls [+ -> stats]
+  body stats calls [copy * + -> -> ->]
+08-captured-closure = 15 nodes 6 calls [-> add-ten]
+  body add-ten calls [copy + ->]
+accumulator n 0 runtime nodes 3873
+accumulator n 1 runtime nodes 4064
+accumulator n 4 runtime nodes 4631
+accumulator n 8 runtime nodes 5387
+Ran 5 tests containing 547 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.semantic-gallery-test: 547 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.recursive-semantic-test
+Ran 2 tests containing 18 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.recursive-semantic-test: 18 pass, 0 fail, 0 error
+Testing graph.lain-editor.inspection.amb-test
+Ran 6 tests containing 57 assertions.
+0 failures, 0 errors.
+graph.lain-editor.inspection.amb-test: 57 pass, 0 fail, 0 error
+Testing graph.lain-editor.layout.graph-layout-test
+Ran 19 tests containing 144 assertions.
+0 failures, 0 errors.
+graph.lain-editor.layout.graph-layout-test: 144 pass, 0 fail, 0 error
+Testing graph.ttms-view-live-test
+Ran 1 tests containing 5 assertions.
+0 failures, 0 errors.
+graph.ttms-view-live-test: 5 pass, 0 fail, 0 error
+Testing graph.vijual.math-test
+Ran 3 tests containing 29 assertions.
+0 failures, 0 errors.
+graph.vijual.math-test: 29 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.tui.version-history-test
+Ran 2 tests containing 9 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.tui.version-history-test: 9 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.tui.block-compiler-test
+Ran 5 tests containing 11 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.tui.block-compiler-test: 11 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.tui.versioned-commit-test
+Ran 16 tests containing 74 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.tui.versioned-commit-test: 74 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.environment-io-test
+Ran 8 tests containing 24 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.environment-io-test: 24 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.clock-test
+Ran 3 tests containing 9 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.clock-test: 9 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.retraction-inspection-test
+Ran 1 tests containing 3 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.retraction-inspection-test: 3 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.session.instance-replay-test
+Ran 10 tests containing 37 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.session.instance-replay-test: 37 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.session.widget-retraction-test
+Ran 1 tests containing 14 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.session.widget-retraction-test: 14 pass, 0 fail, 0 error
+Testing graph.compiler-2-versioned-tui.editor-test
+Ran 6 tests containing 34 assertions.
+0 failures, 0 errors.
+graph.compiler-2-versioned-tui.editor-test: 34 pass, 0 fail, 0 error
+Testing graph.compiler-2-versioned-tui.layout-test
+Ran 7 tests containing 23 assertions.
+0 failures, 0 errors.
+graph.compiler-2-versioned-tui.layout-test: 23 pass, 0 fail, 0 error
+Testing graph.vijual.scan-test
+Ran 1 tests containing 3 assertions.
+0 failures, 0 errors.
+graph.vijual.scan-test: 3 pass, 0 fail, 0 error
+Testing graph.vijual.layout-test
+Ran 9 tests containing 68 assertions.
+0 failures, 0 errors.
+graph.vijual.layout-test: 68 pass, 0 fail, 0 error
+Testing propagators.compiler-2.runtime.boundary-test
+Ran 3 tests containing 13 assertions.
+0 failures, 0 errors.
+propagators.compiler-2.runtime.boundary-test: 13 pass, 0 fail, 0 error
+Testing graph.vijual.compiler-2-demo-test
+Ran 2 tests containing 28 assertions.
+0 failures, 0 errors.
+graph.vijual.compiler-2-demo-test: 28 pass, 0 fail, 0 error
+Testing graph.vijual.render-test
+Ran 5 tests containing 27 assertions.
+0 failures, 0 errors.
+graph.vijual.render-test: 27 pass, 0 fail, 0 error
+TOTAL: 9863 pass, 3 fail, 1 error
+Traceback (most recent call last):
+  File "/home/lain/.local/share/lain-editor-deploy/driver.py", line 410, in <module>
+    poll(arguments.retry)
+  File "/home/lain/.local/share/lain-editor-deploy/driver.py", line 325, in poll
+    run_ci(release)
+  File "/home/lain/.local/share/lain-editor-deploy/driver.py", line 196, in run_ci
+    run(["bash", "deploy/ci.sh"], cwd=release / "backend",
+  File "/home/lain/.local/share/lain-editor-deploy/driver.py", line 32, in run
+    return subprocess.run(args, cwd=cwd, env=env, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['bash', 'deploy/ci.sh']' returned non-zero exit status 1.
+gx10-lain-pull.service: Main process exited, code=exited, status=1/FAILURE
+gx10-lain-pull.service: Failed with result 'exit-code'.
+Failed to start gx10-lain-pull.service - Run local CI and deploy Lain.
+gx10-lain-pull.service: Consumed 1h 1min 16.173s CPU time.
+Starting gx10-lain-pull.service - Run local CI and deploy Lain...
+This pair previously failed; use poll --retry after inspection
+Finished gx10-lain-pull.service - Run local CI and deploy Lain.

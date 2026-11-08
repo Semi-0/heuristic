@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE session-api — High-level source admission and producer extensions; compiled TTMS list consumers
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 3 tests containing 36 assertions.
+0 failures, 0 errors.
+MODULE-RESULT session-api {:test 3, :pass 36, :fail 0, :error 0}

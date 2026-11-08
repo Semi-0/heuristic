@@ -1,0 +1,2 @@
+# Captured prompts, patches and output are evidence; preserve their whitespace.
+runtime/** -whitespace

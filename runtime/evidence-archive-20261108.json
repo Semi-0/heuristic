@@ -1,0 +1,277 @@
+{
+  "format": "individual-gzip-sha256-v1",
+  "files": [
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/evidence.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/evidence.edn.gz",
+      "raw_sha256": "046fedb297e2c881bc72fa4ce4998a7b8bd853c8c5903bc89fec68b0c16bb649",
+      "archive_sha256": "a20bc1fcecc5ab92bd7ec73ac4ba15363d97ada6f1571cd364ffa81941552da4",
+      "raw_bytes": 35702428,
+      "archive_bytes": 4113744
+    },
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/graph-1.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/graph-1.edn.gz",
+      "raw_sha256": "36f53f2820d81d55c09bcf92717c5010b465243e7a4bf0bd7e923cec069321f2",
+      "archive_sha256": "afa33aeaa11e78d6915338f6c4ed5bcb30193e5875a04282b7137f0c405e7299",
+      "raw_bytes": 18567164,
+      "archive_bytes": 3787761
+    },
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/graph-2.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/graph-2.edn.gz",
+      "raw_sha256": "530a5babe7d75f4c8fe9a81ae90e7dbfb7fae56ed245eafa6fad85bc110ed7f9",
+      "archive_sha256": "82c4ae87ac323424a556fb01186cbbe116f2b33d610f4819173d3921370b5c13",
+      "raw_bytes": 26135582,
+      "archive_bytes": 5401217
+    },
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/graph-3.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/graph-3.edn.gz",
+      "raw_sha256": "c1a52157a58ccfab43aac5b2149c506eeb41dd9e67ef4c28288c497035eae118",
+      "archive_sha256": "db5996642e5195a71ab3d281b1590a343ab756bb300c46bda59d7284b79b94bd",
+      "raw_bytes": 33704000,
+      "archive_bytes": 7014364
+    },
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/graph-4.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/graph-4.edn.gz",
+      "raw_sha256": "b11d206da2370d45f794f42cfb74fb29a0bd179015d3f84aef000a2036d6b8b1",
+      "archive_sha256": "214fde4a9745d87d1c769dabab45f855ea6374f1c00794b3ca080e40d0c83bcb",
+      "raw_bytes": 41272418,
+      "archive_bytes": 8623587
+    },
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/graph-5.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/graph-5.edn.gz",
+      "raw_sha256": "14943fd9f18ba347cd5021ea894a58fe690e1c634bb8fa57ea848172d486a117",
+      "archive_sha256": "bec7d958c4a6c69c986dc3d48676f8ed499c5090d9410828dd00667d84620dc4",
+      "raw_bytes": 48840836,
+      "archive_bytes": 10238426
+    },
+    {
+      "raw_path": "runtime/printshop-bounded-local-control-20261108/snapshots.edn",
+      "archive_path": "runtime/printshop-bounded-local-control-20261108/snapshots.edn.gz",
+      "raw_sha256": "17ea457943e84a308896d3ece2e3f93042082051512965fc7d4b0a4ee2148c22",
+      "archive_sha256": "995d893f4eca78ff04721d474589154a5cb8d683f4afdcbdcd91745c21dcf4ce",
+      "raw_bytes": 6572580,
+      "archive_bytes": 187534
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/evidence.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/evidence.edn.gz",
+      "raw_sha256": "66d1068ea2514579e401b9fd4992f128ff0fa1089c77ed62d523ad4ba6f65ddb",
+      "archive_sha256": "6a3f83e6b15c0fddd250b280b6dba5d310af0d3e5139efa3a3f19d78e7c82915",
+      "raw_bytes": 12309076,
+      "archive_bytes": 868347
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/graph-1.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/graph-1.edn.gz",
+      "raw_sha256": "b860ddaad1604f1262c19bf29c32e1e002e3a541a3fedab30d3ef4c3c2fb382b",
+      "archive_sha256": "f83cc047f40773f2698120c7650669ba581eca7052ef85e8c7d06030760fa0cb",
+      "raw_bytes": 11032500,
+      "archive_bytes": 2183241
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/graph-2.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/graph-2.edn.gz",
+      "raw_sha256": "de8249397257107260fee66688b682205d642a911398f3af45d94a6434fc47b8",
+      "archive_sha256": "cb9609a79bcd2ffbfa77baaa9c0b9547024ed0662109225f83de57f0799a0dcd",
+      "raw_bytes": 11926829,
+      "archive_bytes": 2367954
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/graph-3.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/graph-3.edn.gz",
+      "raw_sha256": "8a91fda9cbef7760dc1b40c05f148714ea00cd813be78f5f9155ca63200def08",
+      "archive_sha256": "b41897f5dbbdc3a67e3f8461043695f4846725a1d982d1fd1ea2abcdc221b739",
+      "raw_bytes": 12821158,
+      "archive_bytes": 2551567
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/graph-4.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/graph-4.edn.gz",
+      "raw_sha256": "82cba0a87a5ae8a2d6b2481abcaafad6422ff07ab243d5710a076409c158b424",
+      "archive_sha256": "2b01dd3b132b53a491090ed4a635e6d9573a78381518359cec47cf0588527e81",
+      "raw_bytes": 13715487,
+      "archive_bytes": 2735521
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/graph-5.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/graph-5.edn.gz",
+      "raw_sha256": "1da129250288fd445e40060003d2e8cd178db21765e1895725391f0e5918e57d",
+      "archive_sha256": "e9da300673bf90aa1603e7fd22bd8ecfcfc1322d5d4b99060dc11f66ddb691e0",
+      "raw_bytes": 14609816,
+      "archive_bytes": 2918808
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-flat-20261107/snapshots.edn",
+      "archive_path": "runtime/printshop-recovery-control-flat-20261107/snapshots.edn.gz",
+      "raw_sha256": "64b8ee18b2d4072079916b317833466b27e9d5bed00ae7888ce75c57b40e979a",
+      "archive_sha256": "56df976007106d2cba541f40722c68ddd79d2c731b22a741d6415ab32cbaa419",
+      "raw_bytes": 6383925,
+      "archive_bytes": 167465
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/evidence.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/evidence.edn.gz",
+      "raw_sha256": "88ac7b1a616f54875b043f75bdf3b4301bf6dabccf8c7b5ffa2b96788a60ef7a",
+      "archive_sha256": "0f2670c8221d0b942730a2cf624aa42b7e7b883b1410f4c4c1684761e12297ed",
+      "raw_bytes": 12396707,
+      "archive_bytes": 873853
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-1.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-1.edn.gz",
+      "raw_sha256": "7bf7299f5aa6b75d763dd72fbe9590370d7d2c06c24cb0265064a4beca01b120",
+      "archive_sha256": "4bc50b1b274843681210027da2d76c35c5f79cba60c48a47694760a2bdfde26d",
+      "raw_bytes": 11093125,
+      "archive_bytes": 2198548
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-2.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-2.edn.gz",
+      "raw_sha256": "3251514e440809ee6621b295cc349eb52740bc67c024e932b8d1e4f7cce3f25b",
+      "archive_sha256": "f21327b03a8644d16d78545bdc6536bc44c98eb2072c8f69490da37fd340ce43",
+      "raw_bytes": 11987454,
+      "archive_bytes": 2382444
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-3.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-3.edn.gz",
+      "raw_sha256": "da02e8c007b7e20ef3ebe3c1619312faf625b2bfa372715c25e5af5cc2244565",
+      "archive_sha256": "7ff398771fa80e5e34513c70ca30f54d6dbf341c586b7ed0ed0527c65a5a4c4f",
+      "raw_bytes": 12881783,
+      "archive_bytes": 2566246
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-4.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-4.edn.gz",
+      "raw_sha256": "694e2ef53dbf68c3b54be6b70a2aef16cefc5fb4b5a961e8d722d71092cbbaf5",
+      "archive_sha256": "be19a4d18a88fc3f5c154d343c981e0127813caaf79866e391a7723ed0317cfc",
+      "raw_bytes": 13776112,
+      "archive_bytes": 2750531
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-5.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/graph-5.edn.gz",
+      "raw_sha256": "74610552809d105bb4241080e331bdf8dce8aa8fdb0addfbc5f93cbfa2b84d28",
+      "archive_sha256": "54385b1bbf5f279f9e7a9c4c8a94f117788f8c8fefe80bbf740690e59f90c004",
+      "raw_bytes": 14670441,
+      "archive_bytes": 2933456
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-control-snapshot-20261107/snapshots.edn",
+      "archive_path": "runtime/printshop-recovery-control-snapshot-20261107/snapshots.edn.gz",
+      "raw_sha256": "7c9982cc29e4e22d7395a41723b58f7926f262faacf534beb17c4903717d76da",
+      "archive_sha256": "981b4a9fde8f4b6d0d879f78db4fb5705131d73c921054a95f78fb93e54592b6",
+      "raw_bytes": 6428385,
+      "archive_bytes": 168408
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/evidence.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/evidence.edn.gz",
+      "raw_sha256": "16dee42655b1da6dc34bc2796d369bbb98d2cbc5874a47fd449695b9ef28188c",
+      "archive_sha256": "895b7e05d4f35a906cabab28ff185017512e839f6419c442536c2c302d16773d",
+      "raw_bytes": 13758667,
+      "archive_bytes": 992695
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-1.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-1.edn.gz",
+      "raw_sha256": "1776be471f8a5ba2b28aeaeb6c424a072c4e91facc375ccfb045366c292e7058",
+      "archive_sha256": "06cb0d38b06f51c7a494409994c98b9964d4de58634debc99ce0038454d6c1e9",
+      "raw_bytes": 11019514,
+      "archive_bytes": 2179867
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-2.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-2.edn.gz",
+      "raw_sha256": "711b84c333c768ceddb9f502bdba177c6a081dfc959ab8f97abdea94dd277c1d",
+      "archive_sha256": "ea83d9dc049ed615fa4f66f1ecd946dcf1adf1fc35c87302dcfd8844d7ed7421",
+      "raw_bytes": 11637052,
+      "archive_bytes": 2304559
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-3.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-3.edn.gz",
+      "raw_sha256": "fb93cc6a62d5a65fff5ca910b23da2e8f5df289db13e284d9f6b45a88756fc36",
+      "archive_sha256": "f9b7d71d1606ccbee145c11a71616e0b173930e69703284877733793d7a5df12",
+      "raw_bytes": 12254590,
+      "archive_bytes": 2427831
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-4.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-4.edn.gz",
+      "raw_sha256": "fbccb58c12195ca03c4404516d88aad7d49f1ddf2635b66deb1807be6bb97a45",
+      "archive_sha256": "4a896f31945c989c55dbad08145bf5eb80d755e63b6bf7221e53655759a2a19a",
+      "raw_bytes": 13022310,
+      "archive_bytes": 2585115
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-5.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/graph-5.edn.gz",
+      "raw_sha256": "8392abb694fe9e452d5537a8e44efeaaf0fedd73ae65cb78e5df56e99e1cfb34",
+      "archive_sha256": "b31d78ffd4dfd2ba9bbab1800c4a9d32e9bdd4195a4021571de0880d7fd12953",
+      "raw_bytes": 13786859,
+      "archive_bytes": 2738977
+    },
+    {
+      "raw_path": "runtime/printshop-recovery-live-snapshot-20261107/snapshots.edn",
+      "archive_path": "runtime/printshop-recovery-live-snapshot-20261107/snapshots.edn.gz",
+      "raw_sha256": "004129648276f5078c516f8c2a1e5998caddf75270489c67ebf64e05516ce56a",
+      "archive_sha256": "401eff180110f2c05cc98f15980fb31b82555fd34b1d38c03521e5386cdd6907",
+      "raw_bytes": 7904717,
+      "archive_bytes": 222118
+    },
+    {
+      "raw_path": "runtime/printshop-support-feedback-control-20261108/graph-1.edn",
+      "archive_path": "runtime/printshop-support-feedback-control-20261108/graph-1.edn.gz",
+      "raw_sha256": "bf4642a945075ba03a7e7053420e51ab33414aae5351d95ffb083021043977c0",
+      "archive_sha256": "30b5555caf64e4025f347db971bd566bfa2167d616fdc15daee3baac9bc7f344",
+      "raw_bytes": 18266780,
+      "archive_bytes": 3725872
+    },
+    {
+      "raw_path": "runtime/printshop-support-feedback-control-20261108/graph-2.edn",
+      "archive_path": "runtime/printshop-support-feedback-control-20261108/graph-2.edn.gz",
+      "raw_sha256": "51645b0eb1e354ba061f70dd2192a78721b9ef64b0e2a40763a03bc12d4ebfc8",
+      "archive_sha256": "a06241d58451ea93913db1d350a333da15f83ba3fe00b4a45c83e28131621321",
+      "raw_bytes": 25548696,
+      "archive_bytes": 5282866
+    },
+    {
+      "raw_path": "runtime/printshop-verified-control-20261108/evidence.edn",
+      "archive_path": "runtime/printshop-verified-control-20261108/evidence.edn.gz",
+      "raw_sha256": "a4fb1fe2921c3300f52d47946c75848b8a7d5ebaa137848f4e107ed0239851ef",
+      "archive_sha256": "a487f87331106dd3c9ba20c674e8e885b54c5343624440005bb2c2fa3a00e239",
+      "raw_bytes": 7889945,
+      "archive_bytes": 942876
+    },
+    {
+      "raw_path": "runtime/printshop-verified-control-20261108/graph-1.edn",
+      "archive_path": "runtime/printshop-verified-control-20261108/graph-1.edn.gz",
+      "raw_sha256": "f028ccb7f3809c4aa8edf59039ec8bd18b792064872e40c5d88b7a1eb1afb3f5",
+      "archive_sha256": "1477bdc245f55ebd51e94c53ae7b1a70e44ebfcb234e869aaa1ba835c1b26bf3",
+      "raw_bytes": 18266780,
+      "archive_bytes": 3730990
+    },
+    {
+      "raw_path": "runtime/printshop-verified-control-20261108/graph-2.edn",
+      "archive_path": "runtime/printshop-verified-control-20261108/graph-2.edn.gz",
+      "raw_sha256": "9bf56c13462e4ab358138a2ff357a202f8d0de9b5bf7e16fa0f43cf14e98808c",
+      "archive_sha256": "5ec97e7330e000de843a5108a4d8ffcfba064e6ccc757702002d653d259576bd",
+      "raw_bytes": 25548696,
+      "archive_bytes": 5287740
+    },
+    {
+      "raw_path": "runtime/runtime-fix-tests-20261108/activation-profile.edn",
+      "archive_path": "runtime/runtime-fix-tests-20261108/activation-profile.edn.gz",
+      "raw_sha256": "d68c84313d88884d1fcc6bc9cb1f5ea0fe820d6b712038c018e5104f455953c5",
+      "archive_sha256": "47bbb0821a8ddfb9b3be79c4a41e21d85f1cd57e8c4ac442e2475bbb806abfaf",
+      "raw_bytes": 13316234,
+      "archive_bytes": 2226432
+    }
+  ]
+}

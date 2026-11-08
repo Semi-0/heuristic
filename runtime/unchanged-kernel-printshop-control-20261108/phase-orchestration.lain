@@ -1,0 +1,148 @@
+;; One-shot dataflow stages. All transition, readiness and retry decisions are Lain.
+;; Native adapters only render snapshots, read data and observe existing edges.
+(define experiment:complete?
+  (network [reply]
+    (if (data:equal? (data:get :kind reply) :reply)
+      (if (data:equal? (data:get :finish-reason reply) "stop")
+        (data:equal? (data:get :truncated? reply) false) false) false)))
+
+(define experiment:plan-valid?
+  (network [reply generalized?]
+    (let [parsed (data:read-edn (data:get :text reply))
+          plan (data:get :value parsed)]
+      (if (experiment:complete? reply)
+        (if (data:equal? (data:get :status parsed) :parsed)
+          (if (data:strings? plan (seq:of :outputs :facts :unknowns :units :relations :operators :operator :status :steps :tests))
+            (if (data:has? plan :decision)
+              (logic:all
+                (logic:any (data:equal? (data:get :decision plan) :reuse)
+                           (data:equal? (data:get :decision plan) :adapt)
+                           (data:equal? (data:get :decision plan) :compose)
+                           (data:equal? (data:get :decision plan) :construct))
+                (if generalized? (data:strings? plan (seq:of :problem-class :parameters :captured :interface)) true))
+              false)
+            false)
+          false)
+        false))))
+
+(define experiment:context
+  (network [phase analysis generalization feedback ask]
+    (data:record :phase phase :analysis analysis :generalization generalization :feedback feedback :ask ask)))
+
+(define experiment:rendered-context
+  (network [snapshot]
+    (let [values (data:get :values snapshot)]
+      (experiment:context (data:get "phase" values) (data:get "analysis-record" values)
+                          (data:get "generalization-record" values) (data:get "inspection-feedback" values) (data:get "ask" values)))))
+
+(define experiment:stage
+  (network [environment-reference selected context-reference requests raw-reference request-id time trigger reply-target]
+    (let [environment (cell:value environment-reference)
+          context (cell:value context-reference)
+          raw (cell:value raw-reference)
+          view0 (extend-env environment (env:reference-slot "phase" (cell:reference (data:get :phase context))))
+          view1 (extend-env view0 (env:reference-slot "analysis-record" (cell:reference (data:get :analysis context))))
+          view2 (extend-env view1 (env:reference-slot "generalization-record" (cell:reference (data:get :generalization context))))
+          view3 (extend-env view2 (env:reference-slot "inspection-feedback" (cell:reference (data:get :feedback context))))
+          view4 (extend-env view3 (env:reference-slot "ask" (cell:reference (data:get :ask context))))
+          context-names (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask")
+          values (environment:values view4 context-names reply-target)
+          matching (data:equal? context (experiment:rendered-context (data:record :values values)))
+          snapshot (environment:snapshot-once view4 selected context-names (switch matching matching))
+          packet-ready (logic:all trigger matching)
+          outgoing (data:record :id request-id :text (data:get :text snapshot))
+          packet (cell:first (switch outgoing packet-ready))
+          reply (cell:first (switch raw (data:equal? (data:get :request-id raw) request-id)))]
+      (-> (event:point request-id time packet) (cell:input requests))
+      (-> reply (cell:input reply-target))
+      :connected)))
+
+(define experiment:usable?
+  (network [value]
+    (logic:not (logic:any (data:equal? value :unknown) (data:equal? value :contradictory)))))
+
+(define experiment:ready?
+  (network [observation]
+    (let [o (data:get :outputs observation)
+          s (data:get :supports observation)]
+      (logic:all (experiment:usable? (data:get :production o)) (experiment:usable? (data:get :rush o))
+                 (experiment:usable? (data:get :discount o)) (experiment:usable? (data:get :subtotal o))
+                 (experiment:usable? (data:get :delivery o)) (experiment:usable? (data:get :tax o))
+                 (experiment:usable? (data:get :total o)) (experiment:usable? (data:get :reply o))
+                 (set:subset? (data:get :expected-support observation)
+                   (set:intersection (data:get :production s) (data:get :rush s)
+                                     (data:get :discount s) (data:get :subtotal s)
+                                     (data:get :delivery s) (data:get :tax s)
+                                     (data:get :total s) (data:get :reply s)))))))
+
+(define experiment:attempt
+  (network [environment-reference required worker reply receipt-reference request-id correction attempt-target]
+    (let [environment (cell:value environment-reference)
+          receipt (cell:value receipt-reference)
+          matching (logic:all (data:equal? (data:get :request-id reply) request-id)
+                              (data:equal? (data:get :response receipt) request-id))
+          observation (inspect:outputs-once environment required worker
+                        (switch (data:record :reply reply :receipt receipt) matching))]
+      (-> (cell:first (switch (data:record :response request-id :correction correction :source (data:get :text reply)
+                                          :admission receipt :accepted-forms (data:get :accepted-forms receipt)
+                                          :observation observation :ready? (experiment:ready? observation)) matching))
+          (cell:input attempt-target))
+      :connected)))
+
+(define experiment:success?
+  (network [attempt]
+    (logic:all (data:equal? (data:get :status (data:get :admission attempt)) :admitted)
+               (data:get :ready? attempt))))
+
+(define experiment:feedback
+  (network [attempt history remaining]
+    (data:record :status (if (data:equal? (data:get :status (data:get :admission attempt)) :rejected) :rejected
+                          (if (data:equal? (data:get :missing-supports (data:get :observation attempt)) (data:record))
+                            :unresolved-outputs :missing-dependencies))
+                 :failed-response (data:get :response attempt) :failed-source (data:get :source attempt)
+                 :admission (data:get :admission attempt) :observation (data:get :observation attempt)
+                 :attempt-history history :corrections-used (data:get :correction attempt) :corrections-remaining remaining)))
+
+(define experiment:outcome
+  (network [status attempts analysis generalization feedback feedbacks]
+    (data:record :status status :attempts attempts :analysis analysis :generalization generalization :feedback feedback :feedbacks feedbacks)))
+
+(define experiment:question
+  (network [environment-reference selected worker raw-reference receipt-reference requests number trigger required ask outcome-target]
+    (let-cell [a g t0 t1 t2 r0 r1 r2]
+      (define time (* number 100))
+      (define empty (data:record :status :not-started :corrections-remaining 2))
+      (experiment:stage environment-reference selected (cell:reference (experiment:context "analysis" "No analysis yet." "No interface yet." empty ask))
+                        requests raw-reference (str "analysis-" number) (+ time 1) trigger (cell:reference a))
+      (define a-ok (experiment:plan-valid? a false))
+      (experiment:stage environment-reference selected (cell:reference (experiment:context "generalization" (data:get :text a) "No interface yet." empty ask))
+                        requests raw-reference (str "generalization-" number) (+ time 2) a-ok (cell:reference g))
+      (define g-ok (experiment:plan-valid? g true))
+      (experiment:stage environment-reference selected (cell:reference (experiment:context "implementation" (data:get :text a) (data:get :text g) empty ask))
+                        requests raw-reference (str "round-" number) (+ time 3) g-ok (cell:reference r0))
+      (experiment:attempt environment-reference required worker r0 receipt-reference (str "round-" number) 0 (cell:reference t0))
+      (define ok0 (experiment:success? t0))
+      (define h0 (seq:of t0))
+      (define f0 (experiment:feedback t0 h0 2))
+      (experiment:stage environment-reference selected (cell:reference (experiment:context "implementation" (data:get :text a) (data:get :text g) f0 ask))
+                        requests raw-reference (str "round-" number "-repair-1") (+ time 4) (logic:not ok0) (cell:reference r1))
+      (experiment:attempt environment-reference required worker r1 receipt-reference (str "round-" number "-repair-1") 1 (cell:reference t1))
+      (define ok1 (experiment:success? t1))
+      (define h1 (seq:of t0 t1))
+      (define f1 (experiment:feedback t1 h1 1))
+      (experiment:stage environment-reference selected (cell:reference (experiment:context "implementation" (data:get :text a) (data:get :text g) f1 ask))
+                        requests raw-reference (str "round-" number "-repair-2") (+ time 5) (logic:not ok1) (cell:reference r2))
+      (experiment:attempt environment-reference required worker r2 receipt-reference (str "round-" number "-repair-2") 2 (cell:reference t2))
+      (define ok2 (experiment:success? t2))
+      (define h2 (seq:of t0 t1 t2))
+      (define f2 (experiment:feedback t2 h2 0))
+      (-> (if a-ok
+            (if g-ok
+              (if ok0 (experiment:outcome :done h0 a g empty (seq:empty))
+                (if ok1 (experiment:outcome :done h1 a g f0 (seq:of f0))
+                  (if ok2 (experiment:outcome :done h2 a g f1 (seq:of f0 f1))
+                    (experiment:outcome :failed h2 a g f2 (seq:of f0 f1 f2)))))
+              (data:record :status :failed :reason :invalid-generalization))
+            (data:record :status :failed :reason :invalid-analysis))
+          (cell:input outcome-target))
+      :connected)))

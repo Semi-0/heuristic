@@ -12,6 +12,27 @@
 
 (defrecord Environment [id frames])
 (defrecord Contribution [name cell])
+(defn local-bindings-in
+  "Resolve several frames with one pass over the runtime binding index."
+  [network targets]
+  (if (empty? targets) {}
+      (let [static (:frames (net/network-dict-entry network env/lexical-topology-key))
+            runtime (index/runtime-topology network)
+            grouped (reduce (fn [by-frame [key id]]
+                              (if (and (= :binding (first key)) (contains? targets (second key)))
+                                (update-in by-frame [(second key) (nth key 2)] (fnil conj #{}) id)
+                                by-frame)) {} runtime)]
+        (into {} (for [target targets
+                       :let [frame (get static target)
+                             live (get grouped target)
+                             names (into (set (keys (:bindings frame))) (keys live))]]
+                   [target
+                    (into {} (keep (fn [name]
+                                     (let [candidates (into (set (get-in frame [:bindings name])) (get live name))
+                                           id (or (get-in frame [:current-bindings name])
+                                                  (get runtime [:current-binding target name])
+                                                  (when (= 1 (count candidates)) (first candidates)))]
+                                       (when id [name id]))) names))])))))
 (defn reference [id] (->Environment id {}))
 (defn child [parent id bindings]
   (when-not (instance? Environment parent)
@@ -58,8 +79,4 @@
                   network context inputs (first outputs)))})})
 
 (defn local-bindings [network target]
-  (let [static (:frames (net/network-dict-entry network env/lexical-topology-key))
-        runtime (index/runtime-topology network)
-        names (into (set (keys (get-in static [target :bindings])))
-                    (keep (fn [[k _]] (when (and (= :binding (first k)) (= target (second k))) (nth k 2))) runtime))]
-    (into {} (keep (fn [name] (when-let [id (env/local-binding-id network target name)] [name id]))) names)))
+  (get (local-bindings-in network #{target}) target {}))

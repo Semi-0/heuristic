@@ -1,0 +1,14 @@
+WARNING: Use of :paths external to the project has been deprecated, please remove: /home/lain/projects/lain-workspace/src
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+{:source "(let [] (define f (network [o] (select (p:slot :c o) 10 20))) (let-cell [o] (p:slot :c false o) (f o)))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [o] (select (p:slot :c o) 10 20)) definition-one)) (let-cell [o] (p:slot :c false o) (f o)))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [o] (define c (p:slot :c o)) (select c 10 20)) definition-one)) (let-cell [o] (p:slot :c false o) (f o)))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(select false 10 20)", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(if false 10 20)", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (network [c] (select c 10 20))) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (network [c] (if c 10 20))) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [c] (select c 10 20)) definition-one)) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [c] (if c 10 20)) definition-one)) (f false))", :status :completed, :expected 20, :actual 20, :pass true}
+{:source "(let [] (define f (network [x] (select (>= x 250) 0 12))) (f 185))", :status :completed, :expected 12, :actual 12, :pass true}
+{:source "(let [] (define f (ttms-premise-closure (network [x] (select (>= x 250) 0 12)) definition-one)) (f 185))", :status :completed, :expected 12, :actual 12, :pass true}

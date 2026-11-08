@@ -1,0 +1,7 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE runtime-composition — Clear Lain runtime, independent seeds and completed-response admission
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+
+Ran 2 tests containing 15 assertions.
+0 failures, 0 errors.
+MODULE-RESULT runtime-composition {:test 2, :pass 15, :fail 0, :error 0}

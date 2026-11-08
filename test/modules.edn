@@ -1,4 +1,8 @@
-{:reference-ports {:description "Reference port identity and writes across a lexical child"
+{:session-api {:description "High-level source admission and producer extensions; compiled TTMS list consumers"
+               :namespaces [lain-harness.session-api-test]}
+ :experiment-recovery {:description "Same-child recovery from rejected source, unresolved outputs and bounded exhaustion"
+                       :namespaces [lain-harness.experiment-recovery-test]}
+ :reference-ports {:description "Reference port identity and writes across a lexical child"
                    :vars [lain-harness.soul-test/reference-port-crosses-lexical-child]}
  :staged-context {:description "One live child and model across environment-only contextualization stages"
                   :vars [lain-harness.soul-test/staged-context-retains-model-child-code-and-real-memory-feedback]}

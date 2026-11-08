@@ -1,0 +1,17 @@
+(define quote-fn
+ (ttms-premise-closure
+  (network [o p]
+   (define qty ((slot :quantity) o))
+   (define first-count (min qty ((slot :tier-one-limit) p)))
+   (define remaining (max 0 (- qty first-count)))
+   (define second-count (min remaining ((slot :tier-two-count) p)))
+   (define third-count (max 0 (- remaining second-count)))
+   (define production (+ (* first-count ((slot :tier-one-price) p)) (* second-count ((slot :tier-two-price) p)) (* third-count ((slot :tier-three-price) p))))
+   (define rush (if ((slot :rush?) o) (* production ((slot :rush-rate) p)) 0))
+   (define discount (if ((slot :member?) o) (min (* (+ production rush) ((slot :member-rate) p)) ((slot :discount-cap) o)) 0))
+   (define subtotal (+ (- (+ production rush) discount) ((slot :setup-fee) p)))
+   (define delivery (if (>= subtotal ((slot :free-delivery-threshold) p)) 0 ((slot :delivery-fee) p)))
+   (define tax (* (+ subtotal delivery) ((slot :tax-rate) p)))
+   (define total (round-money (+ subtotal delivery tax)))
+   (struct :production production :rush rush :discount discount :subtotal subtotal :delivery delivery :tax tax :total total))
+  shared-rule))

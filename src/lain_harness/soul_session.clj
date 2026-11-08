@@ -28,13 +28,16 @@
 (defn visible-facts [network e]
   ;; Environment frames are the advertised interface. The compiler's ambient
   ;; implementation root is not an additional model capability catalog.
-  (loop [e e seen #{} facts []]
-    (if-not (contains? (:frames e) (:id e)) facts
-            (let [local (remove #(contains? seen (:name %)) (lexical/local-facts network e))
-                  facts (into facts local)]
-              (if-let [parent (get-in e [:frames (:id e) :parent])]
-                (recur (assoc e :id parent) (into seen (map :name local)) facts)
-                facts)))))
+  (if-not (contains? (:frames e) (:id e)) []
+          (let [live (environment/local-bindings-in network (set (keys (:frames e))))]
+            (loop [e e seen #{} facts []]
+              (if-not (contains? (:frames e) (:id e)) facts
+                      (let [local (remove #(contains? seen (:name %))
+                                          (lexical/local-facts network e (get live (:id e) {})))
+                            facts (into facts local)]
+                        (if-let [parent (get-in e [:frames (:id e) :parent])]
+                          (recur (assoc e :id parent) (into seen (map :name local)) facts)
+                          facts)))))))
 
 (defn headline [v]
   (cond
@@ -142,7 +145,11 @@
 (defn admission-interpreter [journal]
   (reify ops/EffectInterpreter
     (interpret-effect! [_ owner context {:keys [reply target support]} emit!]
-      (let [cancelled (atom false)
+      (let [publish! (fn [receipt]
+                       (emit! (assoc receipt :accepted-forms
+                                     (vec (filter #(and (= (:request-id reply) (:response %))
+                                                        (= :admitted (get-in % [:receipt :status]))) @journal)))))
+            cancelled (atom false)
             finished (atom false)
             task (future
                    (try
@@ -156,27 +163,26 @@
                          (case status
                            :form
                            (let [id [(:request-id reply) index]
-                                 completion (basis/stable-node-id ::completion (:request-id reply))
                                  declaration (admission/declaration id source target nil)
-                                 extension (session/session-extension
-                                            (cond-> declaration
-                                              (zero? index)
-                                              (assoc :cells {completion (publication/active completion 1
-                                                                                            {:response (:request-id reply)
-                                                                                             :source-reference support})})))
+                                 extension (session/session-extension declaration)
                                  receipt @(host/submit-extension! owner extension)
-                                 entry {:response (:request-id reply) :form index :source source :completion-reference completion :receipt receipt}]
+                                 entry (cond-> {:response (:request-id reply) :form index :source source
+                                                :response-reference support :receipt receipt}
+                                         (= :admitted (:status receipt))
+                                         (assoc :source-result-reference
+                                                (session/source-result-cell (host/current-session owner)
+                                                                            (first (keys (:files declaration))))))]
                              (swap! journal conj entry)
                              (if (= :admitted (:status receipt))
                                (recur remaining (inc index) (conj receipts receipt))
-                               (emit! {:status :rejected :response (:request-id reply) :form index :receipts (conj receipts receipt)})))
-                           :complete (emit! {:status :admitted :response (:request-id reply) :forms index :receipts receipts})
+                               (publish! {:status :rejected :response (:request-id reply) :form index :receipts (conj receipts receipt)})))
+                           :complete (publish! {:status :admitted :response (:request-id reply) :forms index :receipts receipts})
                            (throw (ex-info "Source reader rejected response" {:status status :message message})))))
                      (catch Exception error
                        (let [diagnostic {:status :rejected :response (:request-id reply) :message (ex-message error)
                                          :details (select-keys (ex-data error) [:status :message])}]
                          (swap! journal conj {:response (:request-id reply) :diagnostic diagnostic})
-                         (emit! diagnostic)))
+                         (publish! diagnostic)))
                      (finally (reset! finished true) ((:complete! context)))))]
         (fn [] (reset! cancelled true) (when-not @finished (future-cancel task)) {:status :closed})))))
 

@@ -1,0 +1,28 @@
+(load-lain "soul-refined.lain")
+(define phase)
+(define ask)
+(define analysis-record)
+(load-lain "experiments/phase-orchestration.lain")
+(define raw-input-text)
+(define input-text (cell:first raw-input-text))
+(define base-environment (lexical-child (empty-env)))
+(define selected (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask"))
+(define make-view
+ (network [envref context-input]
+  (let [context (cell:first context-input)
+        e (cell:value envref)
+        pv (data:get :phase context)
+        av (data:get :analysis context)
+        v0 (extend-env e (env:slot "phase" pv))
+        v1 (extend-env v0 (env:slot "analysis-record" av))
+        v2 (extend-env v1 (env:slot "generalization-record" (data:get :generalization context)))
+        v3 (extend-env v2 (env:slot "inspection-feedback" (data:get :feedback context)))
+        v4 (extend-env v3 (env:slot "ask" (data:get :ask context)))]
+    (environment:snapshot v4 selected))))
+(define observed (make-view (cell:reference base-environment)
+ (experiment:context "generalization" input-text "No interface yet." (data:record :status :not-started) "Test question")))
+(define mutable-source)
+(define mutable-environment
+  (extend-env base-environment (env:reference-slot "mutable-source" (cell:reference mutable-source))))
+(define once-snapshot
+  (environment:snapshot-once mutable-environment (seq:of "mutable-source") (seq:of "mutable-source")))

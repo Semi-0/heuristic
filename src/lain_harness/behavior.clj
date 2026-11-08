@@ -1,7 +1,6 @@
 (ns lain-harness.behavior
   "Opt-in Compiler-2 temporal operators. All state is immutable reducer content."
-  (:require [propagators.cells.cell :as cell]
-            [propagators.cells.value :as value]
+  (:require [propagators.cells.value :as value]
             [propagators.compiler-2.compiler.basis :as basis]
             [propagators.compiler-2.model.operator-value :as operator]
             [propagators.compiler-2.runtime.application :as application]
@@ -28,24 +27,31 @@
   (let [operator-id (basis/stable-node-id seed :callable)
         out (basis/stable-node-id seed :result)
         args (mapv #(basis/stable-node-id seed :argument %) (range arity))
-        initial (-> (reduce nb/ensure-cell (declarations/discard network) (conj args out operator-id))
-                    (nb/seed-cell operator-id callable))
-        [state _] (application/install-application
-                   {:net initial :context-id context-id :application/app-id seed}
-                   operator-id args out)]
-    {:network (:net state) :tasks (:props state) :arguments args :output out}))
+        initial (reduce nb/ensure-cell (declarations/discard network) (conj args out operator-id))
+        [constant-id initial] ((prop/construct-propagator
+                                :behavior/callable
+                                (fn [_ _ _] [(message operator-id callable)])
+                                [] [operator-id]) initial)
+        initial (runner/completed-network (runner/run-network [constant-id] initial))]
+    {:network initial :operator operator-id :context context-id :seed seed :arguments args :output out}))
 
 (defn invoke
   "Evaluate immutable inputs and discard the temporary invocation."
-  [{:keys [network tasks arguments output]} & values]
-  (let [seeded (reduce (fn [n [id v]]
-                         ;; Structured accumulators are TTMS bases, just like
-                         ;; primitive results, never host-preseeded cell domains.
-                         (let [content (collection/content {:base v :support #{}})
-                               strongest (collection/strongest-value content temporal/refine)]
-                           (net/assoc-net-cell n id (cell/cell content strongest))))
-                       network (map vector arguments values))
-        after (runner/completed-network (runner/run-network tasks seeded))]
+  [{:keys [network operator context seed arguments output]} & values]
+  (let [[network producers]
+        (reduce (fn [[current producers] [id v]]
+                  (let [[producer updated]
+                        ((prop/construct-propagator
+                          :behavior/argument
+                          (fn [_ _ _] [(message id (collection/content {:base v :support #{}}))])
+                          [] [id]) current)]
+                    [updated (conj producers producer)]))
+                [network []] (map vector arguments values))
+        ready (runner/completed-network (runner/run-network producers network))
+        [state _] (application/install-application
+                   {:net ready :context-id context :application/app-id seed}
+                   operator arguments output)
+        after (runner/completed-network (runner/run-network (:props state) (:net state)))]
     (connected/payload (net/network-cell-strongest after output))))
 
 (defn- callable-argument [operation]

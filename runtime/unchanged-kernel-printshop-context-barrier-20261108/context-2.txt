@@ -1,0 +1,157 @@
+# Live environment
+
+## phase
+generalization
+
+## analysis-record
+{:interface "quote-fn takes order and pricing and returns a breakdown struct", :problem-class "Quotes under varying orders and pricing", :relations "Stated progressive pricing and charges", :tests "Host verifies independent known cases", :captured "Shared rule validity premise", :steps "Apply interface and connect outputs", :operators "Available arithmetic and retained quote callable", :status "Known controlled interface", :outputs "Quote breakdown", :operator "quote-fn", :units "copies and currency", :unknowns "none", :facts "Current order and pricing", :parameters "order and pricing structs", :decision :construct}
+
+## generalization-record
+No interface yet.
+
+## inspection-feedback
+{:status :not-started, :corrections-remaining 2}
+
+## admission-result
+State: unknown. unknown
+
+## recovery-policy-cell
+Compilation and execution feedback are observations in inspection-feedback, a stable snapshot of the failed attempt. Its :admission field is the actual compiler result, accompanied by failed source, admitted-prefix receipts, visible child bindings, required output states and the remaining correction budget. admission-result separately exposes the live compiler output, which may become unknown while a new response is pending. These fields are read-only observations; use agent-observations for your own notes. After a failed attempt you may receive the same question again with this updated environment. Return only complete executable Lain forms: no prose, Markdown or reasoning in source. Earlier admitted forms remain installed in the SAME child, even when a later form failed. Inspect the admitted-prefix receipts, written-code and binding directory before correcting the remainder. Do not redeclare admitted names or replay already installed connections; reference existing bindings and submit the missing/corrected forms. Undefined inputs leave connected computations pending: for example, after (define waiting (+ later 2)), waiting stays unknown until (-> 5 later) supplies later, then waiting becomes 7. This is a documentation example, not an installed network. Inspect an existing binding using (inspect:cell (cell:reference waiting)); the result exposes edge, strongest value, input and output connections. A syntactically admitted response can still leave this question's required ports unknown or contradictory; use their observed states to find missing definitions, arguments or connections. Its observation also exposes :supports, :expected-support and :missing-supports: these are source-cell identities, matching the references in the binding directory. A known number without required premise links is incomplete. Attach both the current question-N and shared-rule premises to every breakdown result and reply; inspect:premises can show their supports. No expected numerical answer is supplied by recovery. At most two correction responses per question are allowed. Preserve the planned interface unless actual observations require a change.
+
+## agent-observations
+State: unknown. unknown
+
+## role-cell
+Work carefully from the question and available facts. Follow phase: analyze the problem, design or select a computational interface, then implement and apply it in the persistent lexical child.
+
+## procedure-cell
+Use three stages.
+1. ANALYSIS: identify outputs, knowns, unknowns, units and relationships. Inspect available operators, previous source and visible outcomes. Separate observations from assumptions. Do not implement yet.
+2. GENERALIZATION: consider whether these relationships describe a useful class of problems. Inspect existing operators first. If a prior computation is tied to particular inputs, consider whether exposing some dependencies as parameters would make it useful more generally. Identify which quantities vary between problems and which assumptions can remain captured. Choose direct reuse, adaptation, or construction of the simplest suitable interface. Generalization is optional: explain when it adds unnecessary complexity. A callable's existence does not prove correctness; account for its available results and unresolved dependencies. Do not prescribe an imperative propagation sequence or implement yet.
+3. IMPLEMENTATION: construct or invoke the chosen computational interface and connect it to the current question's outputs. A network definition is a callable; actually invoke it to obtain results. Preserve question-specific premises on each application without accidentally capturing a previous question into all future uses. Use supported operations on input cells. Text claims should follow computed results when information changes. The host, rather than a mandatory model-written test suite, evaluates correctness and actual reuse.
+
+## output-format-cell
+Read phase first. ANALYSIS phase: return only one EDN map with nonempty string fields :outputs :facts :unknowns :units :relations :operators :operator :status :steps :tests, and :decision equal to :reuse, :adapt, :compose or :construct. Identify the problem and available computations. Use "none" when appropriate. Your decision is provisional until the generalization stage. :tests describes possible host-verifiable cases, not a requirement to generate tests.
+GENERALIZATION phase: analysis-record contains your unchanged analysis. Return one EDN map with the same fields and four additional nonempty string fields: :problem-class, :parameters, :captured, :interface. Decide whether an existing operator fits, can be adapted, or whether a new operator is useful. Explain the scope of the computational interface and why it fits. The :operator field names a selected existing callable when there is one, a proposed new callable, or "none" for direct primitive composition. Use :compose for composing existing primitives without selecting a retained application callable. The host records candidate availability but does not block implementation solely because a callable is not named; actual reuse is evaluated from source and runtime evidence. Distinguish variable inputs from captured assumptions. Generalization is optional; the simplest suitable interface is preferred. Use "none" if no useful generalization is warranted. Do not return executable source during either planning phase.
+IMPLEMENTATION phase: analysis-record and generalization-record contain your unchanged records. Implement the final interface decision in executable Lain and apply it to the current inputs. Connect actual computed observations and a text answer to the existing parent ports. If observations invalidate the design, read inspection-feedback, record your own findings in agent-observations and make the necessary correction. Model-generated tests are not required; an independent host evaluator checks the results and actual reuse. Follow the source format below only in this phase.
+
+Return complete executable Lain forms only, without Markdown fences. Existing parent ports must be connected with ->, not redefined. order-N and pricing are input structs. quote-N is an existing output struct with slots :production, :rush, :discount, :subtotal, :delivery, :tax, :total. Expose the computed breakdown by connecting values to those slots. user-output-N is the existing text reply port. self-check-N is an optional boolean port for any verification you construct. N is the current round, 1 through 5. Computed answers must come from Lain operations on input cells, not hardcoded answers. Only final total is rounded to cents.
+Only implementation source is admitted. Model-generated tests are optional, not required; the host checks correctness and reuse.
+
+## context-cell
+One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history contain actual prior source and user/reply messages. Return new forms for the current ask. You may construct test cases or consistency checks using the available operators and connect a boolean result to self-check-N. The parent supplies no quote formula or solved example.
+
+## language-cell
+(define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expression, including a struct. (struct :key value ...) constructs connected fields. Read a field with ((slot :key) object). Write an existing field with (-> computed-value ((slot :key) output-object)). + - * / min max >= <= = str and round-money are support-aware operations. (select condition then-value else-value) selects a branch. round-money rounds to two decimals, half up; use it only on the final amount. str builds text from connected values. Unknown inputs leave dependent computations unresolved. ttms-premise-closure attaches a premise to a callable; invocation carries it to results. Example: (define f (ttms-premise-closure (network [x] (+ x 2)) some-premise)). inspect:premises accepts (cell:reference binding). The struct operators and primitive documentation are capabilities, not prebuilt pricing solutions.
+
+## rules-cell
+Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price each; remaining copies at tier-three-price each. Rush service adds rush-rate times production cost. Members receive member-rate times production plus rush charges as discount, capped by the order discount-cap; nonmembers receive no discount. Add setup-fee after discount. Delivery costs delivery-fee, waived when subtotal after discount and setup is at least free-delivery-threshold. Apply tax-rate to the entire amount including delivery. Final total includes tax and is rounded half up to cents; intermediate values are not rounded.
+
+## metadata-cell
+pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :question premise. question premises identify the corresponding requested quote. shared-rule identifies the validity premise for the general pricing rules. Keep independent orders separate. A promotional discount-cap belongs only to the order carrying it. delivery-note is unrelated. Quote output slots are production cost, rush charge, discount amount, subtotal after setup, delivery charge, tax amount, and final rounded total. Future orders are unknown until asked.
+
+## ask
+Quote 80 copies for a nonmember using standard service. Show the charges and final total.
+
+## written-code
+[]
+
+## history
+[{:role "user", :content "Quote 80 copies for a nonmember using standard service. Show the charges and final total."}]
+
+## Binding directory
+- ask [known]: Quote 80 copies for a nonmember using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "6f1fe5df-0e43-3daf-8da0-b559bc6fbccd"}
+- inspection-feedback [known]: record with keys [:corrections-remaining :status] | reference #propagators.ids.NodeId{:uuid #uuid "c08a4bb3-e1ce-3f4a-93e9-adfe73c606e7"}
+- generalization-record [known]: No interface yet. | reference #propagators.ids.NodeId{:uuid #uuid "64d3e202-733e-39de-af07-729928ecf40e"}
+- analysis-record [known]: {:interface "quote-fn takes order and pricing and returns a breakdown struct", :problem-class "Quotes under varying orders and pricing", :relations "Stated prog | reference #propagators.ids.NodeId{:uuid #uuid "28ada995-66e7-3193-8f25-0ae3d1de092d"}
+- phase [known]: generalization | reference #propagators.ids.NodeId{:uuid #uuid "21c19c00-f610-3c4d-b353-d1aaba8b98b5"}
+- admission-result [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "72c277e6-4566-352c-8c88-fcb7f3a8ac0e"}
+- inspect:premises [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f3cafb7e-9825-334a-9404-100d70bcc84b"}
+- cell:reference [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "39f5f4e0-c623-379f-aa92-7b07399b86d2"}
+- struct [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "2029e721-de61-37be-aa3a-e48c11bf1390"}
+- slot [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "e019e5bc-ef6d-38f4-93c8-40b438f26f06"}
+- round-money [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7de2a527-8a1a-3286-a0ff-343cd821b2a0"}
+- max [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "5d95cf18-2ff9-3e0d-95cb-fe4492fb005e"}
+- min [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "86129593-c116-30fa-8c1b-7e7842755755"}
+- / [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9a04b4c5-58dd-337e-b5de-aaacd0a42401"}
+- ttms-premise-closure [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "f0263179-9707-3a3b-b117-43f0d2eca96e"}
+- select [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "b6cbdf96-11c5-363e-ae84-4bb745a76d3d"}
+- str [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "d8fa6329-1515-3967-b56c-3d6797ce8b8a"}
+- = [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "7a47665d-5634-3bbb-9379-ea409a51b201"}
+- <= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "9aea5e7a-a49f-378f-80ce-865ca7f73d26"}
+- >= [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "02df211b-b81b-3ade-97f4-f9c2040bb929"}
+- * [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "ab121d3a-7491-3d55-aed0-fca1778f843f"}
+- - [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "46a219f0-ceed-38fb-9a94-52e534d85ecf"}
+- + [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "eebaa429-67fe-3fa0-9a7f-78f312b32544"}
+- history [known]: vector with 1 elements | reference #propagators.ids.NodeId{:uuid #uuid "d8f6c777-9f07-35e3-8d18-2c9efb63b3fe"}
+- question-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "57ddfdd7-9525-3f9e-a4f7-9d9962eb28cb"}
+- discount-cap-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "4c8b501e-db96-37fd-b6af-161e473bf9e5"}
+- member-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "798bc16a-1fb6-3868-a5fc-e0ba84fe2c89"}
+- rush-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "5397e351-9da1-3259-ab2a-d7e87a857f0e"}
+- quantity-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "cfa7bbc9-33fa-3673-8447-7c9c9a889d43"}
+- self-check-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "33aa1f98-e1ad-3f70-87d9-e83193c5357b"}
+- user-output-5 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "c4d1c189-1fbf-3e29-b570-4a4504e9bcc1"}
+- quote-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "4ea328c0-47ff-3bb4-bfaf-278b280e03cb"}
+- order-5 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "df9ef90f-e400-3bb8-a6dd-ce2cb4af49e3"}
+- question-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "a939e35d-5b76-3133-995f-53dbe0346a23"}
+- discount-cap-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "0570fab2-7e45-3ce9-bdc6-57827b1565ec"}
+- member-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ee9bbc30-b1ea-34f6-b444-a73b5696f00b"}
+- rush-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "d1bd5da1-0a7c-32b1-b1a6-73be200052a7"}
+- quantity-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "d74989b1-26b6-34aa-b44b-af638f464f97"}
+- self-check-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "f8e1c294-ed21-3877-83d5-1802566d2e03"}
+- user-output-4 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "1bd2f829-9e98-32af-b1a5-6524d7b29eef"}
+- quote-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "39ebb22e-2352-388c-aef4-1e2aa047753c"}
+- order-4 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "bd6c44b2-0d79-3236-b1c5-c775e401178c"}
+- question-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "429de8c9-f012-33d3-8cb3-b1f36a7a110f"}
+- discount-cap-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "2c6c6661-0eed-3cc5-a529-3ceff2141b1c"}
+- member-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "fa42abc0-967a-395a-a6db-95f05b80bb54"}
+- rush-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "c8d6f5a0-5110-3e07-9163-47d6819bdec4"}
+- quantity-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "65a03015-1d46-3c75-9853-9e8d12046e56"}
+- self-check-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "5ec3f9ab-5364-37fb-832c-aa33bdda2e1f"}
+- user-output-3 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "e8496c13-542c-30a8-870a-38006afbaa35"}
+- quote-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "b443273c-efe1-391f-a2cb-c92f70c583d1"}
+- order-3 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "66e068dc-995c-32f6-81be-7b7cc74431fe"}
+- question-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "b7da62bb-8e6f-3075-88e7-cc5caf0867a6"}
+- discount-cap-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "2fb6be8c-4d92-3d05-a145-f31ea39811bd"}
+- member-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "4f25c6a5-8c1a-399a-b8ea-376c46fc7b6d"}
+- rush-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "fc1e4f22-389d-3d54-a795-aff950ed19e2"}
+- quantity-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "6e69f3bb-1282-307f-ac98-23941906e7b3"}
+- self-check-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "54ac8b55-0f91-3420-bc5e-cfeacbfcf26d"}
+- user-output-2 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "38f3cf7f-7ea2-31ab-bc98-cae779b3f4ae"}
+- quote-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "7f1a9504-1ca4-3615-ae76-5a114a5886d4"}
+- order-2 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "4550914a-4a14-3f37-bb1b-97fc88191021"}
+- question-1 [known]: Quote 80 copies for a nonmember using standard service. Show the charges and final total. | reference #propagators.ids.NodeId{:uuid #uuid "dba1ca8c-9436-3441-829a-3e3b9486ce83"}
+- discount-cap-1 [known]: 40 | reference #propagators.ids.NodeId{:uuid #uuid "a14ec6a9-f4a0-3e32-affa-97bf8835a3a9"}
+- member-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "106fb12a-fa8a-3529-a33b-33bd53a115eb"}
+- rush-1 [known]: false | reference #propagators.ids.NodeId{:uuid #uuid "77de54d6-3b99-3771-87ff-5391370392cd"}
+- quantity-1 [known]: 80 | reference #propagators.ids.NodeId{:uuid #uuid "cf91e724-741f-3a8d-907a-49845d20314d"}
+- self-check-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "ea8189c0-3f9e-3efb-87cf-d0469e04736b"}
+- user-output-1 [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "7dbba0a7-11ad-3a60-a8b5-73661b6746dd"}
+- quote-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "027273fa-f9b6-3358-a5df-f5988f692c50"}
+- order-1 [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "685d337e-bd5a-3371-96c9-9eb4d49388b3"}
+- tax-rate [known]: 0.08M | reference #propagators.ids.NodeId{:uuid #uuid "2804c8bc-ac23-39da-a8cd-5ad4728c75da"}
+- free-delivery-threshold [known]: 250 | reference #propagators.ids.NodeId{:uuid #uuid "ff6c2844-729f-3e2e-bcb1-7451af8b76a5"}
+- delivery-fee [known]: 12 | reference #propagators.ids.NodeId{:uuid #uuid "67881878-5047-311d-9543-c092fdfc9923"}
+- setup-fee [known]: 25 | reference #propagators.ids.NodeId{:uuid #uuid "873b59da-9e54-3ea9-bcde-8f36ca121475"}
+- member-rate [known]: 0.10M | reference #propagators.ids.NodeId{:uuid #uuid "ee8faded-38f8-37cc-9d46-71188ba0529a"}
+- rush-rate [known]: 0.20M | reference #propagators.ids.NodeId{:uuid #uuid "250abe6e-7d99-34d7-a447-a65efaf15586"}
+- tier-three-price [known]: 1.30M | reference #propagators.ids.NodeId{:uuid #uuid "bca800ac-4ee3-3a5c-84d6-ca50315e924d"}
+- tier-two-price [known]: 1.60M | reference #propagators.ids.NodeId{:uuid #uuid "0f16efd6-add4-34bb-b5b6-6a938406aaf3"}
+- tier-one-price [known]: 2 | reference #propagators.ids.NodeId{:uuid #uuid "9f204739-0adc-3710-acd3-fef4f5118f1e"}
+- tier-two-count [known]: 400 | reference #propagators.ids.NodeId{:uuid #uuid "8d500a01-5c02-3212-9caa-0c93e63aef06"}
+- tier-one-limit [known]: 100 | reference #propagators.ids.NodeId{:uuid #uuid "a5032aad-7555-3b08-8845-3c23b513c9ca"}
+- delivery-note [known]: Tuesday | reference #propagators.ids.NodeId{:uuid #uuid "ece2f0b3-6dab-32b6-9b53-8cb34bd3de50"}
+- shared-rule [known]: Fictional print-shop rules | reference #propagators.ids.NodeId{:uuid #uuid "1114a961-3e74-3ae0-a0cd-69f267bb22a2"}
+- pricing [known]: compound; inspect its immediate slots | reference #propagators.ids.NodeId{:uuid #uuid "adede99f-7fdc-3d34-a95e-18700be33f7d"}
+- written-code [known]: vector with 0 elements | reference #propagators.ids.NodeId{:uuid #uuid "87d712a6-473e-3b20-8f01-a71938e3f2db"}
+- procedure-cell [known]: Use three stages.
+1. ANALYSIS: identify outputs, knowns, unknowns, units and relationships. Inspect available operators, previous source and visible outcomes. S | reference #propagators.ids.NodeId{:uuid #uuid "ced886d5-313a-3598-88d5-5f9445a6eccd"}
+- metadata-cell [known]: pricing exposes the shared numeric rules. Every order-N contains independently supported :quantity, :rush? boolean, :member? boolean, :discount-cap, and :questi | reference #propagators.ids.NodeId{:uuid #uuid "8bc85c4c-b186-332b-ba58-1817a6e55e3b"}
+- rules-cell [known]: Fictional print-shop rules: progressive production pricing: first tier-one-limit copies at tier-one-price each; next tier-two-count copies at tier-two-price eac | reference #propagators.ids.NodeId{:uuid #uuid "0da38cf7-b244-32b5-ac3b-2d2e13b454ba"}
+- language-cell [known]: (define name expression) binds a cell. (network [parameters] body) creates a callable. A network body can contain local define forms and return its final expres | reference #propagators.ids.NodeId{:uuid #uuid "94f83e9f-321f-334f-a2af-5f94dee58ad0"}
+- context-cell [known]: One worker and lexical child remain alive throughout the questions. Earlier definitions remain available in the binding directory. written-code and history cont | reference #propagators.ids.NodeId{:uuid #uuid "56f1108d-7e63-3415-9125-29c547e223d1"}
+- output-format-cell [known]: Read phase first. ANALYSIS phase: return only one EDN map with nonempty string fields :outputs :facts :unknowns :units :relations :operators :operator :status : | reference #propagators.ids.NodeId{:uuid #uuid "cf7c64f6-7e06-3090-b85b-e6caf0269ee7"}
+- role-cell [known]: Work carefully from the question and available facts. Follow phase: analyze the problem, design or select a computational interface, then implement and apply it | reference #propagators.ids.NodeId{:uuid #uuid "c8e05a62-1900-3b3d-bb9e-cc3754505856"}
+- inspect:cell [known]: callable; inspect the binding and language-introduction-cell | reference #propagators.ids.NodeId{:uuid #uuid "a290dc25-dbce-33c9-8b02-386113df0be1"}
+- recovery-policy-cell [known]: Compilation and execution feedback are observations in inspection-feedback, a stable snapshot of the failed attempt. Its :admission field is the actual compiler | reference #propagators.ids.NodeId{:uuid #uuid "74911f33-2c44-34ce-9a6d-3a598df5dc8e"}
+- agent-observations [unknown]: unknown | reference #propagators.ids.NodeId{:uuid #uuid "d610f530-af59-3c17-8119-8e42ec49ea20"}

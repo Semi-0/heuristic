@@ -8,9 +8,9 @@
     (println "MODULE" (name module) "—" description)
     (doseq [ns namespaces] (require ns))
     (let [selected-vars (vec (distinct
-                             (concat (sort-by str (filter #(-> % meta :test)
-                                                        (mapcat #(vals (ns-publics %)) namespaces)))
-                                     (map requiring-resolve vars))))
+                              (concat (sort-by str (filter #(-> % meta :test)
+                                                           (mapcat #(vals (ns-publics %)) namespaces)))
+                                      (map requiring-resolve vars))))
           result (binding [test/*report-counters* (ref test/*initial-report-counters*)]
                    (when (empty? selected-vars)
                      (throw (ex-info "Module has no tests" {:module module})))
@@ -28,7 +28,7 @@
       modules (edn/read-string (slurp (str root "/test/modules.edn")))
       requested (or (first *command-line-args*) "list")
       selected (case requested
-                 "all" [:foundation :transport :model :integration]
+                 "all" [:session-api :foundation :transport :model :integration]
                  "staged" [:transport :model :user-io :integration]
                  "list" []
                  [(keyword requested)])]

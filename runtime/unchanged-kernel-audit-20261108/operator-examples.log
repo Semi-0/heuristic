@@ -1,0 +1,53 @@
+Offline UUID initialization enabled; compiler/runtime behavior is unchanged.
+MODULE operator-examples — Compile every concrete core operator example supplied through context
+Reflection warning, meander/util/epsilon.cljc:758:24 - reference to field val can't be resolved.
+EXAMPLE model:request
+EXAMPLE message-to-user
+EXAMPLE memory-cell
+EXAMPLE construct-concept-of
+EXAMPLE history
+EXAMPLE define, network, let, if
+EXAMPLE ->, def-cells
+EXAMPLE |>, compose
+EXAMPLE struct, slot
+EXAMPLE <->
+EXAMPLE let-cell, constraint:+
+EXAMPLE cond
+EXAMPLE list, car, cdr
+EXAMPLE +, -, *, /, >, <, =
+EXAMPLE data:record
+EXAMPLE data:get
+EXAMPLE data:equal?
+EXAMPLE data:merge
+EXAMPLE data:snapshot
+EXAMPLE seq:empty
+EXAMPLE seq:append
+EXAMPLE seq:concat
+EXAMPLE seq:last
+EXAMPLE seq:project
+EXAMPLE seq:count
+EXAMPLE text:format
+EXAMPLE event:point
+EXAMPLE behavior:source
+EXAMPLE behavior:scan
+EXAMPLE behavior:map
+EXAMPLE behavior:event-filter
+EXAMPLE behavior:latest-value
+EXAMPLE cell:reference
+EXAMPLE inspect:cell
+EXAMPLE empty-env
+EXAMPLE lexical-child
+EXAMPLE env:slot
+EXAMPLE extend-env, environment:overview
+EXAMPLE source:admit
+EXAMPLE cell:value
+EXAMPLE env:reference-slot
+EXAMPLE cell:input
+EXAMPLE switch
+EXAMPLE event:point
+EXAMPLE behavior:scan
+EXAMPLE event:point, data:get
+
+Ran 3 tests containing 108 assertions.
+0 failures, 0 errors.
+MODULE-RESULT operator-examples {:test 3, :pass 108, :fail 0, :error 0}
