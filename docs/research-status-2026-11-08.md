@@ -51,7 +51,7 @@ LAIN_OFFLINE_UUID=1 tools/test_module.sh model-io
 
 Model-IO's HTTP test needs loopback server access. The latest recorded focused total before adding the session-API module was 28 tests / 460 passing assertions. Recovery and legacy suites have separately recorded failures/timeouts; do not report the whole harness as green. The latest backend style commit `90f74fc` changes only whitespace relative to the checked `a6edf22` revision. The companion test runtime remains at `2773dff`; its executable source matches the latter revision except documentation and the new whitespace-only follow-up.
 
-The machine's deployment pipeline gates the backend/editor pair. It is separate from the heuristic research harness and does not establish the harness's real-model acceptance. The original CI failure was formatting, before runtime tests. The style fix is now pushed and a new local CI/CD attempt is being recorded separately in the [publication receipt](publication-2026-11-08.md).
+The machine's deployment pipeline gates the backend/editor pair. It is separate from the heuristic research harness and does not establish the harness's real-model acceptance. After the formatting correction and three test/documentation follow-ups, the full pipeline passed and activated backend `3c3f643` / editor `602eb67`. Production runtime checks report 9,867 passing assertions with zero failures/errors. The [publication receipt](publication-2026-11-08.md) records activation and GitHub's status-limit caveat for the unchanged editor SHA.
 
 ## Evidence preservation
 
@@ -62,7 +62,7 @@ python3 tools/archive_experiment_evidence.py verify
 python3 tools/archive_experiment_evidence.py restore
 ```
 
-Bulk archive publication was blocked by automatic approval review because of repository size/breadth. The source, documentation, manifest, and selected small evidence records are the smaller publication; the complete archive is retained locally and supplied in the Docker reference bundle. Copy those archives from the bundle before running `restore` in a fresh checkout. The bulk remote publication remains subject to the user's explicit choice. Archived kernel patches and old host controllers are historical evidence only. Use the status notices in their folders.
+The user chose local-only bulk evidence after automatic approval review blocked the broad archive publication. Source, documentation, the hash manifest, and selected small evidence records are published; the complete archive remains local and is supplied in the Docker reference bundle. Copy those archives from the bundle before running `restore` in a fresh checkout. Archived kernel patches and old host controllers are historical evidence only. Use the status notices in their folders.
 
 ## Questions worth carrying into Tsuki
 
@@ -74,3 +74,5 @@ Bulk archive publication was blocked by automatic approval review because of rep
 6. Keep Tsuki contribution tags, alternative justifications, versioned premises, writer supersession, ledger authority, and projected support as explicitly different contracts until a shared probe establishes equivalence.
 
 The [Tsuki reference brief](handoffs/2026-11-08-heuristic-to-tsuki.md) proposes a bounded reading/review task for the existing Docker agent. It preserves that agent's current runtime, kernel, ledger, and test-freeze boundaries. No review date, autonomous reminder, or new deployment authority is implied.
+
+The [returned Tsuki review](handoffs/2026-11-08-tsuki-review.md) adds an important distinction for the next joint review: our extension-only producer uses `collection/content` support-only content, while the public `source-publication/active`/`retracted` path can carry a state-aware frontier. Entering through the public compiler API does not make those payload contracts identical. Its proposed cross-engine probe separates these configurations, raw evidence, usable projections, and consumer outputs; it was written but not executed. Interpret the arithmetic comparison above as evidence for its recorded producer contract, not a universal statement about all TTMS publication paths.

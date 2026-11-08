@@ -2,6 +2,8 @@
 
 Start with [the current research status and evidence map](research-status-2026-11-08.md). It organizes the design, passed conditions, failed conditions, corrected diagnoses, reproducible checks, and remaining work. The [Tsuki handoff](handoffs/2026-11-08-heuristic-to-tsuki.md) is the bounded cross-project reading brief; the [publication receipt](publication-2026-11-08.md) records delivery and CI/CD status. Dated reports below preserve the history and should be read with their runtime/orchestration caveats.
 
+The [returned Tsuki review](handoffs/2026-11-08-tsuki-review.md) is preserved for the next joint discussion; its proposed probes have not been executed.
+
 The guide and examples are copied from the local Lain source tree at `projects/datalog-research/propagators/doc/`. Their internal implementation links refer to that upstream tree.
 
 `soul-refined.lain` contributes a language-guide index and harness context through Lain environment composition. The index identifies documents; it does not pretend to load their contents. A future document capability must preserve source identity and revision when contributing contents. No generated bootstrap or fixed host description schema is required.
