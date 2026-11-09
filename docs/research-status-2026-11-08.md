@@ -1,6 +1,6 @@
 # Heuristic: design, evidence, and current research status
 
-This is the reading entry point for the November 8 review and the Tsuki handoff. Historical records remain at their original paths. A passing result applies to its recorded runtime, orchestration, and input condition; it is not automatically acceptance of the latest design.
+This is the reading entry point for the November 8 review and the Tsuki handoff. The [November 9–10 continuation](2026-11-10-autonomous-repair-experiment.md) records subsequent real repair attempts and the new unchanged-runtime control. Historical records remain at their original paths. A passing result applies to its recorded runtime, orchestration, and input condition; it is not automatically acceptance of the latest design.
 
 ## Intended architecture
 
@@ -24,6 +24,7 @@ Separate identities matter: session, worker, lexical child, question, provider r
 | Current public-session contracts | Three extension-only tests pass 36 assertions; runtime composition passes two tests / 15 assertions. Eleven closure/selector probes pass. | Controlled compiler/consumer evidence, not a real-model construction result. [API audit](2026-11-08-session-api-audit.md). |
 | Earlier single-Lain recovery control | With the completed-context boundary, it reaches analysis, generalization, and initial implementation. Compilation rejects the deliberately invalid suffix and retains the valid prefix. | No repair request was emitted in that condition; round one timed out. [Historical cross-check](2026-11-08-unchanged-kernel-cross-check.md). |
 | Timestamped repair guidance and partial gates | The controlled worker receives analysis, generalization, implementation and two repairs. Accepted definitions survive; the final repair computes 11 and completes without replaying requests. | Controlled transport evidence, not a fresh real-model success or the full five-question print-shop experiment. [Repair guidance](2026-11-08-timestamped-repair-guidance.md). |
+| Full single-Lain recovery reference | Five questions, four retained-callable reuses and all 84 evaluator checks pass on the unchanged runtime, including correction, withdrawal/restoration and isolation. | Controlled transport, zero provider calls. Distinct from the older patched-kernel condition. [November 9–10 continuation](2026-11-10-autonomous-repair-experiment.md). |
 
 ## Corrections to earlier interpretations
 

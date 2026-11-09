@@ -12,7 +12,8 @@
           plan (data:get :value parsed)]
       (if (experiment:complete? reply)
         (if (data:equal? (data:get :status parsed) :parsed)
-          (if (data:strings? plan (seq:of :outputs :facts :unknowns :units :relations :operators :operator :status :steps :tests))
+          (if (logic:all (data:strings? plan (seq:of :outputs :facts :unknowns :units :relations :operators :operator :steps :tests))
+                          (data:labels? plan (seq:of :status)))
             (if (data:has? plan :decision)
               (logic:all
                 (logic:any (data:equal? (data:get :decision plan) :reuse)
@@ -26,18 +27,27 @@
         false))))
 
 (define experiment:context
-  (network [phase analysis generalization feedback ask]
-    (data:record :phase phase :analysis analysis :generalization generalization :feedback feedback :ask ask
-                 ;; Reuse the actual immutable attempt diagnostic, including its
-                 ;; admission timestamp, rather than a second derived status.
-                 :system-message feedback)))
+  (network [phase analysis generalization feedback-input ask]
+    (let [details (cell:first feedback-input)
+          feedback (data:project-paths details
+            (seq:of (seq:of :status) (seq:of :failed-response) (seq:of :failed-source)
+                    (seq:of :admission :status) (seq:of :admission :message) (seq:of :admission :details)
+                    (seq:of :admission :timestamp-ms) (seq:of :admission :timestamp-utc)
+                    (seq:of :admission :accepted-forms)
+                    (seq:of :observation :outputs) (seq:of :observation :output-edges)
+                    (seq:of :observation :supports) (seq:of :observation :expected-support)
+                    (seq:of :observation :missing-supports)
+                    (seq:of :corrections-used) (seq:of :corrections-remaining)))]
+      (data:record :phase phase :analysis analysis :generalization generalization :feedback feedback :ask ask
+                   :system-message feedback :repair-details details))))
 
 (define experiment:rendered-context
   (network [snapshot]
     (let [values (data:get :values snapshot)]
       (data:record :phase (data:get "phase" values) :analysis (data:get "analysis-record" values)
                    :generalization (data:get "generalization-record" values) :feedback (data:get "inspection-feedback" values)
-                   :ask (data:get "ask" values) :system-message (data:get "system-message" values)))))
+                   :ask (data:get "ask" values) :system-message (data:get "system-message" values)
+                   :repair-details (data:get "repair-details" values)))))
 
 (define experiment:stage
   (network [environment-reference selected context-reference requests raw-reference request-id time trigger reply-target]
@@ -52,10 +62,11 @@
           view3 (extend-env view2 (env:reference-slot "inspection-feedback" (cell:reference (data:get :feedback context))))
           view4 (extend-env view3 (env:reference-slot "ask" (cell:reference (data:get :ask context))))
           view5 (extend-env view4 (env:reference-slot "system-message" (cell:reference (data:get :system-message context))))
-          context-names (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask" "system-message")
-          values (environment:values view5 context-names reply-target)
+          view6 (extend-env view5 (env:reference-slot "repair-details" (cell:reference (data:get :repair-details context))))
+          context-names (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask" "system-message" "repair-details")
+          values (environment:values view6 context-names reply-target)
           matching (data:equal? context (experiment:rendered-context (data:record :values values)))
-          snapshot (environment:snapshot-once view5 selected context-names (switch matching matching))
+          snapshot (environment:snapshot-once view6 selected context-names (switch matching matching))
           packet-ready (logic:all trigger matching)
           outgoing (data:record :id request-id :text (data:get :text snapshot)
                                 :messages (seq:of (data:record :role "system" :content (data:get :text snapshot))
@@ -104,9 +115,10 @@
 
 (define experiment:feedback
   (network [attempt history remaining]
-    (data:record :status (if (data:equal? (data:get :status (data:get :admission attempt)) :rejected) :rejected
-                          (if (data:equal? (data:get :missing-supports (data:get :observation attempt)) (data:record))
-                            :unresolved-outputs :missing-dependencies))
+    (data:record :status (if (experiment:success? attempt) :resolved
+                          (if (data:equal? (data:get :status (data:get :admission attempt)) :rejected) :rejected
+                            (if (data:equal? (seq:count (data:get :missing-supports (data:get :observation attempt))) 0)
+                              :unresolved-outputs :missing-dependencies)))
                  :failed-response (data:get :response attempt) :failed-source (data:get :source attempt)
                  :admission (data:get :admission attempt) :observation (data:get :observation attempt)
                  :attempt-history history :corrections-used (data:get :correction attempt) :corrections-remaining remaining)))
@@ -116,7 +128,7 @@
     (data:record :status status :attempts attempts :analysis analysis :generalization generalization :feedback feedback :feedbacks feedbacks)))
 
 (define experiment:question
-  (network [environment-reference selected worker raw-reference receipt-reference requests number trigger required ask outcome-target]
+  (network [environment-reference selected worker raw-reference receipt-reference requests repair-events-reference number trigger required ask outcome-target]
     (let-cell [a g t0 t1 t2 r0 r1 r2]
       (define time (* number 100))
       (define empty (data:record :status :not-started :corrections-remaining 2))
@@ -132,18 +144,21 @@
       (define ok0 (experiment:success? t0))
       (define h0 (seq:of t0))
       (define f0 (experiment:feedback t0 h0 2))
+      (-> (event:point (str "diagnostic-" number "-0") (+ time 3) f0) (cell:input repair-events-reference))
       (experiment:stage environment-reference selected (cell:reference (experiment:context "implementation" (data:get :text a) (data:get :text g) f0 ask))
                         requests raw-reference (str "round-" number "-repair-1") (+ time 4) (logic:not ok0) (cell:reference r1))
       (experiment:attempt environment-reference required worker r1 receipt-reference (str "round-" number "-repair-1") 1 (cell:reference t1))
       (define ok1 (experiment:success? t1))
       (define h1 (seq:of t0 t1))
       (define f1 (experiment:feedback t1 h1 1))
+      (-> (event:point (str "diagnostic-" number "-1") (+ time 4) f1) (cell:input repair-events-reference))
       (experiment:stage environment-reference selected (cell:reference (experiment:context "implementation" (data:get :text a) (data:get :text g) f1 ask))
                         requests raw-reference (str "round-" number "-repair-2") (+ time 5) (logic:not ok1) (cell:reference r2))
       (experiment:attempt environment-reference required worker r2 receipt-reference (str "round-" number "-repair-2") 2 (cell:reference t2))
       (define ok2 (experiment:success? t2))
       (define h2 (seq:of t0 t1 t2))
       (define f2 (experiment:feedback t2 h2 0))
+      (-> (event:point (str "diagnostic-" number "-2") (+ time 5) f2) (cell:input repair-events-reference))
       (-> (if a-ok
             (if g-ok
               (if ok0 (experiment:outcome :done h0 a g empty (seq:empty))

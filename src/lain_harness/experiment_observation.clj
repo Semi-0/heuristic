@@ -41,6 +41,15 @@
                             :when (and available (contains? selected-names name))]
                         [name (cd/unpack value)]))}))
 
+(defn project-paths
+  "Copy selected existing paths, preserving their nested shape. No expansion."
+  [record paths]
+  (let [absent (Object.)]
+    (reduce (fn [result path]
+              (let [v (get-in record path absent)]
+                (if (identical? absent v) result (assoc-in result path v))))
+            {} paths)))
+
 (defn inspect-outputs [network [environment references worker]]
   (let [references (cd/unpack references)
         expected (set (vals (:premises references)))
@@ -53,6 +62,8 @@
      :identity {:id (:session-id (cd/unpack worker)) :run-id (:run-id (cd/unpack worker))}
      :child-bindings (soul/overview network [environment []])
      :outputs (into {} (map (fn [[name view]] [name (:value view)])) views)
+     :output-edges (into {} (for [[name reference] (dissoc references :premises)]
+                              [name (soul/edge-view network reference)]))
      :supports supports
      :expected-support expected
      :missing-supports (into {} (for [[name sources] supports
@@ -68,11 +79,17 @@
             [(primitive 'data:read-edn (fn [text]
                                          (try {:status :parsed :value (edn/read-string text)}
                                               (catch Exception error {:status :invalid :message (ex-message error)}))))
+             (primitive 'data:project-paths project-paths)
              (primitive 'data:has? (fn [record key] (and (map? record) (contains? record key))))
              (primitive 'data:strings? (fn [record fields]
                                          (and (map? record)
                                               (every? #(and (string? (get record %))
                                                             (not (str/blank? (get record %)))) fields))))
+             (primitive 'data:labels? (fn [record fields]
+                                        (and (map? record)
+                                             (every? #(let [label (get record %)]
+                                                        (or (keyword? label)
+                                                            (and (string? label) (not (str/blank? label))))) fields))))
              (primitive 'seq:of vector)
              (primitive 'set:subset? set/subset?)
              (primitive 'set:intersection set/intersection)

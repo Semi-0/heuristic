@@ -26,8 +26,9 @@
         e (extend-env d (env:reference-slot "inspection-feedback" (cell:reference inspection-feedback)))
         f (extend-env e (env:reference-slot "ask" (cell:reference ask)))]
     (extend-env
-      (extend-env (extend-env f (env:reference-slot "result" (cell:reference result)))
+      (extend-env (extend-env (extend-env f (env:reference-slot "result" (cell:reference result)))
                   (env:reference-slot "system-message" (cell:reference system-message)))
+                  (env:reference-slot "repair-details" (cell:reference repair-details)))
       (env:reference-slot "repair-policy-cell" (cell:reference repair-policy-cell)))))
 (define runtime-model (struct :input (model:input m) :output model-result))
 (define running-runtime (runtime (struct :bindings parent-environment :request request-input) runtime-model))
@@ -41,5 +42,5 @@
 (define round-outcome)
 (when (data:has? ask-event :content)
   (experiment:question (cell:reference generated-environment) selected worker (cell:reference raw-model-result)
-                       (cell:reference admission-result) (cell:reference request-events)
+                       (cell:reference admission-result) (cell:reference request-events) (cell:reference repair-detail-events)
                        1 true required ask (cell:reference round-outcome)))
