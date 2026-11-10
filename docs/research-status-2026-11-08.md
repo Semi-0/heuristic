@@ -4,7 +4,7 @@ This is the reading entry point for the November 8 review and the Tsuki handoff.
 
 ## Intended architecture
 
-The [original proposal](lain-agent-harness-proposal.md) treats an agent invocation as a persistent computational environment. Earlier computations should remain inspectable and executable, rather than surviving only as textual memory. The [experiment intention](experiment-intention.md) separates in-session reuse from durable reopening; the latter remains unproved.
+The [original proposal](lain-agent-harness-proposal.md) treats an agent invocation as a persistent computational environment. Earlier computations should remain inspectable and executable, rather than surviving only as textual memory. The [experiment intention](experiment-intention.md) separates in-session reuse from durable reopening; source-based reopening is now demonstrated below, while exact suspended-state resumption remains unproved.
 
 The current runtime is still [soul-refined.lain](../soul-refined.lain), importing the existing [model](../model-refined.lain) and [completed-response compiler](../lib/compiler.lain). Parent environment bindings provide role, task, language, capabilities, examples, inputs, and observations. Generated source extends a lexical child. Transport forwards requests; the Lain network selects phases and bounded corrections. Host code admits external inputs, delivers effects, reads diagnostics, and runs an independent evaluator. A hidden host prompt, handwritten substitute solution, and host retry controller are outside this intended experiment.
 
@@ -31,11 +31,17 @@ The [November 10 catalog experiment](2026-11-10-catalog-discovery-experiment.md)
 adds real recursive Datalog discovery and retained callable composition through a
 local Datomic wrapper. The matched flat-catalog baseline is numerically correct
 but reuses one fewer application; this small comparison is not a general
-performance claim. Metadata persistence is tested; executable reopening remains
-unfinished. The [cumulative closure continuation](2026-11-10-cumulative-catalog-closures.md)
+performance claim. That initial trial tested metadata persistence; source-based executable reopening
+is covered by the later restoration experiment below. The [cumulative closure continuation](2026-11-10-cumulative-catalog-closures.md)
 then passes four real model calls: database examples are executed, a composed
 closure is registered and rediscovered, and two independent orders update without
 further model calls.
+
+The [durable source-restoration experiment](2026-11-10-durable-source-restoration.md)
+now demonstrates rebuilding saved definitions and captured callable dependencies
+in a separate process, followed by real-model discovery/use and reactive updates.
+All 14 checks pass. This advances source-based executable persistence; exact
+suspended graph/cell-state resumption remains unproved.
 
 ## Corrections to earlier interpretations
 

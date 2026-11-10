@@ -1,0 +1,32 @@
+(load-lain "experiments/catalog-common.lain")
+(load-lain "environments/catalog-durable.lain")
+;; Restoration is completed-source admission; it does not request model output.
+(define restore-bundle (catalog:restore-bundle))
+(define restore-modules (data:get :modules restore-bundle))
+(define restore-packet
+ (network [id source]
+  (data:record :request-id id :kind :reply :finish-reason "stop" :truncated? false :text source)))
+(define restored-library-environment (lexical-child seed))
+(define restored-closure-environment (lexical-child seed))
+(define restore-library-receipt
+ (incremental-compile (restore-packet "restore/build" (data:get :source (data:get 0 restore-modules))) restored-library-environment))
+(define restored-library-status (data:get :status (cell:first restore-library-receipt)))
+(define restore-closure-receipt
+ (incremental-compile
+  (switch (restore-packet "restore/compose" (data:get :source (data:get 1 restore-modules)))
+          (data:equal? restored-library-status :admitted))
+  restored-closure-environment))
+(define restored-closure-status (data:get :status (cell:first restore-closure-receipt)))
+(define restoration-ready
+ (logic:all (data:equal? restored-library-status :admitted)
+            (data:equal? restored-closure-status :admitted)))
+(define durable-query-runtime (runtime (struct :bindings durable-seed :request request-input)
+ (struct :input (model:input m) :output (switch raw-response (data:equal? (data:get :request-id raw-response) "discover-restored")))))
+(define durable-use-runtime (runtime (struct :bindings durable-seed :request request-input)
+ (struct :input (model:input m) :output (switch raw-response (data:equal? (data:get :request-id raw-response) "use-restored")))))
+(define durable-query-receipt ((slot :compilation) durable-query-runtime))
+(define durable-use-receipt ((slot :compilation) durable-use-runtime))
+(stage-in durable-seed "discover-restored" 1 durable-search-task (logic:all start restoration-ready)
+ "The database is reopened and executable source restoration is complete. Query it for candidates.")
+(stage-in durable-seed "use-restored" 2 durable-apply-task
+ (data:equal? (data:get :status durable-query-receipt) :admitted) discovery-results)
