@@ -43,7 +43,12 @@
 
 (defn trial! [root evidence control]
   (.mkdirs (java.io.File. evidence))
-  (let [base (model/compiler)
+  (let [provider-options {:timeout-ms 600000
+                          :max-tokens (Long/parseLong (or (System/getenv "LAIN_MODEL_MAX_TOKENS") "4096"))
+                          :enable-thinking true :reasoning-effort "medium"
+                          :thinking-token-budget (Long/parseLong (or (System/getenv "LAIN_MODEL_THINKING_TOKENS") "2048"))}
+        provider (blazux/completion-transport provider-options)
+        base (model/compiler)
         compiler (session/create-session
                   (assoc (session/session-identity base)
                          :native-extensions (:bootstrap (session/session-declarations base))
@@ -52,7 +57,6 @@
                                                :timeout-ms (Long/parseLong (or (System/getenv "LAIN_PROPAGATION_TIMEOUT_MS") "180000"))}))
         owner (host/open! compiler) journal (atom []) requests (atom []) responses (atom []) analyses (atom []) generalizations (atom []) implementations (atom [])
         snapshots (atom []) rounds (atom []) recovery-attempts (atom []) feedbacks (atom []) round-sources (atom []) input-names (atom {}) outcome (atom {})
-        provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 4096 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
         read-value #(connected/payload (session/binding-value (host/current-session owner) %))
         publish-many (fn [entries]
                        (host/publish-input! owner
@@ -69,6 +73,7 @@
                             (host/publish-input! owner (fn [current] [(session/publication-input (session/binding-cell current 'ask-event) event)]))
                             (host/step! owner))]
     (try
+      (spit (str evidence "/provider-options.edn") (pr-str provider-options))
       (add-watch journal ::record-admissions
                  (fn [_ _ _ entries]
                    (spit (str evidence "/admission-journal.edn") (pr-str entries))))
@@ -211,7 +216,7 @@
         (swap! outcome assoc :operational-status :failed :error (.getMessage e) :data (ex-data e))
         (println "Operational failure:" (.getMessage e)))
       (finally
-        (spit (str evidence "/evidence.edn") (pr-str {:controlled control :replay-source-dir (System/getenv "LAIN_REPLAY_SOURCE_DIR") :outcome @outcome :requests @requests :responses @implementations :phase-responses @responses :analyses @analyses :generalizations @generalizations
+        (spit (str evidence "/evidence.edn") (pr-str {:controlled control :provider-options provider-options :replay-source-dir (System/getenv "LAIN_REPLAY_SOURCE_DIR") :outcome @outcome :requests @requests :responses @implementations :phase-responses @responses :analyses @analyses :generalizations @generalizations
                                                       :recovery-attempts @recovery-attempts :recovery-feedback @feedbacks :round-sources @round-sources
                                                       :input-names @input-names :admissions @journal :snapshots @snapshots :rounds @rounds
                                                       :history (try (read-value 'conversation-history) (catch Throwable _ :unavailable))

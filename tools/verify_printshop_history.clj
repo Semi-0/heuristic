@@ -1,5 +1,6 @@
-(require '[clojure.edn :as edn]
-         '[clojure.string :as str])
+(ns tools.verify-printshop-history
+  (:require [clojure.edn :as edn]
+            [clojure.string :as str]))
 
 (defn rendered-history [text]
   (when-let [section (second (re-find #"(?ms)^## history\n(.*?)(?=\n\n##|\z)" text))]
@@ -14,6 +15,9 @@
                                 (get-in % [:messages 1 :content])) requests))
       reply (fn [i] (get-in snapshots [(keyword (str "round-" i)) :results
                                        (symbol (str "user-output-" i)) :value]))
+      ports (fn [i] (conj (mapv #(symbol (str "observed-" % "-" i))
+                                ["production" "rush" "discount" "subtotal" "delivery" "tax" "total"])
+                          (symbol (str "user-output-" i))))
       expected (vec (mapcat (fn [i] [{:role "user" :content (question i)}
                                      {:role "assistant" :content (reply i)}]) (range 1 6)))
       checks {:completed-five-rounds (and (= :completed (get-in evidence [:outcome :operational-status]))
@@ -29,6 +33,10 @@
                       (range 1 6))
               :exact-delivered-history (= expected (:history evidence))
               :each-round-history (every? #(= (subvec expected 0 (* 2 (:round %))) (:history %)) (:rounds evidence))
+              :earlier-results-stable
+              (every? true? (for [later (range 2 6) earlier (range 1 later) port (ports earlier)]
+                              (= (select-keys (get-in snapshots [(keyword (str "round-" earlier)) :results port]) [:value :support])
+                                 (select-keys (get-in snapshots [(keyword (str "round-" later)) :results port]) [:value :support]))))
               :explicit-roles (every? #(= ["system" "user"] (mapv :role (:messages %))) requests)
               :system-is-described-environment (every? #(= (:text %) (get-in % [:messages 0 :content])) requests)
               :history-in-every-request
