@@ -1,0 +1,4 @@
+(load-lain "experiments/catalog-common.lain")
+(stage "build" 1 build-task start "No earlier library exists yet.")
+(stage "search" 2 search-task (data:equal? (data:get :status library-admission) :admitted) library-ready)
+(stage "solve" 3 solve-task (data:equal? (data:get :status search-admission) :admitted) discovery-results)

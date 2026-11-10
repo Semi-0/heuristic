@@ -1,0 +1,33 @@
+(load-lain "soul-refined.lain")
+(load-lain "lib/behavior-core.lain")
+(define request-events (behavior:source))
+(define request-input (behavior:latest-value request-events))
+(define m (model))
+(define raw-response (model:output m))
+(load-lain "environments/catalog-discovery.lain")
+(define library-runtime (runtime (struct :bindings seed :request request-input)
+  (struct :input (model:input m) :output (switch raw-response (data:equal? (data:get :request-id raw-response) "build")))))
+(define search-runtime (runtime (struct :bindings seed :request request-input)
+  (struct :input (model:input m) :output (switch raw-response (data:equal? (data:get :request-id raw-response) "search")))))
+(define solve-runtime (runtime (struct :bindings seed :request request-input)
+  (struct :input (model:input m) :output (switch raw-response (data:equal? (data:get :request-id raw-response) "solve")))))
+(define library-environment ((slot :environment) library-runtime))
+(define search-environment ((slot :environment) search-runtime))
+(define solve-environment ((slot :environment) solve-runtime))
+(define library-admission ((slot :compilation) library-runtime))
+(define search-admission ((slot :compilation) search-runtime))
+(define solve-admission ((slot :compilation) solve-runtime))
+(define stage-in
+ (network [base id time task trigger memory]
+  (let [v1 (add-binding base "current-task" (cell:reference task))
+        v2 (add-binding v1 "memory-cell" (cell:reference memory))
+        v3 (add-binding v2 "ask" (cell:reference task))
+        snapshot (cell:first (environment:snapshot-once v3
+          (seq:of "role-cell" "current-task" "language-introduction-cell" "catalog-guide" "transitive-guide" "memory-cell" "ask")
+          (seq:of "current-task" "memory-cell") trigger))
+        text (data:get :text snapshot)
+        packet (cell:first (switch (data:record :id id :text text :messages
+          (seq:of (data:record :role "system" :content text) (data:record :role "user" :content task))) trigger))]
+    (-> (event:point id time packet) request-events))))
+
+(define stage (network [id time task trigger memory] (stage-in seed id time task trigger memory)))

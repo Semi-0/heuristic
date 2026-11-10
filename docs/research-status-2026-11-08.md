@@ -27,6 +27,16 @@ Separate identities matter: session, worker, lexical child, question, provider r
 | Full single-Lain recovery reference | Five questions, four retained-callable reuses and all 84 evaluator checks pass on the unchanged runtime, including correction, withdrawal/restoration and isolation. | Controlled transport, zero provider calls. Distinct from the older patched-kernel condition. [November 9–10 continuation](2026-11-10-autonomous-repair-experiment.md). |
 | Real five-question continuation | One real session makes 15 calls, delivers all five correct quotes, reuses the retained pricing callable four times, and passes all 84 numerical/dependency/mutation checks plus nine history/stability and eight integrity checks. | Uses the unchanged runtime, compact parent diagnostics, string/keyword status labels, documented branch limits and 8,192/4,096 generation limits. Earlier real repair failures remain recorded; general planning repair and admitted-contradiction repair are unfinished. [Final campaign record](2026-11-10-autonomous-repair-experiment.md). |
 
+The [November 10 catalog experiment](2026-11-10-catalog-discovery-experiment.md)
+adds real recursive Datalog discovery and retained callable composition through a
+local Datomic wrapper. The matched flat-catalog baseline is numerically correct
+but reuses one fewer application; this small comparison is not a general
+performance claim. Metadata persistence is tested; executable reopening remains
+unfinished. The [cumulative closure continuation](2026-11-10-cumulative-catalog-closures.md)
+then passes four real model calls: database examples are executed, a composed
+closure is registered and rediscovered, and two independent orders update without
+further model calls.
+
 ## Corrections to earlier interpretations
 
 The four old experimental closure assertions are not four established failures of Lain consumers. Three inspect raw returned-list storage. Through compiled Lain `car`/`cdr` accessors, premise withdrawal makes flat and nested results unknown, and restoration gives values with the current premise support. The fourth expects rejection of a list shape change; the high-level path produces the changed list and updates its consumers successfully. That expectation needs contract review. The old tests were explicitly invoked as references and were not model questions or generated code.

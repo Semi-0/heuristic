@@ -125,3 +125,5 @@ experiments/live/config.edn
 /runtime/repair-alert-20261108/
 
 /runtime/autonomous-20261109/
+
+/runtime/discovery-20261110/

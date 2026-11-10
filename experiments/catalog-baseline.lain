@@ -1,0 +1,4 @@
+(load-lain "experiments/catalog-common.lain")
+(stage "build" 1 build-task start "No earlier library exists yet.")
+(define complete-catalog (catalog:entries library-ready))
+(stage "solve" 2 solve-task (data:equal? (data:get :status library-admission) :admitted) complete-catalog)
