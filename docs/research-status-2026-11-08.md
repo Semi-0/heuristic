@@ -131,3 +131,23 @@ readmission. These results establish guided connection repair and clean
 integration separately; arbitrary contradiction/domain-error repair remains
 unproved. Dependency-aware validation of historical assumptions is the next
 research milestone.
+
+## November 13: reuse under changed policy assumptions
+
+The [changed-policy experiment](2026-11-13-dependency-aware-catalog-reuse.md)
+compares a stored quote that excludes delivery from surcharge with a new policy
+that includes it. A thinking-enabled real trial passes all 41 checks: the model
+rejects the incompatible whole quote despite its current catalog status, restores
+the applicable event-only callable, and uses it once for historical and revised
+calculations. Exact support sets, selective policy/question withdrawal and
+restoration, unrelated-source isolation, input updates, and no extra inference
+all pass. Revised totals are 861 → 882 → 1008 → 1056.
+
+Two non-thinking trials passed 30/41 checks but omitted the delivery principal;
+their support/reuse correctness did not imply numerical correctness. A control
+first exposed an evaluator mistake about numeric source supports; the corrected
+control passes 41/41. The report records all conditions, the generic methodology
+revision, and the thinking-mode setting. Runtime and kernel are unchanged.
+Known-but-wrong answer repair remains separate from the proven missing-output
+repair path. The earlier durable/recovery work and this new experiment are
+committed separately; large evidence stays local.

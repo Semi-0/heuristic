@@ -1,0 +1,2 @@
+(-> :event-cost/v1 selected-id)
+(-> "The delivered quote excludes delivery from surcharge, which conflicts with the new policy despite current status. The event-only callable remains applicable under both." selection-notes)
