@@ -1,0 +1,12 @@
+
+
+(define event-cost-fn (cell:value (catalog:resolve :event-cost/v1)))
+(define base (event-cost-fn quantity unit-price hours hourly-rate surcharge-rate))
+(-> base base-answer)
+(define historical-fn (ttms-premise-closure (ttms-premise-closure (network [b dc sr] (+ b dc)) old-policy) question-old))
+(define historical (historical-fn base delivery-charge surcharge-rate))
+(-> historical historical-answer)
+(define revised-fn (ttms-premise-closure (ttms-premise-closure (network [b dc sr] (+ b (* dc (+ 1 sr)))) new-policy) question-current))
+(define revised (revised-fn base delivery-charge surcharge-rate))
+(-> revised answer)
+(-> (str "Revised quote under new policy: " revised) user-output)

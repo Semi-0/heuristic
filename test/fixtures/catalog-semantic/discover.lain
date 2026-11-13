@@ -1,0 +1,4 @@
+(define query-text "[:find ?id ?desc ?iface ?assumptions ?status ?example :in $ % :where [?e :catalog/id ?id] [?e :catalog/description ?desc] [?e :catalog/interface ?iface] [?e :catalog/assumptions ?assumptions] [?e :catalog/status ?status] [?e :catalog/example ?example]]")
+(define rules-text "[]")
+(define candidates (catalog:query query-text rules-text))
+(-> candidates discovery-results)

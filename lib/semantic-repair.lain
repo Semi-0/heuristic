@@ -1,0 +1,40 @@
+;; Candidate isolation, semantic observation and bounded correction are Lain policy.
+(define semantic:ports
+ (network [environment base-ref historical-ref answer-ref reply-ref]
+  (let [e1 (add-binding environment "base-answer" base-ref)
+        e2 (add-binding e1 "parent-base-answer" base-ref)
+        e3 (add-binding e2 "historical-answer" historical-ref)
+        e4 (add-binding e3 "parent-historical-answer" historical-ref)
+        e5 (add-binding e4 "answer" answer-ref)
+        e6 (add-binding e5 "parent-answer" answer-ref)
+        e7 (add-binding e6 "user-output" reply-ref)]
+   (add-binding e7 "parent-user-output" reply-ref))))
+
+(define semantic:attempt
+ (network [environment references worker reply receipt domain attempt-target]
+  (let [done (cell:first receipt)
+        observed (cell:first (inspect:outputs-once environment references worker done))
+        outputs (data:get :outputs observed)
+        ready (logic:all (repair:usable? (data:get :first outputs))
+                         (repair:usable? (data:get :second outputs))
+                         (repair:usable? (data:get :base outputs))
+                         (repair:usable? (data:get :reply outputs)))
+        revised (switch (data:get :first outputs) ready)
+        historical (switch (data:get :second outputs) ready)
+        base (switch (data:get :base outputs) ready)
+        monotone (if ready (>= revised historical) false)
+        includes-base (if ready (>= historical base) false)
+        valid (logic:all (data:equal? (data:get :status done) :admitted)
+                         domain ready monotone includes-base)]
+   (-> (cell:first (data:record :valid? valid :source (data:get :text reply)
+      :admission done :observation observed
+      :checks (data:record :domain domain :outputs-ready ready
+                           :revised-not-below-historical monotone :historical-not-below-base includes-base)))
+       (cell:input attempt-target)))))
+
+(define semantic:feedback
+ (network [attempt remaining]
+  (data:record :status :semantic-repair-required :corrections-remaining remaining
+   :failed-source (data:get :source attempt) :admission (data:get :admission attempt)
+   :observation (data:get :observation attempt) :checks (data:get :checks attempt)
+   :rule "For nonnegative delivery and surcharge, the revised quote cannot be less than the historical quote, and the historical quote cannot be less than the event base. These are necessary constraints, not a proof of full correctness.")))

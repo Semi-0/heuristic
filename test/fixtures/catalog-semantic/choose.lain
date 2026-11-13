@@ -1,0 +1,4 @@
+(.
+  (-> :event-cost/v1 selected-id)
+  (-> "Selected :event-cost/v1 because it calculates the base cost (goods + labor) with surcharge, excluding delivery. This computation is valid under both the old policy (where delivery was added post-surcharge) and the new policy (where delivery is surcharged), as it isolates the non-delivery components. Rejected :delivered-event-cost/v1 because its assumption 'Delivery charge is added after surcharge calculation' is incompatible with the new policy where delivery receives the surcharge. Rejected :operator/percentage-v1 and :operator/linear-v1 as they are too generic and do not encapsulate the specific event cost structure (goods + labor) required for the base calculation." selection-notes)
+)

@@ -1,0 +1,6 @@
+(-> base-amount base-answer)
+(-> historical-amount historical-answer)
+(define corrected-fn (ttms-premise-closure (ttms-premise-closure (network [b d r] (+ b (* d (+ 1 r)))) new-policy) question-current))
+(define corrected (corrected-fn base-amount delivery-charge surcharge-rate))
+(-> corrected answer)
+(-> (str "Revised quote: " corrected) user-output)

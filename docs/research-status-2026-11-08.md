@@ -151,3 +151,25 @@ revision, and the thinking-mode setting. Runtime and kernel are unchanged.
 Known-but-wrong answer repair remains separate from the proven missing-output
 repair path. The earlier durable/recovery work and this new experiment are
 committed separately; large evidence stays local.
+
+## November 13: semantic validation before delivery
+
+The [semantic repair experiment](2026-11-13-semantic-validation-repair.md) isolates
+candidate outputs and checks necessary numerical inequalities in Lain. A failure
+produces an environment diagnostic and at most two corrections in descendant
+lexical children, preserving usable intermediate computations. Only an accepted
+candidate reaches public output. Existing main runtime, native observers,
+compiler and kernel remain unchanged.
+
+Three controls pass (47/47 repaired, 43/43 clean, 4/4 exhausted). The real model
+repairs the recorded 821-versus-859 error in one provider response, passing all
+47 checks. A fully fresh run passes 43/43 with three provider calls and no repair.
+Both retain one catalog application and respond to mutations with revised totals
+861 → 882 → 1008 → 1056, preserving exact supports and selective withdrawal.
+Focused session/runtime tests pass 51 assertions; formatter and lint are clean.
+
+This establishes guided repair before delivery for the tested numerical failure,
+not arbitrary semantic correctness or replacement of already-delivered answers.
+The inequalities are necessary conditions checked at candidate selection. A
+stronger executable contract for wrong formulas that satisfy those conditions is
+the next reliability question; large evidence remains local.
