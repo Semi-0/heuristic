@@ -1,0 +1,2 @@
+(define candidates (catalog:query "[:find ?id ?description ?interface ?assumptions ?status ?example :in $ % :where [?n :catalog/id ?id] [?n :catalog/description ?description] [?n :catalog/interface ?interface] [?n :catalog/assumptions ?assumptions] [?n :catalog/status ?status] [?n :catalog/example ?example]]" "[]"))
+(-> candidates discovery-results)

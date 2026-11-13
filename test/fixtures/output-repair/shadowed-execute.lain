@@ -1,0 +1,3 @@
+(define delivered-quote (cell:value (catalog:resolve :delivered-event-cost/v1)))
+(define answer (delivered-quote quantity unit-price hours hourly-rate surcharge-rate delivery-charge))
+(define user-output (str "Total: " answer))

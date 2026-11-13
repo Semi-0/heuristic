@@ -95,3 +95,39 @@ The user chose local-only bulk evidence after automatic approval review blocked 
 The [Tsuki reference brief](handoffs/2026-11-08-heuristic-to-tsuki.md) proposes a bounded reading/review task for the existing Docker agent. It preserves that agent's current runtime, kernel, ledger, and test-freeze boundaries. No review date, autonomous reminder, or new deployment authority is implied.
 
 The [returned Tsuki review](handoffs/2026-11-08-tsuki-review.md) adds an important distinction for the next joint review: our extension-only producer uses `collection/content` support-only content, while the public `source-publication/active`/`retracted` path can carry a state-aware frontier. Entering through the public compiler API does not make those payload contracts identical. Its proposed cross-engine probe separates these configurations, raw evidence, usable projections, and consumer outputs; it was written but not executed. Interpret the arithmetic comparison above as evidence for its recorded producer contract, not a universal statement about all TTMS publication paths.
+
+## November 11: agent-directed durable accumulation
+
+The [directed accumulation experiment](2026-11-11-agent-directed-durable-accumulation.md)
+starts with metadata and no live saved callables. The model queries and selects an
+existing event network; Lain restores its source dependencies. The model composes
+and registers a delivered-event closure, which a fresh process later discovers,
+selects, restores and invokes. The successful producer computes 623.5 and reacts
+to inputs with 638.5/796.0; the consumer computes 859.0 and reacts with 879.0/1005.0,
+without extra model calls. Callable identity inspection and source hashes verify
+reuse across all three retained modules.
+
+This required context revisions after Markdown fences and shadowed parent outputs.
+The successful consumer uses the already-saved producer database with improved
+output-wiring examples; it is not an unchanged-prompt first-attempt success.
+Four focused tests pass 20 assertions, and formatting/lint pass. Main runtime and
+kernel remain unchanged. The next reliability gap is detecting admitted stages
+with missing parent outputs and repairing them through the Lain environment.
+
+## November 11: automatic repair of missing parent outputs
+
+The [missing-output repair experiment](2026-11-11-missing-output-repair.md) adds
+Lain-owned post-admission output checks, environment diagnostics and at most two
+repairs into the same child. Existing main runtime, compiler, model, native
+observers and kernel remain unchanged. Stable aliases identify the original
+parent ports even when generated local names shadow them.
+
+Three controls establish successful repair, no false repair and bounded terminal
+failure. With the previous real shadowing failure replayed unchanged, the real
+model adds the two missing parent connections in one response and passes all 23
+checks. A separate fully fresh run passes with three provider calls and no repair.
+Both compute 859 → 879 → 1005 on input changes without additional inference or
+readmission. These results establish guided connection repair and clean
+integration separately; arbitrary contradiction/domain-error repair remains
+unproved. Dependency-aware validation of historical assumptions is the next
+research milestone.

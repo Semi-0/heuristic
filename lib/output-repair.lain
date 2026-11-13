@@ -1,0 +1,59 @@
+;; Required-output feedback and bounded repair. Scheduling and admission stay in Lain.
+(define repair:usable? (network [value]
+ (logic:not (logic:any (data:equal? value :unknown) (data:equal? value :contradictory)))))
+(define repair:attempt
+ (network [environment required worker reply receipt attempt-target]
+  (let [done (cell:first receipt)
+        observed (cell:first (inspect:outputs-once environment required worker done))
+        outputs (data:get :outputs observed)
+        ready (logic:all (data:equal? (data:get :status done) :admitted)
+                         (repair:usable? (data:get :first outputs))
+                         (repair:usable? (data:get :second outputs)))]
+   (-> (cell:first (data:record :ready? ready :source (data:get :text reply)
+                              :admission done :observation observed))
+       (cell:input attempt-target)))))
+
+(define repair:request
+ (network [environment id time task diagnostic trigger requests]
+  (let [v0 (add-binding environment "current-task" (cell:reference task))
+        v1 (add-binding v0 "system-message" (cell:reference diagnostic))
+        v2 (add-binding v1 "memory-cell" (cell:reference diagnostic))
+        snapshot (cell:first (environment:snapshot-once v2
+          (seq:of "role-cell" "current-task" "repair-policy-cell" "system-message" "language-introduction-cell")
+          (seq:of "current-task" "system-message") trigger))
+        text (data:get :text snapshot)
+        packet (cell:first (switch (data:record :id id :text text :messages
+          (seq:of (data:record :role "system" :content text) (data:record :role "user" :content task))) trigger))]
+   (-> (event:point id time packet) (cell:input requests)))))
+
+(define repair:feedback
+ (network [attempt remaining]
+  (data:record :status :repair-required :corrections-remaining remaining
+               :failed-source (data:get :source attempt)
+               :admission (data:get :admission attempt)
+               :observation (data:get :observation attempt))))
+
+(define repair:phase
+ (network [environment required worker raw-reference initial-receipt requests id time task outcome-target]
+  (let-cell [attempt0 attempt1 attempt2]
+   (define raw (cell:value raw-reference))
+   (define reply0 (cell:first (switch raw (data:equal? (data:get :request-id raw) id))))
+   (repair:attempt environment required worker reply0 initial-receipt (cell:reference attempt0))
+   (define ok0 (data:get :ready? attempt0))
+   (define id1 (str id "-repair-1"))
+   (repair:request environment id1 (+ time 1) task (repair:feedback attempt0 2) (logic:not ok0) requests)
+   (define reply1 (cell:first (switch raw (data:equal? (data:get :request-id raw) id1))))
+   (define receipt1 (incremental-compile reply1 environment))
+   (repair:attempt environment required worker reply1 receipt1 (cell:reference attempt1))
+   (define ok1 (data:get :ready? attempt1))
+   (define id2 (str id "-repair-2"))
+   (repair:request environment id2 (+ time 2) task (repair:feedback attempt1 1) (logic:not ok1) requests)
+   (define reply2 (cell:first (switch raw (data:equal? (data:get :request-id raw) id2))))
+   (define receipt2 (incremental-compile reply2 environment))
+   (repair:attempt environment required worker reply2 receipt2 (cell:reference attempt2))
+   (define ok2 (data:get :ready? attempt2))
+   (-> (if ok0 (data:record :status :done :attempts (seq:of attempt0))
+         (if ok1 (data:record :status :done :attempts (seq:of attempt0 attempt1))
+           (data:record :status (if ok2 :done :failed) :attempts (seq:of attempt0 attempt1 attempt2))))
+       (cell:input outcome-target))
+   :connected)))

@@ -1,0 +1,4 @@
+(define f (cell:value (catalog:resolve :delivered-event-cost/v1)))
+(define total (f quantity unit-price hours hourly-rate surcharge-rate delivery-charge))
+(-> total answer)
+(-> (str "Total: " total) user-output)
