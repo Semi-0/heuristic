@@ -1,0 +1,17 @@
+;; Main orchestration. The extension supplies capabilities, never a host action loop.
+(define run-scheduled
+  (network [job]
+    (let [tick (clock:every (field job "poll_seconds") (field job "max_ticks"))
+          observed (queue:observe job tick)]
+      (cond [
+        (field observed "notified")
+          (clock:stop observed)
+        (field observed "terminal")
+          (clock:stop (codex:wake job observed))
+        (field observed "expired")
+          (clock:stop (codex:wake job observed))
+        (field observed "started") "waiting"
+        (field observed "admitted")
+          (if (field observed "idle") (queue:start job observed) "waiting")
+        else "waiting"]))))
+(define completion (run-scheduled (job:configuration)))

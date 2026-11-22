@@ -1,0 +1,15 @@
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+
+(define watch-task
+  (network [clock task]
+    (let [observed (queue:observe task clock)]
+      (cond [
+        (field observed "acknowledged") (task:finish observed)
+        (field observed "terminal")
+          (task:finish (queue:acknowledge task (codex:notify task "completed")))
+        (>= clock (field task "deadline"))
+          (task:finish (queue:acknowledge task (codex:notify task "deadline")))
+        (>= clock (task:expires)) (task:renew task)
+        else "waiting"]))))
+
+(define result (watch-task (clock:subscribe) (task:current)))

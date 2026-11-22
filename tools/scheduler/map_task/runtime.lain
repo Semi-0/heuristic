@@ -1,0 +1,12 @@
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+(load-lain "propagators/compiler_2/runtime/lain/list.lain")
+
+;; Module identifies trusted Lain source admitted in a disposable session.
+;; It is not a captured closure transported across lexical environments.
+(define map-tasks
+  (network [clock module tasks]
+    (map-list (network [task] (task:run clock module task)) tasks)))
+
+(define runtime
+  (network [clock tasks]
+    (map-tasks clock :watch-task tasks)))

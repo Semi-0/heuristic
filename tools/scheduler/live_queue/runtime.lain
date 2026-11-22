@@ -1,0 +1,21 @@
+(load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
+(load-lain "propagators/compiler_2/runtime/lain/list.lain")
+
+(define watch-task
+  (network [clock queue codex task]
+    (let [observed (queue:observe queue task clock)]
+      (cond [
+        (field observed "acknowledged") "acknowledged"
+        (field observed "terminal")
+          (queue:acknowledge queue task
+            (codex:notify codex task "completed"))
+        (>= clock (field task "deadline"))
+          (queue:acknowledge queue task
+            (codex:notify codex task "deadline"))
+        else "waiting"]))))
+
+(define runtime
+  (network [clock queue codex tasks]
+    (map-list
+      (network [task] (watch-task clock queue codex task))
+      tasks)))

@@ -1,0 +1,7 @@
+(define clock (clock:shared (clock:period)))
+(define queue (queue:open))
+(define inbox (inbox:open))
+(define log (log:open))
+(define ingress (receive-tasks inbox queue))
+(define scheduler (runtime clock queue))
+(define observation (observe-scheduler queue scheduler log))

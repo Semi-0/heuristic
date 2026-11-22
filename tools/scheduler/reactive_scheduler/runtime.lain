@@ -1,0 +1,13 @@
+(define runtime
+  (network [clock queue]
+    (map-tasks clock :watch-task queue)))
+
+(define receive-tasks
+  (network [inbox queue]
+    (let [request (inbox:subscribe inbox)]
+      (inbox:acknowledge inbox (queue:enqueue queue request)))))
+
+(define observe-scheduler
+  (network [queue scheduler log]
+    (log:append log (queue:updates queue))
+    (log:append log (runtime:updates scheduler))))

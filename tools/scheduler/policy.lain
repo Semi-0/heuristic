@@ -1,0 +1,12 @@
+;; One coherent observation; effects are interpreted after session advancement.
+(define observation)
+(define decide
+  (network [o]
+    (if (field o "notified") "done"
+      (if (field o "terminal") "wake"
+        (if (field o "expired") "wake"
+          (if (field o "started") "wait"
+            (if (field o "admitted")
+              (if (field o "idle") "launch" "wait")
+              "wait")))))))
+(define action (decide observation))

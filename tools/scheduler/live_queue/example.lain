@@ -1,0 +1,7 @@
+(load-lain "runtime.lain")
+(define clock (clock:every 1))
+(define later-tasks)
+(define tasks
+  (cons (task:record "a" 100)
+    (cons (task:record "b" 6) later-tasks)))
+(define notifications (runtime clock :scheduled-tasks :recording-codex tasks))

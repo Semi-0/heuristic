@@ -1,0 +1,3 @@
+(define runtime
+  (network [clock queue]
+    (map-tasks clock :watch-task queue)))

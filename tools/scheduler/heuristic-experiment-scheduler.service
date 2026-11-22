@@ -1,0 +1,19 @@
+[Unit]
+Description=Lain heuristic experiment scheduler and Codex completion notifier
+
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/lain-workspace
+ExecStart=/usr/bin/python3 %h/projects/lain-workspace/tools/scheduler/scheduler.py %h/reports/heuristic-scheduler-20261114/pilot-config.json
+Environment=PATH=/home/lain/.local/bin:/usr/local/bin:/usr/bin:/bin
+Slice=lain-agents.slice
+MemoryHigh=768M
+MemoryMax=896M
+CPUQuota=50%
+TasksMax=64
+Nice=10
+Restart=no
+TimeoutStopSec=15
+
+[Install]
+WantedBy=default.target
