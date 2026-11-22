@@ -1,0 +1,76 @@
+(load-lain "soul-refined.lain")
+
+(define pricing-question)
+(define assessment)
+(define probe-count)
+(define job-a)
+(define job-b)
+(define fn-a)
+(define fn-b)
+(define invoice-marginal)
+(define invoice-volume)
+(define target-count)
+(define branch-a-premise)
+(define branch-b-premise)
+
+(define planner-role "You plan verification for a print shop. Decide what the evidence establishes. Optional independent implementation agents are available. Choose zero, one, or two jobs as warranted. Return only complete executable Lain forms. Connect your assessment string to assessment, and a positive integer quantity for an informative next invoice to probe-count. To commission work connect a self-contained assignment string to job-a or job-b. Leave unused ports unwritten. Each job implements ONE pricing relation in integer cents per order. Workers only see your assignment. Syntax examples: (-> \"observed fact\" assessment) and (-> 17 probe-count).")
+(define worker-role "You implement only the assigned pricing hypothesis. Return complete Lain source, no Markdown. Export a callable of one integer quantity returning the integer TOTAL in cents. Example for an unrelated charge: (define cost (network [n] (+ 17 (* 3 n)))) (-> cost quote-output). Available operators: + - * >= <= = and (if condition then-value else-value). Your child is private.")
+(define bind-ref (network [env name ref] (extend-env env (env:reference-slot name ref))))
+(define packet (network [id role task]
+  (data:record :id id :text role :messages (seq:of
+    (data:record :role "system" :content role)
+    (data:record :role "user" :content task)))))
+(define planner-seed
+ (let [s (empty-env)
+       a (bind-ref s "assessment" (cell:reference assessment))
+       p (bind-ref a "probe-count" (cell:reference probe-count))
+       j (bind-ref p "job-a" (cell:reference job-a))]
+   (bind-ref j "job-b" (cell:reference job-b))))
+(define planner (runtime (struct :bindings planner-seed :request (packet "plan" planner-role pricing-question)) (model)))
+(define planner-receipt ((slot :compilation) planner))
+(define plan-ready (data:equal? (data:get :status planner-receipt) :admitted))
+(define worker-seed
+ (let [a (bind-ref (empty-env) "+" (cell:reference ttms:+))
+       b (bind-ref a "-" (cell:reference ttms:-))
+       c (bind-ref b "*" (cell:reference ttms:*))
+       d (bind-ref c ">=" (cell:reference ttms:>=))
+       e (bind-ref d "<=" (cell:reference ttms:<=))]
+   (bind-ref e "=" (cell:reference ttms:=))))
+(define implementation-agent
+ (network [id assignment output-ref premise]
+  (let [seed (bind-ref worker-seed "quote-output" output-ref)
+        run (runtime (struct :bindings seed :request (packet id worker-role assignment)) (model))
+        receipt ((slot :compilation) run)
+        ready (data:equal? (data:get :status receipt) :admitted)
+        verified-function (ttms:ttms-premise-closure (switch (cell:value output-ref) ready) premise)]
+    (struct :input assignment :output verified-function :receipt receipt :environment ((slot :environment) run)))))
+(define worker-a (implementation-agent "a" (switch job-a plan-ready) (cell:reference fn-a) branch-a-premise))
+(define worker-b (implementation-agent "b" (switch job-b plan-ready) (cell:reference fn-b) branch-b-premise))
+(define verify-pricing
+ (network [worker invoice]
+   (let [f ((slot :output) worker)
+         at-probe (f probe-count)
+         fits (ttms:= at-probe invoice)]
+     (struct :predicted at-probe :fits fits :quote (switch (f target-count) fits)))))
+(define am (verify-pricing worker-a invoice-marginal))
+(define bm (verify-pricing worker-b invoice-marginal))
+(define av (verify-pricing worker-a invoice-volume))
+(define bv (verify-pricing worker-b invoice-volume))
+(define am-fits ((slot :fits) am))
+(define am-predicted ((slot :predicted) am))
+(define am-quote ((slot :quote) am))
+(define bm-fits ((slot :fits) bm))
+(define bm-predicted ((slot :predicted) bm))
+(define bm-quote ((slot :quote) bm))
+(define av-fits ((slot :fits) av))
+(define av-predicted ((slot :predicted) av))
+(define av-quote ((slot :quote) av))
+(define bv-fits ((slot :fits) bv))
+(define bv-predicted ((slot :predicted) bv))
+(define bv-quote ((slot :quote) bv))
+(define receipt-a ((slot :receipt) worker-a))
+(define old-a-80 (((slot :output) worker-a) 80))
+(define old-a-100 (((slot :output) worker-a) 100))
+(define receipt-b ((slot :receipt) worker-b))
+(define old-b-80 (((slot :output) worker-b) 80))
+(define old-b-100 (((slot :output) worker-b) 100))

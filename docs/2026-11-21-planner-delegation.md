@@ -1,0 +1,33 @@
+# Does ambiguity trigger delegation?
+
+The print-shop pilot gives a planner two optional assignment ports. Flash writes executable Lain to express its decision. Each nonempty assignment can drive one private worker runtime after the planner's completed response has been admitted. The branch models receive only their assigned text and a common callable interface. Lain exposes their assignments, returned callables, compilation receipts and child environments as ports. The host publishes the problem and held-out invoices and observes the resulting network.
+
+[Orchestration](../experiments/delegation/pricing.lain) · [Session probe](../experiments/delegation/probe.clj) · [Numerical and support checks](../experiments/delegation/evaluate.clj) · [Local evidence](/home/lain/reports/heuristic-delegation-20261121)
+
+Run the fixed-source control first. Both branches must reproduce the two prior invoices, predict different prices for the planner's chosen quantity, and remain undecided before the new invoice arrives. Publish alternative invoices into isolated verification cells in the same session. Require the correct branch to produce a 140-copy quote, with the branch, invoice and target quantity among its TTMS supports. Each wrong branch should remain silent on its quote port. The alternatives represent two hypothetical worlds. Neither world shares an invoice port with the other.
+
+The optional-delegation trial asks which invoice quantity would be informative. The flat-rate comparison supplies an unambiguous rule. A separate ambiguous trial adds a requirement to deliver independently executable predictions. It supplies neither hypothesis nor a required number of workers. Runtime cores are prewired with two available workers. A dispatch counts only when the transport observes a real request for that worker.
+
+The run uses the existing model and soul runtime with direct qwen3.8-flash-next at temperature 0, medium thinking, 2,048 thinking tokens and 4,096 maximum completion tokens. The local harness uses base commit 00c1ead with workspace additions and the exported runtime 2773dff. The experiment uses one watchdog-registered JVM at a time, a 1,400 MiB heap and a 2,304 MiB reservation.
+
+The controlled run passed all eight evaluator checks. In the first real ambiguous trial Flash explicitly described both flat and marginal interpretations and chose 101 copies. It submitted no worker assignments. The two invoices corroborate the advertised lower tier at those quantities; extrapolating the rule to all smaller orders also uses the stated policy.
+
+The flat-rate planner computed 28,000 cents for 140 copies and dispatched zero jobs. It also connected the monetary result to the quantity probe port. Treat that output as a unit error.
+
+The second ambiguous user message added one sentence asking for executable predictions for each material interpretation. Flash chose 150 copies and commissioned two real implementation agents. The requests overlapped by 7.146 seconds, with nine provider samples reporting two running requests during their overlap. Both returned complete Lain, were admitted into separate children, and reproduced the original invoices. Worker A implemented 200 cents per copy at every quantity. Worker B implemented the marginal discount. At 150 copies the pair predicted 30,000 and 27,500 cents. The planner omitted the advertised whole-order discount of 22,500 cents. The marginal-world invoice selected B and produced 26,000 cents for the 140-copy target. The whole-order-world invoice ruled out both candidates and both outputs stayed unknown. There were three calls in this trial, all before the invoices. The recorded marginal-world quote includes B's branch premise, the marginal invoice and the target quantity as supports. The origin of every generated token is outside these TTMS observations.
+
+The original score assumed numerical ordering identified the hypotheses. The real outputs exposed that assumption. The reviewed evaluator checks each worker's match against its actual prediction and scores coverage independently. All eight controlled checks passed. Seven of eight real checks passed, with hypothesis coverage failing. The original and reviewed evaluator outputs are preserved. A probe import error in the first executable-predictions launch occurred before inference. The corrected launch is recorded in executable2. Across all three real prompts there were five provider completions. Only one planner decision per prompt was sampled.
+
+## Where the planner and workers keep state
+
+All three roles use the same Flash model service. Each request carries a role instruction and one user message. The planner sees the problem. Each implementation worker sees only its assignment. To transfer an assumption to a worker, the planner must put it in the assignment.
+
+During the session, each worker's lexical child holds its admitted definitions. The worker exports the pricing callable to a Lain cell. The verification network applies that callable to the probe and target quantities. Its match and output cells carry TTMS supports for the branch and invoice, and the selected quote also carries the target quantity. This lets a new invoice produce a result without calling Flash again. The branch premise is explicitly supplied by the experiment. These supports describe the calculation, while the request logs and admission receipts document how the code arrived.
+
+After the session closes, the probe leaves local records of the requests, generated source, admissions, timings and observed values. The worker prompts have no shared transcript or archive retrieval. The separate [queryable context experiment](2026-11-17-queryable-context.md) exercises Datomic evidence storage and an agent-authored index. Connecting that catalog to this planner and measuring cross-session rediscovery remain open.
+
+## Reading the run evidence
+
+Follow the planner's source to its assignment ports, then the worker requests to the admitted callables. Compare the snapshots before the probe invoice, after the first invoice and after both hypothetical worlds have been checked. The reviewed evaluator scores correctness of verification separately from coverage of the two interpretations. The fixed-source control passed 8/8 checks. The executable real-model trial passed 7/8, with coverage as the failed check. The matched worker requests overlapped by 7.146 seconds.
+
+Local run directories under `/home/lain/reports/heuristic-delegation-20261121/` are `control1` for fixed responses, `ambiguous` and `clear` for the two decision probes, and `executable2` for the real worker pair. The earlier `executable` directory preserves the pre-inference import failure.
