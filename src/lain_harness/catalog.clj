@@ -40,6 +40,11 @@
                                                                   [:catalog/description :catalog/interface :catalog/assumptions]))
       (throw (ex-info "Registration requires id, description, interface and assumptions" {})))
     (locking references
+      ;; Evidence/index identities cannot be repurposed by legacy registration.
+      (let [existing (d/pull (d/db (:connection store)) '[*] [:catalog/id id])]
+        (when (and (or (:catalog/evidence-kind existing) (:catalog/claim-chunk existing))
+                   (nil? (:catalog/registration existing)))
+          (throw (ex-info "Identity belongs to evidence or an indexed claim" {:id id}))))
       (when-let [saved (:catalog/registration (d/pull (d/db (:connection store))
                                                       [:catalog/registration] [:catalog/id id]))]
         (when-not (= record (edn/read-string saved))

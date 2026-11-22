@@ -152,7 +152,8 @@
                       (handle [_ exchange]
                         (swap! received conj (json/read-json (slurp (.getRequestBody exchange))))
                         (let [body (.getBytes (json/write-json
-                                               {:choices [{:message {:content "hello" :reasoning_content "considered"}
+                                               {:usage {:prompt_tokens 2 :completion_tokens 1}
+                                                :choices [{:message {:content "hello" :reasoning_content "considered"}
                                                            :finish_reason "stop"}]}) "UTF-8")]
                           (.sendResponseHeaders exchange 200 (alength body))
                           (with-open [out (.getResponseBody exchange)] (.write out body))))))
@@ -163,6 +164,7 @@
                         :model "test-model" :max-tokens 32 :timeout-ms 2000 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
             result (transport {:text "hi" :cancelled? (constantly false)})]
         (is (= {:kind :reply :text "hello" :thinking "considered"
+                :http-status 200 :usage {:prompt_tokens 2 :completion_tokens 1}
                 :finish-reason "stop" :truncated? false} result))
         (is (= [{:role "user" :content "hi"}] (:messages (first @received))))
         (is (= false (:stream (first @received))))

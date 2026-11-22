@@ -62,5 +62,6 @@
                   (not (or (nil? text) (string? text))) (not (string? thinking)))
           (throw (ex-info "Malformed model response" {})))
         {:kind :reply :text (or text "") :thinking thinking
+         :http-status (.statusCode response) :usage (:usage body)
          :finish-reason (or (:finish_reason choice) "unknown")
          :truncated? (= "length" (:finish_reason choice))}))))

@@ -1,0 +1,8 @@
+(load-lain "lib/context-policy.lain")
+(load-lain "environments/context.lain")
+(define context-model (model))
+(define context-requests (behavior:source))
+(define context-response (model:output context-model))
+
+;; One temporal ingress owns the shared model input across lexical attempts.
+(-> (behavior:latest-value context-requests) (model:input context-model))

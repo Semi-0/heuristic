@@ -1,0 +1,159 @@
+(load-lain "soul-refined.lain")
+(load-lain "lib/behavior-core.lain")
+
+;; Each attempt owns fresh output ports. Accepted prefixes remain in its lexical
+;; environment; one diagnostic correction can extend that environment.
+(define context:bind
+  (network [e name reference] (extend-env e (env:reference-slot name reference))))
+
+(define context:gate
+  (network [value ready]
+    (let-cell [waiting]
+      (if ready value waiting))))
+
+(define context:request
+  (network [base id task phase memory diagnostic result-reference]
+    (let-cell []
+      (define e0 (context:bind (cell:value base) "current-task" (cell:reference task)))
+      (define e1 (context:bind e0 "working-evidence" (cell:reference memory)))
+      (define e2 (context:bind e1 "latest-diagnostic" (cell:reference diagnostic)))
+      (define e3 (context:bind e2 "stage-result" result-reference))
+      (define e4 (context:bind e3 "stage" (cell:reference phase)))
+      (define e5 (context:bind e4 "request-id" (cell:reference id)))
+      (define snapshot (cell:first (environment:snapshot-once e5
+            (seq:of "role-cell" "language-introduction-cell" "context-guide" "output-contract"
+              "retrieval-example-cell" "current-task" "stage" "request-id" "working-evidence" "latest-diagnostic")
+            (seq:of "current-task" "working-evidence" "latest-diagnostic") true)))
+      (define text (data:get :text snapshot))
+      (define packet (data:record :id id :text text :messages
+          (seq:of (data:record :role "system" :content text)
+            (data:record :role "user" :content task))))
+      (define request-archive (cell:first (context:archive-value (context:id id "request") :request packet)))
+      (define count (if (data:equal? (data:get :status request-archive) :archived)
+          (cell:first (context:tokens packet))
+          (data:record :status :error :reason :archive-failed)))
+
+      (data:record :status (data:get :status count) :count count :packet packet :base (cell:reference e5)
+        :conversation (data:record :task task :phase phase
+          :working-evidence (if (data:has? memory :history)
+            (data:record :overview (data:get :overview memory)) memory)
+          :latest-diagnostic diagnostic)))))
+
+(define context:execute
+  (network [prepared worker raw requests id time task phase result-reference]
+    (let-cell [runtime-input]
+      (define e5 (cell:value (data:get :base prepared)))
+      (define packet (data:get :packet prepared))
+      (let-cell []
+        (define outgoing (event:point id time runtime-input))
+        (define response (cell:first (context:gate (cell:value raw)
+              (data:equal? (data:get :request-id (cell:value raw)) id))))
+        (define archived (cell:first (context:archive-value (context:id id "response") :response response)))
+        (define source-archive (cell:first (context:archive (context:id id "source") :source (data:get :text response))))
+        (define run (runtime (struct :bindings e5 :request packet)
+            (struct :input runtime-input
+              :output (context:gate response
+                (logic:all (data:equal? (data:get :status archived) :archived)
+                  (data:equal? (data:get :status source-archive) :archived))))))
+        (define receipt (cell:first ((slot :compilation) run)))
+        (define receipt-archive (cell:first (context:archive-value (context:id id "admission") :admission receipt)))
+        (define observed (cell:first (context:observe result-reference
+              (context:gate receipt (data:equal? (data:get :status receipt-archive) :archived)))))
+        (define checked (cell:first (context:validate task phase observed)))
+        (define result-archive (cell:first (context:archive-value (context:id id "result") :result observed)))
+        (define check-archive (cell:first (context:archive-value (context:id id "validation") :validation checked)))
+
+        (-> outgoing (cell:input requests))
+        (context:gate (data:record :status (data:get :status checked)
+            :result (data:get :result observed) :diagnostic checked
+            :environment (cell:reference ((slot :environment) run))
+            :source (data:get :text response)
+            :transcript (seq:of (data:merge (data:get :conversation prepared)
+                (data:record :source (data:get :text response))))
+            :evidence (seq:of (context:id id "request") (context:id id "response")
+              (context:id id "source") (context:id id "admission")
+              (context:id id "result") (context:id id "validation")))
+          (logic:all (data:equal? (data:get :status result-archive) :archived)
+            (data:equal? (data:get :status check-archive) :archived)))))))
+
+(define context:attempt
+  (network [base worker raw requests id time task phase memory diagnostic]
+    (let-cell [stage-result]
+      (define prepared (cell:first (context:request base id task phase memory diagnostic (cell:reference stage-result))))
+      (define count (data:get :count prepared))
+      (define allowed (if (data:equal? (data:get :status count) :counted)
+          (<= (data:get :tokens count) 12000) false))
+      (if allowed
+        (context:execute prepared worker raw requests id time task phase (cell:reference stage-result))
+        (let-cell []
+          (define overflow (data:record :status :unresolved :reason :input-budget :count count))
+          (define saved (cell:first (context:archive-value (context:id id "overflow") :diagnostic overflow)))
+          (context:gate (data:record :status :unresolved :result overflow :diagnostic overflow
+              :environment (data:get :base prepared) :source "" :transcript (seq:of)
+              :evidence (seq:of (context:id id "overflow")))
+            (data:equal? (data:get :status saved) :archived)))))))
+
+(define context:stage
+  (network [base worker raw requests id time task phase memory]
+    (let-cell []
+      (define first (cell:first (context:attempt base worker raw requests id time task phase memory "No diagnostic.")))
+
+      (if (data:equal? (data:get :status first) :invalid)
+        (let-cell []
+          (define correction (cell:first (context:attempt (data:get :environment first) worker raw requests
+                (str id "-correction") (+ time 1) task phase memory (data:record :validation (data:get :diagnostic first) :failed-source (data:get :source first)))))
+
+          (data:merge correction (data:record :transcript (seq:concat (data:get :transcript first)
+                (data:get :transcript correction)))))
+        first))))
+
+;; The decreasing remaining count bounds retrieval topology. The agent selects
+;; evidence in its output; the host never chooses a retrieved operator.
+(define context:work
+  (network [base worker raw requests id time task memory remaining]
+    (let-cell []
+      (define attempt (cell:first (context:stage base worker raw requests id time task :work memory)))
+      (define result (data:get :result attempt))
+
+      (if (data:equal? (data:get :status attempt) :valid)
+        (if (data:equal? (data:get :decision result) :retrieve)
+          (if (> remaining 0)
+            (let-cell []
+              (define next (cell:first (context:work base worker raw requests (str id "-retrieve") (+ time 10) task
+                    (data:get :evidence result) (- remaining 1))))
+
+              (data:merge next (data:record :transcript (seq:concat (data:get :transcript attempt)
+                    (data:get :transcript next)))))
+            (data:record :status :unresolved :reason :retrieval-limit :attempt attempt :transcript (data:get :transcript attempt)))
+          (data:record :status (if (data:equal? (data:get :decision result) :done) :delivered :unresolved)
+            :attempt attempt :transcript (data:get :transcript attempt)))
+        (data:record :status :unresolved :reason :stage-failed :attempt attempt :transcript (data:get :transcript attempt))))))
+
+(define context:task
+  (network [base worker raw requests id time task history]
+    (let-cell []
+      (define task-saved (cell:first (context:archive (context:id id "task") :task task)))
+
+      (if (data:equal? (data:get :status task-saved) :archived)
+        (let-cell []
+          (define overview (cell:first (context:query "[:find ?id ?description :in $ % :where [?e :catalog/id ?id] [?e :catalog/description ?description]]" "[]" nil 8)))
+          (define work (cell:first (context:work base worker raw requests (str id "-work") time task
+                (data:record :overview overview :history history) 4)))
+
+          (if (data:has? work :status)
+            (let-cell []
+              (define attempt (data:get :attempt work))
+              (define index-memory (data:record :task-evidence (context:id id "task")
+                  :artifacts (data:get :evidence attempt)
+                  :source (data:get :source attempt)
+                  :outcome (data:get :result attempt)
+                  :validation (data:get :diagnostic attempt)))
+              (define indexed (cell:first (context:stage (data:get :environment attempt) worker raw requests
+                    (str id "-index") (+ time 80) task :index index-memory)))
+              (define outcome (data:record :status (data:get :status work) :work work :index indexed
+                  :transcript (seq:concat (data:get :transcript work) (data:get :transcript indexed))))
+              (define saved (cell:first (context:archive-value (context:id id "outcome") :outcome outcome)))
+
+              (context:gate outcome (data:equal? (data:get :status saved) :archived)))
+            (data:record :status :unresolved :reason :missing-work)))
+        (data:record :status :unresolved :reason :archive-failed)))))
