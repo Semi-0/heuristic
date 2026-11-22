@@ -1,3 +1,35 @@
+# Heuristic documentation
+
+## Current maintained pages
+
+- [Status and evidence](STATUS.md)
+- [Design and source map](DESIGN.md)
+- [Plan and acceptance gates](PLAN.md)
+- [Remaining issues](ISSUES.md)
+- [Original research proposal](lain-agent-harness-proposal.md)
+
+## Recent experiment reports
+
+- [November 21 — planner delegation, verification and memory](2026-11-21-planner-delegation.md).
+- [November 18 — context retrieval prompt trials](2026-11-18-context-prompt-repair.md).
+- [November 17 — queryable context and the matched pilot](2026-11-17-queryable-context.md).
+- [November 16 — direct Flash and Pi comparison](2026-11-16-pi-model-extension.md).
+
+- [November 14: cumulative-history benchmark pilot](2026-11-14-cumulative-history-pilot.md) — corrected request envelope and terminal results.
+- [November 13: semantic validation and bounded repair](2026-11-13-semantic-validation-repair.md).
+- [November 13: dependency-aware catalog reuse](2026-11-13-dependency-aware-catalog-reuse.md).
+- [November 11: missing-output repair](2026-11-11-missing-output-repair.md).
+- [November 11: agent-directed durable accumulation](2026-11-11-agent-directed-durable-accumulation.md).
+- [November 10: durable source restoration](2026-11-10-durable-source-restoration.md).
+- [November 10: durable executable preflight](2026-11-10-durable-executable-preflight.md).
+- [November 10: cumulative catalog closures](2026-11-10-cumulative-catalog-closures.md).
+- [November 10: catalog discovery](2026-11-10-catalog-discovery-experiment.md).
+- [November 10: autonomous repair continuation](2026-11-10-autonomous-repair-experiment.md).
+
+## Historical reading index
+
+The following earlier index is retained for navigation. Use STATUS above for current conclusions; dated reports retain their original scope and runtime pins.
+
 # Language context
 
 Start with [the current research status and evidence map](research-status-2026-11-08.md). It organizes the design, passed conditions, failed conditions, corrected diagnoses, reproducible checks, and remaining work. The [Tsuki handoff](handoffs/2026-11-08-heuristic-to-tsuki.md) is the bounded cross-project reading brief; the [publication receipt](publication-2026-11-08.md) records delivery and CI/CD status. Dated reports below preserve the history and should be read with their runtime/orchestration caveats.
@@ -42,3 +74,13 @@ The guide and examples are copied from the local Lain source tree at `projects/d
 - [Runtime faults and environment-visible dependency recovery](2026-11-08-runtime-and-dependency-recovery-fixes.md)
 - [Unchanged-kernel cross-check: runnable examples, context boundaries, and remaining failures](2026-11-08-unchanged-kernel-cross-check.md)
 - [Public session API audit and compiled Lain compound consumers](2026-11-08-session-api-audit.md)
+
+- [Scheduler map-task lifecycle and collection evidence](../tools/scheduler/map_task/README.md) — controlled November 15 run; no deployment.
+
+- [Disk-backed map-tasks effect](../tools/scheduler/disk_tasks/README.md) — stable parent graph, persistence-before-retirement and controlled recovery checks.
+
+- [Lain ingress and isolated observer networks](../tools/scheduler/reactive_scheduler/README.md) — live command propagation, file event logs, measured retention and deployment.
+
+- [Pi backend through the existing model session extension](2026-11-16-pi-model-extension.md) — implementation, control checks and terminal comparison.
+
+- [Queryable context: implementation and negative pilot — November 17](2026-11-17-queryable-context.md) (controlled gates pass; indexed acceptance failed; all runs terminal).

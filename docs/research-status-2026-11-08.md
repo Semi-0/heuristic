@@ -1,5 +1,7 @@
 # Heuristic: design, evidence, and current research status
 
+**Navigation update (2026-11-14):** use [current status](STATUS.md), [design](DESIGN.md), [plan](PLAN.md) and [issues](ISSUES.md) for the maintained overview. This dated evidence map remains intact below.
+
 This is the reading entry point for the November 8 review and the Tsuki handoff. The [November 9–10 continuation](2026-11-10-autonomous-repair-experiment.md) records subsequent real repair attempts and the new unchanged-runtime control. Historical records remain at their original paths. A passing result applies to its recorded runtime, orchestration, and input condition; it is not automatically acceptance of the latest design.
 
 ## Intended architecture
