@@ -325,12 +325,14 @@
             (assert (and (old-ids "target") (not (old-ids "target-v2"))))
             (assert (every? #(not (str/blank? (:description %))) (mapcat :dependencies (index-rows ctx)))))))
       (finally (h/close! owner)))))
-(let [[mode path only-arm] *command-line-args*]
-  (assert (#{"control" "live"} mode))
-  (assert (or (nil? only-arm) (#{"serial-full" "serial-selected" "overlap-full" "overlap-selected"} only-arm)))
-  (assert (.isAbsolute (io/file path)) "Supply an absolute evidence path")
-  (try (doseq [[scenario arms] [["serial" [:full :selected]] ["overlap" [:selected :full]]] arm arms
-               :let [arm-id (str scenario "-" (name arm))]
-               :when (or (nil? only-arm) (= only-arm arm-id))]
-         (run-arm! (io/file path arm-id) mode arm (= scenario "overlap")))
-       (finally (shutdown-agents))))
+(if (= "reuse" (first *command-line-args*))
+  (load-file (str root "/experiments/dependency-context/reuse.clj"))
+  (let [[mode path only-arm] *command-line-args*]
+    (assert (#{"control" "live"} mode))
+    (assert (or (nil? only-arm) (#{"serial-full" "serial-selected" "overlap-full" "overlap-selected"} only-arm)))
+    (assert (.isAbsolute (io/file path)) "Supply an absolute evidence path")
+    (try (doseq [[scenario arms] [["serial" [:full :selected]] ["overlap" [:selected :full]]] arm arms
+                 :let [arm-id (str scenario "-" (name arm))]
+                 :when (or (nil? only-arm) (= only-arm arm-id))]
+           (run-arm! (io/file path arm-id) mode arm (= scenario "overlap")))
+         (finally (shutdown-agents)))))

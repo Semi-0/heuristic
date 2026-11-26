@@ -344,3 +344,5 @@ The [2026-11-21 planner delegation pilot](2026-11-21-planner-delegation.md) obse
 The described-link trial completed in four scripted and four live sessions. Selected context passed 6/6 serial and 3/6 overlapping roots. All scripted historical-reference checks passed. [Stored descriptions and measurements](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)
 
 The xhigh trace trial finished at 19:36 UTC on 26 November. With the matching Pi Flash profile’s 32,768 completion-token allowance, all 24 live roots passed. All 48 returned traces passed checksum verification. One full-history selector exhausted the cap before the answer stage recovered. [Trial record](2026-11-26-dependency-context.md#pi-budget-xhigh-trace-trial)
+
+Lain reused her original functions, selected the applicable tariff and cited the supporting records on all 18 scored answers. Dependency selection took 12 calls for six answers and used more generated tokens than full history. [Run and evidence](2026-11-26-reuse-context.md)

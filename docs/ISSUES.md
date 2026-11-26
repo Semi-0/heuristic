@@ -288,3 +288,5 @@ matched sequence; LifelongAgentBench remains paused.
 In the [planner delegation pilot](2026-11-21-planner-delegation.md), a planner that accurately describes both candidate rules can satisfy an explanation request without dispatching verification jobs. The available slot count bounds this experiment. TTMS branch tags record the branch assumed by a verification path. Source admission and call records supply the model-side evidence.
 
 Described dependency links make relations inspectable, but rendering the entire link index on every recognition call repeats descriptions. Per-question incremental retrieval and full prompt token budgeting remain untested. [Protocol trial](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)
+
+The reuse fixture supplies complete provenance edges and visible index labels. Its six matched decisions per arm measure one shop workflow. Long-history reliability and unsupervised edge recognition remain open. [Reuse experiment](2026-11-26-reuse-context.md)
