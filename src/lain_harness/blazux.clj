@@ -16,12 +16,16 @@
         (if (= ::waiting response) (recur) response)))
     (finally (.cancel pending true))))
 
+(def sampling-defaults {:temperature 1.0 :enable-thinking true})
+
 (defn completion-transport
-  [{:keys [endpoint model timeout-ms max-tokens api-key enable-thinking reasoning-effort thinking-token-budget]
+  [{:keys [endpoint model timeout-ms max-tokens api-key enable-thinking reasoning-effort thinking-token-budget temperature]
     :or {endpoint "http://127.0.0.1:18320/v1" model "qwen3.8-flash-next"
-         timeout-ms 30000 max-tokens 512}}]
+         timeout-ms 30000 max-tokens 512
+         temperature (:temperature sampling-defaults) enable-thinking (:enable-thinking sampling-defaults)}}]
   (when-not (and (string? endpoint) (string? model)
                  (pos-int? timeout-ms) (pos-int? max-tokens)
+                 (number? temperature) (<= 0 temperature 2)
                  (or (nil? enable-thinking) (boolean? enable-thinking))
                  (or (nil? reasoning-effort) (#{"medium" "low" "xhigh"} reasoning-effort))
                  (or (nil? thinking-token-budget) (pos-int? thinking-token-budget)))
@@ -36,7 +40,7 @@
                       (.timeout (Duration/ofMillis timeout-ms))
                       (.header "Content-Type" "application/json")
                       (.POST (HttpRequest$BodyPublishers/ofString
-                              (json/write-json (cond-> {:model model :stream false :temperature 0
+                              (json/write-json (cond-> {:model model :stream false :temperature temperature
                                                         :max_tokens max-tokens
                                                         :messages (or messages [{:role "user" :content text}])}
                                                  (some? enable-thinking)

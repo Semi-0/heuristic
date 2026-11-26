@@ -159,24 +159,34 @@
                           (with-open [out (.getResponseBody exchange)] (.write out body))))))
     (.start server)
     (try
-      (let [transport (blazux/completion-transport
-                       {:endpoint (str "http://127.0.0.1:" (.getPort (.getAddress server)) "/v1")
-                        :model "test-model" :max-tokens 32 :timeout-ms 2000 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
+      (let [settings {:endpoint (str "http://127.0.0.1:" (.getPort (.getAddress server)) "/v1")
+                      :model "test-model" :max-tokens 32 :timeout-ms 2000
+                      :reasoning-effort "medium" :thinking-token-budget 2048}
+            transport (blazux/completion-transport settings)
             result (transport {:text "hi" :cancelled? (constantly false)})]
         (is (= {:kind :reply :text "hello" :thinking "considered"
                 :http-status 200 :usage {:prompt_tokens 2 :completion_tokens 1}
                 :finish-reason "stop" :truncated? false} result))
         (is (= [{:role "user" :content "hi"}] (:messages (first @received))))
         (is (= false (:stream (first @received))))
+        (is (== 1.0 (:temperature (first @received))))
         (is (= 2048 (:thinking_token_budget (first @received))))
         (is (= {:enable_thinking true :reasoning_effort "medium"} (:chat_template_kwargs (first @received))))
         (is (= 32 (:max_tokens (first @received))))
         (let [messages [{:role "system" :content "instructions supplied by Lain"}
                         {:role "user" :content "first"}
                         {:role "assistant" :content "delivered"}
-                        {:role "user" :content "next"}]]
-          (transport {:messages messages :cancelled? (constantly false)})
-          (is (= messages (:messages (last @received))))))
+                        {:role "user" :content "next"}]
+              sampled (blazux/completion-transport (assoc settings :temperature 1.0 :reasoning-effort "xhigh"))]
+          (sampled {:messages messages :cancelled? (constantly false)})
+          (is (== 1.0 (:temperature (last @received))))
+          (is (= {:enable_thinking true :reasoning_effort "xhigh"} (:chat_template_kwargs (last @received))))
+          (is (= messages (:messages (last @received)))))
+        (let [disabled (blazux/completion-transport
+                         {:endpoint (:endpoint settings) :temperature 0 :enable-thinking false})]
+          (disabled {:text "hi" :cancelled? (constantly false)})
+          (is (zero? (:temperature (last @received))))
+          (is (= {:enable_thinking false} (:chat_template_kwargs (last @received))))))
       (finally (.stop server 0)))))
 
 (deftest bounded-queue-and-explicit-effect-matching
