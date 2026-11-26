@@ -1,5 +1,7 @@
 # Remaining issues and limits
 
+Dependency recognition can select unnecessary evidence. The question-rooted prototype uses one small catalog, a host scheduler, structured fixture tools and one trial per condition. General retrieval precision and concurrent production latency remain open. [Experiment and results](2026-11-26-dependency-context.md)
+
 Updated 2026-11-14. Entries distinguish observed failures from unproved scope. Do not treat old failures as current defects without their recorded conditions. [Status](STATUS.md) · [Plan](PLAN.md).
 
 | ID | Issue / evidence | Next check |

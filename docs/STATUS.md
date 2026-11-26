@@ -1,5 +1,7 @@
 # Current status and evidence
 
+The question-rooted context prototype has run serial and interleaved real-model trials against a full-history control. The report records compiler and TTMS outcomes, question latency, and recognition plus answer costs. [Experiment and results](2026-11-26-dependency-context.md)
+
 Updated 2026-11-14. Reviewed source: heuristic `00c1ead`; historical trials retain their own runtime pins. This document summarizes recorded evidence; no model or runtime test was rerun for this documentation update. [Design](DESIGN.md) · [Plan](PLAN.md) · [Issues](ISSUES.md).
 
 ## What exists
