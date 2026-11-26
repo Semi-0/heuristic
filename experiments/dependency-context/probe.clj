@@ -7,7 +7,9 @@
          '[lain-harness.premise-experiment :as ttms] '[propagators.compiler-2.session :as s]
          '[propagators.compiler-2.session.connected :as c] '[propagators.compiler-2.session.host :as h])
 (def root (System/getenv "LAIN_HARNESS_ROOT"))
-(def settings {:model "qwen3.8-flash-next" :temperature 0.0 :enable-thinking false :max-tokens 1024 :timeout-ms 90000})
+(def settings
+  (assoc qwen/sampling-defaults :model "qwen3.8-flash-next" :reasoning-effort "xhigh"
+         :max-tokens 32768 :timeout-ms 2400000))
 (def questions
   {:price "Shop p1: an 80-copy invoice was 16000 cents. Flat costs 175 cents/copy. Marginal charges 200 each through 100 and 150 on the excess. Whole charges 200 each through 100 and 150 on ALL copies for larger orders. Quote 140 copies under the current policy using a justified existing callable and the identifying invoice."
    :repair (str "Shop p1: verified 120-copy invoice invoice-120 is 23000 cents; the marginal rule is established. Repair and submit the supplied executable Lain price function. Its current draft is:\n" tools/broken)
@@ -24,27 +26,65 @@
    :a3 "Return only a Lain arithmetic expression referencing the appropriate previous result binding."})
 (defn save! [dir name x] (spit (io/file dir name) (pr-str x)))
 (defn snapshot [ctx] (d/db (:connection (:store ctx))))
+(def relation-text
+  {:context "was recorded in the context of"
+   :reply-to "replies to" :triggered-by "was triggered by"
+   :reads "requested the archived input" :returns "returns the result of"
+   :checked "checked the revision identified by" :rejected "rejected a receipt offered to"
+   :selected "was composed with evidence selected by Lain from"
+   :received "used the receipt from" :premise "has a runtime-observed TTMS premise recorded by"
+   :revises "revises" :observed "records an observation for"})
+(def edge-schema
+  (mapv (fn [[ident type cardinality]]
+          {:db/ident ident :db/valueType type :db/cardinality cardinality})
+        [[:event/dependencies :db.type/ref :db.cardinality/many]
+         [:dependency/target :db.type/ref :db.cardinality/one]
+         [:dependency/relation :db.type/keyword :db.cardinality/one]
+         [:dependency/description :db.type/string :db.cardinality/one]]))
+(defn dependency [relation target] [relation target])
+(def edge-pattern
+  '{:event/dependencies [:dependency/relation :dependency/description
+                         {:dependency/target [:catalog/id]}]})
+(defn descriptions [event]
+  (->> (:event/dependencies event)
+       (map (fn [edge]
+              {:relation (:dependency/relation edge)
+               :target (name (get-in edge [:dependency/target :catalog/id]))
+               :description (:dependency/description edge)}))
+       (sort-by (juxt :target :relation)) vec))
 (defn entry [ctx id]
-  (let [e (d/pull (snapshot ctx) '[:catalog/id :catalog/description :catalog/interface :event/seq :event/time
-                                   {:catalog/depends-on [:catalog/id]}] [:catalog/id (keyword id)])]
+  (let [e (d/pull (snapshot ctx) (conj '[:catalog/id :catalog/description :catalog/interface :event/seq :event/time
+                                   {:catalog/depends-on [:catalog/id]}] edge-pattern) [:catalog/id (keyword id)])]
     (when (:catalog/id e)
       {:id id :label (:catalog/interface e) :body (:catalog/description e) :sequence (:event/seq e) :utc (str (.toInstant (:event/time e)))
-       :parents (sort (map (comp name :catalog/id) (:catalog/depends-on e)))})))
+       :dependencies (descriptions e) :parents (sort (map (comp name :catalog/id) (:catalog/depends-on e)))})))
 (defn put! [ctx id label body parents]
   (assert (nil? (entry ctx id)))
-  (catalog/seed! (:store ctx) [(cond-> {:catalog/id (keyword id) :catalog/interface label :catalog/description body
-                                       :event/seq (swap! (:seq ctx) inc) :event/time (java.util.Date.)}
-                                 (seq parents) (assoc :catalog/depends-on (mapv #(vector :catalog/id (keyword %)) parents)))])
+  (let [edges (for [[relation target] (distinct (map #(if (string? %) [:context %] %) parents))]
+                (let [reference [:catalog/id (keyword target)]
+                      peer (:catalog/interface (d/pull (snapshot ctx) [:catalog/interface] reference))
+                      verb (relation-text relation)]
+                  (when-not (and peer verb) (throw (ex-info "Invalid dependency" {:target target :relation relation})))
+                  {:dependency/target reference :dependency/relation relation
+                   :dependency/description (str label " (" id ") " verb " " peer " (" target ").")}))
+        event {:catalog/id (keyword id) :catalog/interface label :catalog/description body
+               :event/seq (swap! (:seq ctx) inc) :event/time (java.util.Date.)}]
+    (d/transact (:connection (:store ctx))
+                {:tx-data (into [(cond-> event
+                                   (seq edges) (assoc :catalog/depends-on (distinct (map :dependency/target edges))
+                                                      :event/dependencies (mapv #(str "edge-" %) (range (count edges)))))]
+                                (map-indexed #(assoc %2 :db/id (str "edge-" %1)) edges))}))
   id)
 (defn entries [ctx]
   (sort-by :sequence (map #(entry ctx (name (first %))) (d/q '[:find ?id :where [_ :catalog/id ?id]] (snapshot ctx)))))
 (defn index-rows [ctx]
-  (let [rows (d/q '[:find (pull ?e [:catalog/id :catalog/interface :event/seq
-                                     {:catalog/depends-on [:catalog/id]}])
-                    :where [?e :catalog/id]] (snapshot ctx))]
+  (let [db (snapshot ctx)
+        pattern (conj '[:catalog/id :catalog/interface :event/seq {:catalog/depends-on [:catalog/id]}] edge-pattern)
+        rows (d/q '[:find (pull ?e pattern) :in $ pattern :where [?e :catalog/id]] db pattern)]
     (sort-by :sequence
              (for [[e] rows]
                {:id (name (:catalog/id e)) :label (:catalog/interface e) :sequence (:event/seq e)
+                :dependencies (descriptions e)
                 :parents (sort (map (comp name :catalog/id) (:catalog/depends-on e)))}))))
 (defn expand [ctx ids]
   (loop [remaining (seq ids) seen {}]
@@ -58,6 +98,14 @@
 (defn publish! [ctx sym epoch value]
   (let [owner (:owner ctx)]
     (h/extend! owner (pub/declaration (h/current-session owner) sym epoch :active value))))
+(defn save-thinking! [dir id thinking]
+  (when (string? thinking)
+    (let [filename (str id "-thinking.txt")
+          bytes (.getBytes ^String thinking java.nio.charset.StandardCharsets/UTF_8)
+          digest (.digest (java.security.MessageDigest/getInstance "SHA-256") bytes)]
+      (with-open [out (io/output-stream (io/file dir filename))]
+        (.write out bytes))
+      {:file filename :bytes (alength bytes) :sha256 (.formatHex (java.util.HexFormat/of) digest)})))
 (defn call! [{:keys [owner dir calls] :as ctx} q stage role payload scripted]
   (let [id (str (name q) "-" (name stage))
         packet {:id id :messages [{:role "system" :content role} {:role "user" :content payload}]}
@@ -71,11 +119,12 @@
       (let [reply (binding! ctx 'response)]
         (if (= (:request-id reply) id)
           (let [record (assoc (select-keys reply [:kind :text :usage :finish-reason]) :id id
+                              :thinking-trace (save-thinking! dir id (:thinking reply))
                               :seconds (/ (- (System/nanoTime) start) 1e9))]
             (swap! calls conj record)
             (save! dir (str id "-reply.edn") record)
             (if (= "stop" (:finish-reason reply)) (str/trim (:text reply)) ""))
-          (do (when (> (- (System/nanoTime) start) 100000000000) (throw (ex-info "Model deadline" {:id id})))
+          (do (when (> (- (System/nanoTime) start) (* 1000000 (+ 10000 (:timeout-ms settings)))) (throw (ex-info "Model deadline" {:id id})))
               (Thread/sleep 20) (recur)))))))
 (defn seed! [ctx]
   (doseq [[id label body parents]
@@ -92,12 +141,12 @@
   (doseq [[sym val] [['policy "p1"] ['target-count 140] ['start-value 20]]] (publish! ctx sym 1 val)))
 (defn open-question! [ctx q parents]
   (let [id (name q)]
-    (put! ctx id (str (if (= q :repair) "Codex" "Semi") " question") (questions q) parents)
+    (put! ctx id (str (if (= q :repair) "Codex" "Semi") " question") (questions q) (map #(dependency :reply-to %) parents))
     (swap! (:opened ctx) assoc q (System/nanoTime))))
 (defn recognize! [ctx q]
   (let [index (vec (index-rows ctx))
         reply (call! ctx q :recognize
-                 "You are Lain. Recognize the evidence needed to answer this exact question. Select archive IDs, including any needed pending tool request. Return only a JSON array of ID strings. Prefer precise revisions and the previously computed binding. Do not select the question itself."
+                 "You are Lain. Dependency descriptions explain the typed links between archive records. Follow the target IDs to ground claims in original records. A selected link records a model choice; a premise link records observed computational support. Recognize the evidence needed to answer this exact question. Select archive IDs, including any needed pending tool request. Return only a JSON array of ID strings. Prefer precise revisions and the previously computed binding. Do not select the question itself."
                  (str (questions q) "\nRoot " (name q) "\nArchive index " (json/write-json index))
                  (json/write-json (specs q)))
         ids (try (json/read-json reply) (catch Exception _ nil))]
@@ -107,7 +156,7 @@
   (let [tasks (filter #{"invoice120" "diagnostic1"} ids)]
     (doseq [task tasks]
       (let [id (str (name q) "-" task "-call")]
-        (put! ctx id "tool call" task [(name q) task])
+        (put! ctx id "tool call" task [[:triggered-by (name q)] [:reads task]])
         (swap! (:pending ctx) conj id)))))
 (defn call-owner [ctx call]
   (let [{:keys [body parents]} (entry ctx call)]
@@ -123,11 +172,12 @@
   (let [q (call-owner ctx call)
         expected (:body (entry ctx call))]
     (if (= expected task)
-      (let [id (put! ctx (str call "-receipt") "tool receipt" result [call task])]
+      (let [id (put! ctx (str call "-receipt") "tool receipt" result [[:returns call] [:checked task]])]
+        (when (= task "invoice120") (compare-and-set! (:invoice-origin ctx) nil id))
         (swap! (:wake ctx) conj {:root q :call call :receipt id})
         (swap! (:receipts ctx) update q (fnil conj []) id)
         q)
-      (do (put! ctx (str call "-stale") "rejected wrong-revision receipt" result [call task])
+      (do (put! ctx (str call "-stale") "rejected wrong-revision receipt" result [[:rejected call] [:checked task]])
           (swap! (:stale ctx) conj {:call call :expected expected :observed task})
           nil))))
 (def scripts {:asof "[26000,26150]" :price "QUOTE marginal invoice-120" :repair tools/good :a1 "(- start-value (* 100 30))"
@@ -189,7 +239,13 @@
                 initial)
         evaluated (if retry? (evaluate reply) first-result)
         id (case q :a1 "result1" :a2 "result2" :a3 "result3" (str (name q) "-answer"))
-        parents (distinct (concat [(name q)] ids receipts (when check-id [check-id])))
+        premise-ids (if (= q :price)
+                      (when (parse-long (str (:value evaluated)))
+                        (keep {"target-count" "target" "policy" "policy" "invoice120" @(:invoice-origin ctx)} (:sources evaluated)))
+                      (when (:start-supported evaluated) ["start"]))
+        parents (concat [[:reply-to (name q)]] (map #(dependency :selected %) ids)
+                        (map #(dependency :received %) (cond-> receipts check-id (conj check-id)))
+                        (map #(dependency :premise %) premise-ids))
         supported (and (every? (set (map :id evidence)) (specs q))
                        (case q :asof (get-in @(:results ctx) [:price :pass])
                                :price (some #(= "invoice120" (:body (entry ctx (:call %)))) (filter #(= q (:root %)) @(:wake ctx)))
@@ -219,17 +275,19 @@
   (when-not (.mkdirs dir) (throw (ex-info "Use a fresh evidence directory" {:dir dir})))
   (let [owner (h/open! (model/compiler)) script (atom nil) transport (qwen/completion-transport settings)
         ctx {:owner owner :dir dir :arm arm :interleaved interleaved :stale (atom []) :store (catalog/open! (.getAbsolutePath (io/file dir "db")))
-             :seq (atom 0) :calls (atom []) :script script :cells (atom {}) :invoiced (atom false)
+             :seq (atom 0) :calls (atom []) :script script :cells (atom {}) :invoiced (atom false) :invoice-origin (atom nil)
              :results (atom {}) :opened (atom {}) :receipts (atom {}) :wake (atom []) :pending (atom [])}]
     (try
+      (save! dir "settings.edn" settings)
       (h/extend! owner (soul/extension owner (atom [])))
       (h/extend! owner (ttms/facilities))
       (h/extend! owner (model/declaration root "experiments/dependency-context/runtime.lain"
                          {:transport (if (= mode "control")
-                                       (fn [_] {:kind :reply :text @script :finish-reason "stop" :truncated? false})
+                                       (fn [_] {:kind :reply :text @script :thinking "Scripted trace storage check." :finish-reason "stop" :truncated? false})
                                        transport)}))
       (d/transact (:connection (:store ctx)) {:tx-data [{:db/ident :event/seq :db/valueType :db.type/long :db/cardinality :db.cardinality/one}
                                                         {:db/ident :event/time :db/valueType :db.type/instant :db/cardinality :db.cardinality/one}]})
+      (d/transact (:connection (:store ctx)) {:tx-data edge-schema})
       (seed! ctx)
       (if interleaved
         (do (doseq [q [:price :repair :a1]] (open-question! ctx q []))
@@ -244,10 +302,10 @@
       (let [cs (h/current-session owner)
             revised (:value (inspect-cell ctx (s/binding-cell cs 'marginal-result)))
             unchanged (some->> (get @(:cells ctx) :a3) (inspect-cell ctx) :value)
-            _ (put! ctx "target-v2" "target quantity revision 2 supersedes revision 1" "141 copies" ["target"])
+            _ (put! ctx "target-v2" "target quantity revision 2 supersedes revision 1" "141 copies" [[:revises "target"]])
             _ (put! ctx "revised-quote" "quote observed after target revision 2"
                     (if (get-in @(:results ctx) [:price :result :verified]) (str revised) "original callable unavailable")
-                    ["target-v2" "price-answer"])
+                    [[:observed "target-v2"] [:context "price-answer"]])
             _ (open-question! ctx :asof ["target-v2"])
             _ (batch! ctx [:asof])
             summary {:mode mode :arm arm :interleaved interleaved :settings settings
@@ -258,11 +316,21 @@
         (save! dir "summary.edn" summary)
         (spit (io/file dir "summary.json") (json/write-json summary))
         (println (.getName dir) (mapv (fn [[q r]] [q (:pass r)]) (:results summary)) (:mutation summary)) (flush)
-        (when (= "control" mode) (assert (and (every? :pass (vals (:results summary))) (get-in summary [:mutation :pass])))))
+        (when (= "control" mode)
+          (assert (and (every? :pass (vals (:results summary))) (get-in summary [:mutation :pass])))
+          (let [quote-edges (:dependencies (entry ctx "price-answer"))
+                old-ids (set (map :id (expand ctx ["price-answer"])))]
+            (assert (= #{"policy" "target" @(:invoice-origin ctx)}
+                       (set (map :target (filter #(= :premise (:relation %)) quote-edges)))))
+            (assert (and (old-ids "target") (not (old-ids "target-v2"))))
+            (assert (every? #(not (str/blank? (:description %))) (mapcat :dependencies (index-rows ctx)))))))
       (finally (h/close! owner)))))
-(let [[mode path] *command-line-args*]
+(let [[mode path only-arm] *command-line-args*]
   (assert (#{"control" "live"} mode))
+  (assert (or (nil? only-arm) (#{"serial-full" "serial-selected" "overlap-full" "overlap-selected"} only-arm)))
   (assert (.isAbsolute (io/file path)) "Supply an absolute evidence path")
-  (try (doseq [[scenario arms] [["serial" [:full :selected]] ["overlap" [:selected :full]]] arm arms]
-         (run-arm! (io/file path (str scenario "-" (name arm))) mode arm (= scenario "overlap")))
+  (try (doseq [[scenario arms] [["serial" [:full :selected]] ["overlap" [:selected :full]]] arm arms
+               :let [arm-id (str scenario "-" (name arm))]
+               :when (or (nil? only-arm) (= only-arm arm-id))]
+         (run-arm! (io/file path arm-id) mode arm (= scenario "overlap")))
        (finally (shutdown-agents))))

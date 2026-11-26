@@ -15,7 +15,7 @@
       _ (.mkdirs (java.io.File. evidence))
       journal (atom []) requests (atom []) responses (atom []) rounds (atom [])
       owner (host/open! (model/compiler))
-      provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 4096 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
+      provider (blazux/completion-transport {:enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
       read-value #(connected/payload (session/binding-value (host/current-session owner) %))
       publish (fn [name v] (host/publish-input! owner (fn [current] [(session/publication-input (session/binding-cell current name) v)])) (host/step! owner))]
   (try

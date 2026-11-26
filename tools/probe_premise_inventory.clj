@@ -11,7 +11,7 @@
                              (if control? "control" (or (System/getenv "LAIN_ATTEMPT") "live")))) "/")
       _ (.mkdirs (java.io.File. evidence))
       owner (host/open! (model/compiler)) journal (atom []) requests (atom []) snapshots (atom [])
-      provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 4096 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
+      provider (blazux/completion-transport {:enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
       read-value #(connected/payload (session/binding-value (host/current-session owner) %))
       publish (fn [name epoch status base]
                 (let [current (host/current-session owner)

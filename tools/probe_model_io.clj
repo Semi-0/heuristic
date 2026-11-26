@@ -1,5 +1,6 @@
 (load-file (str (System/getenv "LAIN_HARNESS_ROOT") "/tools/offline_uuid.clj"))
-(require '[lain-harness.model-io-session :as setup]
+(require '[lain-harness.blazux :as blazux]
+         '[lain-harness.model-io-session :as setup]
          '[propagators.compiler-2.session :as session]
          '[propagators.compiler-2.session.connected :as connected]
          '[propagators.compiler-2.session.host :as host])
@@ -8,7 +9,7 @@
   (throw (ex-info "Pass --live to send one bounded greeting to the local Blazux endpoint" {})))
 
 (let [owner (setup/open! (System/getenv "LAIN_HARNESS_ROOT") "examples/lain/model-refined-demo.lain"
-                         {:timeout-ms 30000 :max-tokens 128})
+                         blazux/sampling-defaults)
       started (System/nanoTime)]
   (try
     ;; Exercise the same source-extension entry point used by the editor.
@@ -18,7 +19,7 @@
                     :files {"model-io-live-prompt.lain"
                             "(define live-output (model:output m))
                              (-> \"Hi. Reply with one short greeting.\" (model:input m))"}}))
-    (let [deadline (+ (System/currentTimeMillis) 45000)]
+    (let [deadline (+ (System/currentTimeMillis) (:timeout-ms blazux/sampling-defaults) 15000)]
       (loop []
         (when-let [error (first (host/failures owner))] (throw error))
         (let [output (connected/payload (session/binding-value (host/current-session owner) 'live-output))]

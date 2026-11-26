@@ -8,7 +8,7 @@
 (let [root (System/getenv "LAIN_HARNESS_ROOT")
       evidence "/home/lain/projects/lain-workspace/runtime/arithmetic-attempt-1/"
       _ (.mkdirs (java.io.File. evidence))
-      provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 4096 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
+      provider (blazux/completion-transport {:enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
       {:keys [owner journal]} (soul/open! root {:transport (fn [request]
                                                            (spit (str evidence "request.edn") (pr-str (dissoc request :cancelled?)))
                                                            (spit (str evidence "context.txt") (:text request))

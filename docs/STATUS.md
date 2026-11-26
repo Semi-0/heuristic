@@ -340,3 +340,7 @@ application-error containment through public session surfaces. Then repeat the
 matched sequence; LifelongAgentBench remains paused.
 
 The [2026-11-21 planner delegation pilot](2026-11-21-planner-delegation.md) observed recognition with zero dispatches for the explanatory task, followed by two concurrent implementation calls for the executable task. Invoice-dependent verification worked, with one advertised pricing interpretation missing from the planner's candidates.
+
+The described-link trial completed in four scripted and four live sessions. Selected context passed 6/6 serial and 3/6 overlapping roots. All scripted historical-reference checks passed. [Stored descriptions and measurements](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)
+
+The xhigh trace trial finished at 19:36 UTC on 26 November. With the matching Pi Flash profile’s 32,768 completion-token allowance, all 24 live roots passed. All 48 returned traces passed checksum verification. One full-history selector exhausted the cap before the answer stage recovered. [Trial record](2026-11-26-dependency-context.md#pi-budget-xhigh-trace-trial)

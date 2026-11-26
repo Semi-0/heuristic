@@ -36,3 +36,43 @@ All four live arms first submitted the wrong price rule, then used the concrete 
 The strict score also requires the selected packet to contain every required evidence ID (the full-history packet naturally contains more IDs), and the relevant tool to have been requested by the same root. In both serial arms the model fixed the bracket without requesting the reader diagnostic, so repair lost its provenance point. In overlapping selected context the price recognizer chose policy and invoice but omitted the target-quantity record. The executable still had target-count support, and the exact question included 140, yet the selected packet lacked that archive ID. The historical follow-up returned both correct amounts as JSON strings. The verifier required integer amounts and a supported original price answer. Overlapping full history passed both checks.
 
 Across the two schedules, selection used 43% and 57% fewer total tokens, respectively. Every arm made 13 real calls. The latency figures depend on the local worker and workload. Selectors also picked incidental records on some turns. Neither smaller packets nor executable correctness guarantees complete or minimal evidence. There were four isolated scripted controls with all 24 scored roots and four mutation checks passing. Local artifacts include every recognition, answer and correction packet, responses, answer-parent lists, timestamps, tool receipts, and Datomic databases. Compact results in the repository include question-level latencies. [Machine-readable measurements](../experiments/dependency-context/measured.json) · [Live evidence](/home/lain/reports/dependency-context-receipt-live) · [Control evidence](/home/lain/reports/dependency-context-receipt-control)
+
+## Stored descriptions for dependency links
+
+The prototype now transacts each event and its dependency records together in Datomic. Each link has a relation, an exact target event reference, and a short English description generated from the relation and the endpoint labels. A source can have several different relations to the same target. The recognition index includes these descriptions without the event bodies. The answer packet groups the links with their source event and includes the selected original records and their ancestors in journal order. Earlier databases retain their parent IDs; this experiment writes descriptions for new events.
+
+For example, the original quote can have a model-selected link to the policy and a separate TTMS premise link to that same policy. A runtime premise link can also reach the target quantity even when Lain did not select that record. The price and arithmetic fixtures map inspected source cells to archived records. The invoice premise points to the first accepted receipt that published the invoice value. The original quote continues to point to the initial quantity after revision 2 arrives. General-purpose runtime cell-to-archive mapping and token-budgeted, incremental expansion remain open. This trial exposes the entire metadata index to the recognizer and expands the selected ancestry for answering. [Storage and context assembly](../experiments/dependency-context/probe.clj)
+
+All four scripted controls passed, including checks of the stored TTMS targets and historical revision. The live trial used the same six roots and sampling settings as the earlier receipt comparison on the local workspace atop 7a926d2.
+
+| Live arm | Supported roots | Total tokens |
+| --- | ---: | ---: |
+| serial-full | 5/6 | 37,267 |
+| serial-selected | 6/6 | 21,743 |
+| overlap-full | 6/6 | 37,802 |
+| overlap-selected | 3/6 | 18,143 |
+
+In the overlapping selected arm the computed quote had all three TTMS premises. Recognition omitted the target event on that turn and returned an empty selection for the first arithmetic question. The historical answer later recovered both exact integer amounts but inherited the original quote’s failed packet-support score. The serial selected arm passed all six roots. These observations measure the entire protocol change, including premise references and prompt changes. [Control evidence](/home/lain/reports/described-dependencies-control-02) · [Live evidence](/home/lain/reports/described-dependencies-live-01)
+
+## Thinking enabled at temperature 1
+
+On 26 November at 17:41 UTC the described-dependency experiment started fresh scripted controls and live runs for the two schedules and two context policies. All use the Flash sampling defaults. For comparison with the earlier run, each live call retains the 1,024-completion-token limit shared by thinking and visible output, and the same 90-second HTTP timeout. The experiment records the visible response, finish status and provider token usage at each stage.
+
+The operator increased the default to 12,288 completion tokens while the 1,024-token run was in progress. The original live run stopped after five saved responses in its first arm. Its completed scripted controls passed all 24 roots. The replacement uses fresh sessions, thinking enabled, temperature 1.0, 12,288 completion tokens per call, and a 600-second HTTP deadline. The root and source selection protocol, experimental tasks, and scoring stay as in the described-link trial. [Partial 1,024-token run](/home/lain/reports/dependency-context-thinking-t1-live)
+
+The 12,288-token trial was superseded after one live response. The first serial-full recognition call used all 12,288 tokens for reasoning, returned empty visible text, and finished with length after 362.9 seconds. Its four scripted controls passed all 24 roots. That run predates trace recording. [Partial 12,288-token run](/home/lain/reports/dependency-context-thinking-t1-12k-live)
+
+## Pi-budget xhigh trace trial
+
+At 17:55 UTC the experiment started fresh controls and four live sessions. Pi's local gx10-blazux profile for qwen3.8-flash-next specifies a 131,072-token context window and 32,768 maximum completion tokens. This trial requests xhigh, temperature 1.0 and thinking enabled, with the full 32,768 shared by reasoning and visible output. The HTTP deadline is 40 minutes per call. Each completed response including one ending in length gets a UTF-8 trace file if a thinking field is available. Its reply record includes the file name, byte length and SHA-256. The trace stays outside subsequent model messages. Controls use clearly labeled synthetic trace text. The four live conditions run concurrently in separate JVMs and Datomic databases against one model endpoint. Per-question scheduling and scoring within each condition follow the earlier experiment. Wall times include contention and batching and should not be directly compared to sequential-arm runs. [Live artifacts](/home/lain/reports/dependency-context-xhigh-pi-live) · [Scripted artifacts](/home/lain/reports/dependency-context-xhigh-pi-control)
+
+All four live conditions completed by 19:36 UTC. Each passed six supported roots, passed the mutation check, and used twelve model calls. All four scripted controls also passed. The four live sessions ran for about 101 minutes wall time in total. The audit verified all 48 nonempty live reasoning files against their saved lengths and SHA-256 checksums (1,670,910 UTF-8 bytes).
+
+| Schedule | Context | Supported roots | Reasoning tokens | Total tokens |
+| --- | --- | ---: | ---: | ---: |
+| Serial | Full | 6/6 | 74,607 | 112,250 |
+| Serial | Selected | 6/6 | 103,204 | 122,367 |
+| Overlapping | Full | 6/6 | 137,437 | 171,264 |
+| Overlapping | Selected | 6/6 | 96,729 | 114,361 |
+
+Across arms the provider reported 411,977 reasoning tokens and 520,242 total tokens. All four pricing selectors included policy, target and invoice, and all quotes passed on the initial answer. The overlapping selected arm chose the archived start operand and passed the historical comparison. The overlapping full-history arm's historical selector used its entire 32,768-token allowance and returned no IDs. Its returned trace repeatedly weighs alternative evidence sets, including whether the earlier quote answer also requires its invoice receipt. The next full-history answer call still received the original records and returned the two amounts correctly. Thus 24 passing final checks include one intermediate selection that did not complete. These are four single trials with several settings changed together. [Portable results](../experiments/dependency-context/measured-xhigh.json) · [Live comparison and trace audit](/home/lain/reports/dependency-context-xhigh-pi-live/comparison.json)

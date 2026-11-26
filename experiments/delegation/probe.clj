@@ -13,7 +13,7 @@
 (def logic {"plan" "(-> \"ambiguous\" assessment) (-> 101 probe-count) (-> \"marginal\" job-a) (-> \"volume\" job-b)"
             "a" "(define cost (network [n] (if (<= n 100) (* n 200) (+ 20000 (* (- n 100) 150))))) (-> cost quote-output)"
             "b" "(define cost (network [n] (if (<= n 100) (* n 200) (* n 150)))) (-> cost quote-output)"})
-(def provider (qwen/completion-transport {:max-tokens 4096 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048 :timeout-ms 240000}))
+(def provider (qwen/completion-transport {:enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048}))
 (defn save [file data] (spit (str out "/" file) data))
 (def times (atom {}))
 (defn transport [request]
@@ -53,10 +53,10 @@
   "A print shop charges exactly 200 cents per copy for every positive quantity, without discounts or fees. What is the total at 140 copies? Decide whether implementation work is warranted."
   (str "A print shop charges $2 per copy for orders up to 100 copies and advertises '$1.50 per copy over 100.' Verified invoices: 80 copies cost $160 and 100 cost $200. What does this evidence establish? Choose one additional positive order quantity whose invoice would be informative."
        (when executable " Deliver independently executable predictions for each materially different interpretation you identify, so the new invoice can be checked when it arrives."))))
- (wait-for #(receipt 'planner-receipt) 300)
+ (wait-for #(receipt 'planner-receipt) 620)
  (save "planner.edn" (pr-str (mapv val-of '[assessment probe-count job-a job-b])))
  (let [jobs (for [[n r] '[[job-a receipt-a] [job-b receipt-b]] :when (string? (val-of n))] r)]
-  (doseq [r jobs] (wait-for #(receipt r) 300))
+  (doseq [r jobs] (wait-for #(receipt r) 620))
   (let [cs (current) nw (s/network cs)
         graph (net/net-graph nw)
         export (fn [n]

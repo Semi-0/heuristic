@@ -3,6 +3,7 @@
             [clojure.core.async :as async]
             [graph.json :as json]
             [lain-harness.blazux :as blazux]
+            [lain-harness.transport :as streaming]
             [lain-harness.model-io :as bridge]
             [lain-harness.model-io-session :as setup]
             [propagators.cells.value :as value]
@@ -151,10 +152,11 @@
                     (reify HttpHandler
                       (handle [_ exchange]
                         (swap! received conj (json/read-json (slurp (.getRequestBody exchange))))
-                        (let [body (.getBytes (json/write-json
+                        (let [body (.getBytes (if (:stream (last @received)) "data: [DONE]\n\n"
+                                               (json/write-json
                                                {:usage {:prompt_tokens 2 :completion_tokens 1}
                                                 :choices [{:message {:content "hello" :reasoning_content "considered"}
-                                                           :finish_reason "stop"}]}) "UTF-8")]
+                                                           :finish_reason "stop"}]})) "UTF-8")]
                           (.sendResponseHeaders exchange 200 (alength body))
                           (with-open [out (.getResponseBody exchange)] (.write out body))))))
     (.start server)
@@ -182,9 +184,15 @@
           (is (== 1.0 (:temperature (last @received))))
           (is (= {:enable_thinking true :reasoning_effort "xhigh"} (:chat_template_kwargs (last @received))))
           (is (= messages (:messages (last @received)))))
+        (let [send-stream! (streaming/streaming-model settings)]
+          (send-stream! {:messages [{:role "user" :content "hi"}] :cancelled? (constantly false)} identity)
+          (is (true? (:stream (last @received))))
+          (is (== 1.0 (:temperature (last @received))))
+          (is (true? (get-in (last @received) [:chat_template_kwargs :enable_thinking]))))
         (let [disabled (blazux/completion-transport
                          {:endpoint (:endpoint settings) :temperature 0 :enable-thinking false})]
           (disabled {:text "hi" :cancelled? (constantly false)})
+          (is (= 12288 (:max_tokens (last @received))))
           (is (zero? (:temperature (last @received))))
           (is (= {:enable_thinking false} (:chat_template_kwargs (last @received))))))
       (finally (.stop server 0)))))

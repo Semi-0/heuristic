@@ -44,7 +44,7 @@
 (defn trial! [root evidence control]
   (.mkdirs (java.io.File. evidence))
   (let [provider-options {:timeout-ms 600000
-                          :max-tokens (Long/parseLong (or (System/getenv "LAIN_MODEL_MAX_TOKENS") "4096"))
+                          :max-tokens (or (some-> (System/getenv "LAIN_MODEL_MAX_TOKENS") parse-long) (:max-tokens blazux/sampling-defaults))
                           :enable-thinking true :reasoning-effort "medium"
                           :thinking-token-budget (Long/parseLong (or (System/getenv "LAIN_MODEL_THINKING_TOKENS") "2048"))}
         provider (blazux/completion-transport provider-options)

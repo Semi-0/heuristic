@@ -1,6 +1,7 @@
 (ns lain-harness.transport
   "Configurable streaming HTTP effect; no compiler or weather dispatch."
-  (:require [clojure.string :as str] [clojure.java.io :as io] [graph.json :as json])
+  (:require [clojure.string :as str] [clojure.java.io :as io] [graph.json :as json]
+            [lain-harness.blazux :as flash])
   (:import [java.net URI] [java.net.http HttpClient HttpRequest HttpRequest$BodyPublishers HttpResponse$BodyHandlers]
            [java.time Duration] [java.util.concurrent Executors TimeUnit ThreadFactory]))
 (defn consume-sse! [reader cancelled? emit!]
@@ -20,8 +21,10 @@
         (recur))
       (throw (ex-info "Model stream ended without completion" {:phase :transport})))))
 (defn streaming-model
-  [{:keys [endpoint model timeout-ms max-tokens headers]
-    :or {timeout-ms 90000 max-tokens 1800 headers {}}}]
+  [{:keys [endpoint model timeout-ms max-tokens headers temperature enable-thinking]
+    :or {timeout-ms (:timeout-ms flash/sampling-defaults) max-tokens (:max-tokens flash/sampling-defaults) headers {}
+         temperature (:temperature flash/sampling-defaults)
+         enable-thinking (:enable-thinking flash/sampling-defaults)}}]
   (when-not (and (string? endpoint) (string? model) (pos-int? timeout-ms))
     (throw (ex-info "Model endpoint, name and positive timeout are required" {})))
   (fn [{:keys [messages cancelled?]} emit!]
@@ -30,7 +33,8 @@
                       (.header "Content-Type" "application/json")
                       (.POST (HttpRequest$BodyPublishers/ofString
                                (json/write-json {:model model :messages messages :stream true
-                                                 :temperature 0 :max_tokens max-tokens}))))
+                                                 :temperature temperature :max_tokens max-tokens
+                                                 :chat_template_kwargs {:enable_thinking enable-thinking}}))))
           _ (doseq [[name value] headers] (.header builder name value))
           deadline (+ (System/nanoTime) (* 1000000 timeout-ms))
           client (-> (HttpClient/newBuilder) (.connectTimeout (Duration/ofMillis timeout-ms)) .build)

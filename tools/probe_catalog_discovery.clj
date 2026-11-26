@@ -47,7 +47,7 @@
       owner (host/open! compiler)
       diagnostic-time (atom 0)
       admissions (atom []) requests (atom []) responses (atom [])
-      provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 8192 :enable-thinking (not= "false" (System/getenv "LAIN_DISCOVERY_THINKING"))
+      provider (blazux/completion-transport {:enable-thinking (not= "false" (System/getenv "LAIN_DISCOVERY_THINKING"))
                                              :reasoning-effort "medium" :thinking-token-budget 4096})
       read-value #(connected/payload (session/binding-value (host/current-session owner) %))
       publish (fn [entries] (host/publish-input! owner (fn [current]

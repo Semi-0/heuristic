@@ -35,7 +35,7 @@
       policy-mode (or (System/getenv "LAIN_SEMANTIC_MODE") "fresh")
       _ (assert (#{"control" "clean" "exhausted" "replay" "fresh"} policy-mode))
       controlled? (#{"control" "clean" "exhausted"} policy-mode)
-      thinking? (= "1" (System/getenv "LAIN_POLICY_THINKING"))
+      thinking? (= "1" (or (System/getenv "LAIN_POLICY_THINKING") "1"))
       store (catalog/open! (str evidence "/database"))
       before (edn/read-string {:default tagged-literal} (slurp (str evidence "/accumulate-result.edn")))
       base (model/compiler)
@@ -47,7 +47,7 @@
       journal (atom []) requests (atom []) responses (atom []) snapshots (atom []) checks (atom {})
       provider-count (atom 0)
       outcomes (atom nil) pre-repair (atom [])
-      provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 8192 :enable-thinking thinking? :reasoning-effort "medium" :thinking-token-budget 4096})
+      provider (blazux/completion-transport {:enable-thinking thinking? :reasoning-effort "medium" :thinking-token-budget 4096})
       read-value #(connected/payload (session/binding-value (host/current-session owner) %))
       publish (fn [entries]
                 (host/publish-input! owner (fn [current] (mapv (fn [[n v]] (session/publication-input (session/binding-cell current n) v)) entries)))

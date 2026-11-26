@@ -55,7 +55,7 @@
                          :propagation-options {:max-steps 300000 :timeout-ms 180000}))
         owner (host/open! compiler) journal (atom []) requests (atom []) responses (atom []) phase-responses (atom []) analyses (atom []) generalizations (atom [])
         snapshots (atom []) rounds (atom []) input-names (atom {}) outcome (atom {})
-        provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 4096 :enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
+        provider (blazux/completion-transport {:enable-thinking true :reasoning-effort "medium" :thinking-token-budget 2048})
         read-value #(connected/payload (session/binding-value (host/current-session owner) %))
         publish (fn [name epoch status base]
                   (let [ref (session/binding-cell (host/current-session owner) name)]

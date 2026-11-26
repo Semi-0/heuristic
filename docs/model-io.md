@@ -146,3 +146,5 @@ the user's submitted prompt; the saved example leaves prompt submission explicit
 
 The original `soul.lain` remains unchanged. The unknown-slot display improvement
 is recorded in `TODO.md`.
+
+Direct model experiments default to temperature 1.0, thinking enabled and 12,288 completion tokens per call, shared by reasoning and visible output. The default HTTP timeout is 600 seconds. Both HTTP transports use the shared settings, and explicit comparison options can override them. [Default settings](../src/lain_harness/blazux.clj)

@@ -9,8 +9,8 @@
 (def settings
   (let [[_ _ max-tokens timeout-ms] *command-line-args*]
     (assoc qwen/sampling-defaults
-           :max-tokens (Long/parseLong (or max-tokens "512"))
-           :timeout-ms (Long/parseLong (or timeout-ms "75000")))))
+           :max-tokens (if max-tokens (Long/parseLong max-tokens) (:max-tokens qwen/sampling-defaults))
+           :timeout-ms (if timeout-ms (Long/parseLong timeout-ms) (:timeout-ms qwen/sampling-defaults)))))
 (def base-role (str "You are a planner working on one attempt. You choose the next action. Respond with ONE action per turn, up to four turns. No Markdown fences. "
  "NOTE followed by text records a public decision and continues; FINAL followed by text ends the session. "
  "HISTORY all, HISTORY open or HISTORY contradicted queries this shop's earlier attempts (two reads). "

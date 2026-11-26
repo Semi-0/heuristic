@@ -286,3 +286,5 @@ application-error containment through public session surfaces. Then repeat the
 matched sequence; LifelongAgentBench remains paused.
 
 In the [planner delegation pilot](2026-11-21-planner-delegation.md), a planner that accurately describes both candidate rules can satisfy an explanation request without dispatching verification jobs. The available slot count bounds this experiment. TTMS branch tags record the branch assumed by a verification path. Source admission and call records supply the model-side evidence.
+
+Described dependency links make relations inspectable, but rendering the entire link index on every recognition call repeats descriptions. Per-question incremental retrieval and full prompt token budgeting remain untested. [Protocol trial](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)

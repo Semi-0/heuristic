@@ -271,3 +271,5 @@ application-error containment through public session surfaces. Then repeat the
 matched sequence; LifelongAgentBench remains paused.
 
 For [planner delegation](2026-11-21-planner-delegation.md), score ambiguity recognition, assignment publication, concurrent execution, and evidence-dependent selection individually.
+
+The described-link prototype checks whether stored premise references survive a later revision and whether the selected evidence packet contains the linked originals. A subsequent budgeted retrieval trial can measure which descriptions need to enter each question's context. [Experiment](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)

@@ -55,7 +55,7 @@
                                               :propagation-options {:max-steps 300000 :timeout-ms 180000}))
       owner (host/open! compiler)
       journal (atom []) requests (atom []) responses (atom []) result (atom nil)
-      provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 8192 :enable-thinking false})
+      provider (blazux/completion-transport {})
       read-value #(connected/payload (session/binding-value (host/current-session owner) %))
       publish (fn [entries]
                 (host/publish-input! owner (fn [current] (mapv (fn [[n v]] (session/publication-input (session/binding-cell current n) v)) entries)))

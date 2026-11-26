@@ -1,0 +1,169 @@
+[
+  {
+    "schedule_and_context": "serial-full",
+    "passed": 6,
+    "checks": 6,
+    "calls": 12,
+    "answer_input_tokens": 22980,
+    "input_tokens": 37435,
+    "completion_tokens": 74815,
+    "total_tokens": 112250,
+    "summed_call_seconds": 3751.27,
+    "question_seconds": {
+      "price": 929.89,
+      "repair": 1847.76,
+      "a1": 55.58,
+      "a2": 208.06,
+      "a3": 158.39,
+      "asof": 553.07
+    },
+    "failed": [],
+    "quote_correction": false,
+    "mutation": {
+      "price": "26150",
+      "unrelated": "1",
+      "pass": true
+    },
+    "wake_order": [
+      "price",
+      "price",
+      "repair",
+      "repair"
+    ],
+    "rejected_stale": [],
+    "traces": {
+      "files": 12,
+      "bytes": 283629
+    },
+    "reasoning_tokens": 74607,
+    "truncated_calls": []
+  },
+  {
+    "schedule_and_context": "serial-selected",
+    "passed": 6,
+    "checks": 6,
+    "calls": 12,
+    "answer_input_tokens": 6466,
+    "input_tokens": 18950,
+    "completion_tokens": 103417,
+    "total_tokens": 122367,
+    "summed_call_seconds": 5086.7,
+    "question_seconds": {
+      "price": 1432.37,
+      "repair": 1734.47,
+      "a1": 408.41,
+      "a2": 387.04,
+      "a3": 87.32,
+      "asof": 1038.43
+    },
+    "failed": [],
+    "quote_correction": false,
+    "mutation": {
+      "price": "26150",
+      "unrelated": "1",
+      "pass": true
+    },
+    "wake_order": [
+      "price",
+      "repair",
+      "repair"
+    ],
+    "rejected_stale": [],
+    "traces": {
+      "files": 12,
+      "bytes": 436343
+    },
+    "reasoning_tokens": 103204,
+    "truncated_calls": []
+  },
+  {
+    "schedule_and_context": "overlap-full",
+    "passed": 6,
+    "checks": 6,
+    "calls": 12,
+    "answer_input_tokens": 22361,
+    "input_tokens": 33647,
+    "completion_tokens": 137617,
+    "total_tokens": 171264,
+    "summed_call_seconds": 6011.46,
+    "question_seconds": {
+      "repair": 4083.72,
+      "price": 4253.07,
+      "a1": 4274.21,
+      "a2": 144.26,
+      "a3": 269.78,
+      "asof": 1324.61
+    },
+    "failed": [],
+    "quote_correction": false,
+    "mutation": {
+      "price": "26150",
+      "unrelated": "1",
+      "pass": true
+    },
+    "wake_order": [
+      "repair",
+      "repair",
+      "price"
+    ],
+    "rejected_stale": [
+      {
+        "call": "repair-diagnostic1-call",
+        "expected": "diagnostic1",
+        "observed": "diagnostic2"
+      }
+    ],
+    "traces": {
+      "files": 12,
+      "bytes": 547034
+    },
+    "reasoning_tokens": 137437,
+    "truncated_calls": [
+      "asof-recognize"
+    ]
+  },
+  {
+    "schedule_and_context": "overlap-selected",
+    "passed": 6,
+    "checks": 6,
+    "calls": 12,
+    "answer_input_tokens": 6015,
+    "input_tokens": 17427,
+    "completion_tokens": 96934,
+    "total_tokens": 114361,
+    "summed_call_seconds": 4820.58,
+    "question_seconds": {
+      "repair": 2748.22,
+      "price": 2781.29,
+      "a1": 2803.93,
+      "a2": 237.29,
+      "a3": 191.41,
+      "asof": 1589.27
+    },
+    "failed": [],
+    "quote_correction": false,
+    "mutation": {
+      "price": "26150",
+      "unrelated": "1",
+      "pass": true
+    },
+    "wake_order": [
+      "repair",
+      "repair",
+      "price"
+    ],
+    "rejected_stale": [
+      {
+        "call": "repair-diagnostic1-call",
+        "expected": "diagnostic1",
+        "observed": "diagnostic2"
+      }
+    ],
+    "traces": {
+      "files": 12,
+      "bytes": 403904
+    },
+    "reasoning_tokens": 96729,
+    "truncated_calls": []
+  }
+]

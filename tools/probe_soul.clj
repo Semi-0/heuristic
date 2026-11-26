@@ -15,7 +15,7 @@
 (.mkdirs (io/file evidence-dir))
 (def requests (atom []))
 (def responses (atom []))
-(def provider (blazux/completion-transport {:timeout-ms 600000 :max-tokens 16384 :enable-thinking (not= "0" (System/getenv "LAIN_SOUL_THINKING")) :reasoning-effort "medium" :thinking-token-budget 2048}))
+(def provider (blazux/completion-transport {:enable-thinking (not= "0" (System/getenv "LAIN_SOUL_THINKING")) :reasoning-effort "medium" :thinking-token-budget 2048}))
 (defn observed [owner binding]
   (connected/payload (session/binding-value (host/current-session owner) binding)))
 (defn await!

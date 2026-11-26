@@ -16,12 +16,12 @@
         (if (= ::waiting response) (recur) response)))
     (finally (.cancel pending true))))
 
-(def sampling-defaults {:temperature 1.0 :enable-thinking true})
+(def sampling-defaults {:temperature 1.0 :enable-thinking true :max-tokens 12288 :timeout-ms 600000})
 
 (defn completion-transport
   [{:keys [endpoint model timeout-ms max-tokens api-key enable-thinking reasoning-effort thinking-token-budget temperature]
     :or {endpoint "http://127.0.0.1:18320/v1" model "qwen3.8-flash-next"
-         timeout-ms 30000 max-tokens 512
+         timeout-ms (:timeout-ms sampling-defaults) max-tokens (:max-tokens sampling-defaults)
          temperature (:temperature sampling-defaults) enable-thinking (:enable-thinking sampling-defaults)}}]
   (when-not (and (string? endpoint) (string? model)
                  (pos-int? timeout-ms) (pos-int? max-tokens)
