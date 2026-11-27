@@ -318,3 +318,5 @@ In the question-rooted prototype, a Datomic dependency record carries a typed re
 The isolated crossover driver maintains a lexical FTS5 index beside the Datomic archive, reranks up to eight candidates, expands stored references and executes responses against declarations loaded from source files. [Source](../experiments/context-crossover/run.py)
 
 The isolated project benchmark grants Flash structured search/read/edit actions in pinned snapshots, with offline Node execution and a journal of tool reads, writes and feedback. [Implementation](../experiments/autocomplete-project/run.py)
+
+The chronological Soul editor can bind request-policy changes to the next packet ID via the [editor hot-reload integration](../experiments/editor-hot-reload/README.md).

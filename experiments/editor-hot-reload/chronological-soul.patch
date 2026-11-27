@@ -1,0 +1,13 @@
+--- a/experiments/editor-chat/soul-editor.lain
++++ b/experiments/editor-chat/soul-editor.lain
+@@ -61,8 +61,9 @@
+ (chat:export :user "soul-fixture" :user-message (cell:reference fixture-input))
+ (define chronology (editor:chronicle (editor:run-id) context user-input codex-input fixture-input turns))
+ (define soul-model (model))
++(define request-policy (network [packet] packet))
+ (define soul-run
+-  (runtime (struct :bindings seed :request (conversation-request chronology))
++  (runtime (struct :bindings seed :request (editor:live-call request-policy (conversation-request chronology)))
+            soul-model))
+ (-> ((slot :environment) soul-run) execution-environment)
+ (define execution-receipt ((slot :compilation) soul-run))
