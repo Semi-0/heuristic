@@ -14,9 +14,11 @@
   (let [cell (tools/extend-source! (:owner ctx) (binding! ctx 'repair-frame) id (pr-str form))]
     (:value (inspect-cell ctx cell))))
 (defn author! [ctx]
-  (let [reply (call! ctx :setup :author
+  (let [reply (if-let [prior (:saved-setup ctx)]
+                (do (swap! (:calls ctx) conj prior) (:text prior))
+                (call! ctx :setup :author
                      "You are Lain. Write executable Lain. Return only a JSON array of three strings, each one (define NAME (network [n] EXPR)). Use integer literals and prefix + and *. No markdown."
-                     "For this print shop define press-k: sheets for n bundles, 8 sheets per bundle plus 3 setup sheets. Define tariff-b: October rush cents for n sheets, 11 per sheet plus 40. Define tariff-m: November rush cents for n sheets, 9 per sheet plus 95." nil)
+                     "For this print shop define press-k: sheets for n bundles, 8 sheets per bundle plus 3 setup sheets. Define tariff-b: October rush cents for n sheets, 11 per sheet plus 40. Define tariff-m: November rush cents for n sheets, 9 per sheet plus 95." nil))
         sources (json/read-json reply)]
     (assert (= 3 (count sources)))
     (doseq [[sym source f] (map vector '[press-k tariff-b tariff-m] sources [#(+ 3 (* 8 %)) #(+ 40 (* 11 %)) #(+ 95 (* 9 %))])]
@@ -49,7 +51,11 @@
         tariff (if old? 'tariff-b 'tariff-m) expected ((if old? #(+ 40 (* 11 %)) #(+ 95 (* 9 %))) (+ 3 (* 8 n)))
         question (if old? "Codex: What rush charge applied to the Aster order as originally invoiced?" "Semi: What rush charge applies to the revised Aster order?")
         idx (when (= arm :selected) (mapv #(select-keys % [:id :label :parents]) (index-rows ctx)))
-        initial (case arm :full (entries ctx) :oracle (expand ctx [(first ids)]) :selected [])
+        ranking (when-let [rank (:rank ctx)] (rank ctx question))
+        initial (case arm :reranked (expand ctx [(:id (first (:scores ranking)))]) :full (entries ctx) :oracle (expand ctx [(first ids)]) :selected [])
+        routing (when-let [route (:route ctx)] (route question initial))
+        effort (or (:id (first (:scores routing))) (:reasoning-effort settings))
+        _ (reset! (:effort ctx) effort)
         result (try
                  (loop [events initial round 0]
                    (let [payload (pr-str (cond-> {:question question :events (rows events)} idx (assoc :index idx)))
@@ -70,26 +76,44 @@
                           :version (and (boolean (operators tariff)) (not (operators (if old? 'tariff-m 'tariff-b))))
                           :supported (and evidence (every? seen ids)) :expr (pr-str form) :reads round}))))
                  (catch Exception e {:error (ex-message e)}))]
-    (merge {:episode ep :arm arm :question q} result (metrics (subvec @(:calls ctx) offset) start))))
-(defn run-reuse! [path ep]
+    (merge {:episode ep :arm arm :question q}
+           (when ranking {:ranking ranking :routing routing :requested-effort effort :selected-ids (mapv :id initial)
+                          :target-top-one (= (first ids) (:id (first (:scores ranking))))}) result (metrics (subvec @(:calls ctx) offset) start))))
+(defn run-reuse! [path ep run-questions!]
   (let [dir (io/file path (str "episode-" ep)) _ (assert (.mkdirs dir)) owner (h/open! (model/compiler))
-        ctx {:owner owner :dir dir :calls (atom []) :script (atom nil) :seq (atom 0)
+        effort (atom (:reasoning-effort settings))
+        previous (when-let [source (nth *command-line-args* 2 nil)]
+                   (let [candidate (io/file source (str "episode-" ep))]
+                     (when (.exists candidate) candidate)))
+        prior-rows (when (and previous (= "active" (first *command-line-args*))) (slurp (io/file previous "scores.jsonl")))
+        ctx {:effort effort :previous-scores (when prior-rows (mapv json/read-json (str/split-lines prior-rows))) :owner owner :dir dir :saved-setup (when previous (clojure.edn/read-string (slurp (io/file previous "setup-author-reply.edn")))) :calls (atom []) :script (atom nil) :seq (atom 0)
              :store (catalog/open! (.getAbsolutePath (io/file dir "db")))}]
     (try
       (h/extend! owner (soul/extension owner (atom [])))
       (h/extend! owner (ttms/facilities))
-      (h/extend! owner (model/declaration root "experiments/dependency-context/runtime.lain" {:transport (qwen/completion-transport settings)}))
+      (h/extend! owner (model/declaration root "experiments/dependency-context/runtime.lain" {:transport (fn [request] ((qwen/completion-transport (assoc settings :reasoning-effort @effort)) request))}))
       (d/transact (:connection (:store ctx)) {:tx-data [{:db/ident :event/seq :db/valueType :db.type/long :db/cardinality :db.cardinality/one}
                                                         {:db/ident :event/time :db/valueType :db.type/instant :db/cardinality :db.cardinality/one}]})
       (d/transact (:connection (:store ctx)) {:tx-data edge-schema})
       (let [start (System/nanoTime) sources (author! ctx)]
-        (spit (io/file dir "setup.json") (json/write-json (metrics @(:calls ctx) start)))
+        (if previous
+          (do (when prior-rows (spit (io/file dir "scores.jsonl") prior-rows))
+              (doseq [f ["setup.json" "setup-author-reply.edn"]]
+                (io/copy (io/file previous f) (io/file dir f))))
+          (spit (io/file dir "setup.json") (json/write-json (metrics @(:calls ctx) start))))
         (seed-orders! ctx ep sources)
-        (doseq [arm (nth [[:full :selected :oracle] [:selected :oracle :full] [:oracle :full :selected]] (mod (dec ep) 3))
-                q (if (even? ep) [:historical :revision] [:revision :historical])]
-          (let [r (challenge! ctx ep arm q)]
-            (spit (io/file dir "scores.jsonl") (str (json/write-json r) "\n") :append true)
-            (println r) (flush))))
+        (run-questions! ctx ep))
       (finally (h/close! owner)))))
-(let [[_ path] *command-line-args*]
-  (try (doseq [ep [1 2 3]] (run-reuse! path ep)) (finally (shutdown-agents))))
+(defn reuse-questions! [{:keys [dir] :as ctx} ep]
+  (doseq [arm (nth [[:full :selected :oracle] [:selected :oracle :full] [:oracle :full :selected]] (mod (dec ep) 3))
+          q (if (even? ep) [:historical :revision] [:revision :historical])]
+    (let [r (challenge! ctx ep arm q)]
+      (spit (io/file dir "scores.jsonl") (str (json/write-json r) "\n") :append true)
+      (println r) (flush))))
+(let [[mode path] *command-line-args*]
+  (try
+    (case mode
+      ("rerank" "routed") (load-file (str root "/experiments/dependency-context/rerank.clj"))
+      "active" (load-file (str root "/experiments/dependency-context/active.clj"))
+      (doseq [ep [1 2 3]] (run-reuse! path ep reuse-questions!)))
+    (finally (shutdown-agents))))

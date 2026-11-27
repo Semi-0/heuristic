@@ -346,3 +346,7 @@ The described-link trial completed in four scripted and four live sessions. Sele
 The xhigh trace trial finished at 19:36 UTC on 26 November. With the matching Pi Flash profile’s 32,768 completion-token allowance, all 24 live roots passed. All 48 returned traces passed checksum verification. One full-history selector exhausted the cap before the answer stage recovered. [Trial record](2026-11-26-dependency-context.md#pi-budget-xhigh-trace-trial)
 
 Lain reused her original functions, selected the applicable tariff and cited the supporting records on all 18 scored answers. Dependency selection took 12 calls for six answers and used more generated tokens than full history. [Run and evidence](2026-11-26-reuse-context.md)
+
+Encouragement reduced mean time from 507 to 95 seconds with four of four supported answers in both staged arms. Joined plans passed zero of four alone and one of four with encouragement. [Experiment](2026-11-27-active-prompt.md)
+
+Qwen3-Reranker-0.6B followed by Flash xhigh was queued for the six recorded order questions. [Experiment](2026-11-27-reranker.md)

@@ -1,5 +1,7 @@
 # Current design
 
+The isolated prompt-speed experiment can execute a model-selected archive read or numeric probe and a model-authored continuation in one dispatch. Both protocols resolve the same archive and execute expressions in the same restricted lexical frame. [Implementation](../experiments/dependency-context/active.clj)
+
 An isolated question-rooted context prototype uses a shared Lain model worker, Datomic event and dependency records, lexical bindings and TTMS observations. A session-side driver resolves model-selected evidence and delivers revision-checked fixture receipts. [Experiment and results](2026-11-26-dependency-context.md)
 
 Reviewed 2026-11-14 against heuristic `00c1ead`. This is an implementation map; the [original proposal](lain-agent-harness-proposal.md) remains the research specification. See [status](STATUS.md) for acceptance limits.

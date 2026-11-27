@@ -1,0 +1,24 @@
+# Action encouragement and latency
+
+Started 2026-11-27 00:52 UTC. Four paired questions across two fresh Soul sessions compare the usual prompt with the action encouragement paragraph. Both arms can read dependency records, execute trial expressions, inspect receipts and submit a final expression. Settings and executable definitions are shared within each pair. Arm order alternates. One question in each session needs an archived order. The other has two rates that agree at ten sheets and a live meter that can be tested at other quantities. Correctness requires executable reuse, the correct price, and supporting evidence. For timing, the first useful action is the completed target order read or a distinguishing meter probe. Total wall time and provider-generated tokens include all actions through final scoring. Eight calls per question are allowed.
+
+The two-arm run is a pilot. The primary comparison crosses prompt encouragement and an optional executable continuation, with four matched questions per condition. Two fresh episodes each include one revised/original order and one meter challenge. Across four question blocks each condition appears once at each ordinal position. Both protocols allow separate actions and expose the same archive and probe. The joined protocol additionally accepts an archive read and its dependent expression, or a numeric probe, comparison and two possible answer expressions, in one dispatch. The compiler executes the selected expression. The host does not choose which evidence or tariff to use. Trial and final type allowlists are shared. [Driver](../experiments/dependency-context/active.clj)
+
+The pilot was stopped when the scope expanded, before starting the factorial run. Its first baseline order passed in 114.9 seconds. Pilot rows are excluded from all four-way comparisons. The four-way run uses qwen3.8-flash-next, temperature 1, thinking enabled, xhigh, and 32,768 completion tokens per call in every cell, matching the prior reuse trial. Base 667f4ea, runtime c33c2111a43cd2d1a0140a62df8312848e585d5a, compiler 343f08d1241b0e23549c0425dcdae9f7a0d8bff0. Run with `experiments/dependency-context/run.sh active /absolute/new/report-directory`.
+
+After the sixth sampled answer, the scorer raised an assertion when a joined infix probe produced no numeric result. That answer remains a failed trial. Its latency uses the saved single-call wall time of 173.487 seconds and omits the small post-call rejection overhead. The resumed JVM reinstalls the same saved episode-one setup definitions, verifies them on the same cases, copies the existing scores and skips completed questions. Subsequent scored calls continue in their scheduled order. No sampled answer was replaced. The scorer now records the invalid numeric receipt as a normal failure.
+
+## Completed results
+
+| Protocol | Supported correct | Calls | Mean seconds | Median seconds | Median seconds to first useful action | Flash generated tokens |
+|---|---:|---:|---:|---:|---:|---:|
+| Staged baseline | 4/4 | 9 | 507.4 | 511.8 | 310.2 (4 reached) | 67,614 |
+| Encouragement | 4/4 | 8 | 95.1 | 84.3 | 21.7 (4 reached) | 12,995 |
+| Executable plans | 0/4 | 4 | 309.0 | 124.5 | 493.7 (2 reached) | 41,085 |
+| Plans + encouragement | 1/4 | 6 | 244.0 | 158.3 | 52.3 (2 reached) | 32,305 |
+
+Encouragement saved 412.3 seconds per question on average with the staged protocol and 65.0 seconds with plans available. Staged encouragement preserved accuracy and reduced generated tokens by 80.8%. It was faster on three of four paired questions. Enabling plans on the encouraged arm added 148.9 seconds per question on average and lowered supported accuracy from 4/4 to 1/4. The observed interaction on mean elapsed time is 347.3 seconds (the encouragement speed benefit was smaller with plans). Four question blocks provide descriptive effects, not a precise interaction estimate. Failed answers are timed through rejection. A short time to failure does not establish a faster time to a correct answer.
+
+All four collapsed meter answers selected distinguishing quantities but emitted infix calls instead of executable Lain prefix syntax. Final plan failures ended the turn, whereas an intermediate invalid staged action could receive feedback and retry. The combined arm used two calls for both orders; one final expression multiplied the sheet count by a tariff evaluated on the bundle count. The two order prompts described function references, and the joined template used expression placeholders. These findings concern this prompt and execution contract. [Per-trial scores](../experiments/dependency-context/active-measured.json).
+
+Four scripted valid plans passed the same executor and scorer in one dispatch each: order totals 1,562 and 1,305 cents and meter totals 779 and 860 cents. This control exercises both conditional branches. It made no provider calls and is excluded from the live totals.

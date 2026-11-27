@@ -1,0 +1,323 @@
+{
+  "scores": [
+    {
+      "joined": false,
+      "arm": "baseline",
+      "supported": true,
+      "trial-count": 0,
+      "value": 1562,
+      "question": "order",
+      "reuse": true,
+      "seconds": 402.763173944,
+      "generated-tokens": 13270,
+      "expr": "(tariff-m (press-k 20))",
+      "prompt-tokens": 1485,
+      "expected": 1562,
+      "first-action": {
+        "action": "read",
+        "seconds": 16.494176343,
+        "generated": 579
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 1,
+      "correct": true
+    },
+    {
+      "joined": false,
+      "arm": "encouraged",
+      "supported": true,
+      "trial-count": 0,
+      "value": 1562,
+      "question": "order",
+      "reuse": true,
+      "seconds": 77.599537985,
+      "generated-tokens": 2567,
+      "expr": "(tariff-m (press-k 20))",
+      "prompt-tokens": 1619,
+      "expected": 1562,
+      "first-action": {
+        "action": "read",
+        "seconds": 22.442324928,
+        "generated": 723
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 1,
+      "correct": true
+    },
+    {
+      "joined": true,
+      "arm": "combined",
+      "supported": true,
+      "trial-count": 0,
+      "value": 1562,
+      "question": "order",
+      "reuse": true,
+      "seconds": 263.17059763,
+      "generated-tokens": 8845,
+      "expr": "(tariff-m (press-k 20))",
+      "prompt-tokens": 1807,
+      "expected": 1562,
+      "first-action": {
+        "action": "read",
+        "seconds": 90.402461244,
+        "generated": 2894
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 1,
+      "correct": true
+    },
+    {
+      "arm": "collapsed",
+      "question": "order",
+      "seconds": 911.894368701,
+      "generated-tokens": 30027,
+      "prompt-tokens": 786,
+      "first-action": {
+        "action": "read",
+        "seconds": 911.894031499,
+        "generated": 30027
+      },
+      "error": "Invalid Lain expression",
+      "calls": 1,
+      "episode": 1
+    },
+    {
+      "joined": false,
+      "arm": "encouraged",
+      "supported": true,
+      "trial-count": 1,
+      "value": 779,
+      "question": "meter",
+      "reuse": true,
+      "seconds": 54.109311792,
+      "generated-tokens": 1878,
+      "expr": "(rate-x 81)",
+      "prompt-tokens": 703,
+      "expected": 779,
+      "first-action": {
+        "action": "run",
+        "seconds": 25.049132133,
+        "generated": 876
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 1,
+      "correct": true
+    },
+    {
+      "arm": "collapsed",
+      "episode": 1,
+      "question": "meter",
+      "seconds": 173.487480373,
+      "prompt-tokens": 372,
+      "generated-tokens": 5884,
+      "calls": 1,
+      "first-action": null,
+      "error": "Invalid infix probe; no numeric receipt",
+      "timing-source": "saved provider-call elapsed; excludes post-call rejection overhead"
+    },
+    {
+      "joined": false,
+      "arm": "baseline",
+      "supported": true,
+      "trial-count": 2,
+      "value": 779,
+      "question": "meter",
+      "reuse": true,
+      "seconds": 620.889622256,
+      "generated-tokens": 20892,
+      "expr": "(rate-x 81)",
+      "prompt-tokens": 861,
+      "expected": 779,
+      "first-action": {
+        "action": "run",
+        "seconds": 603.895825168,
+        "generated": 20220
+      },
+      "calls": 3,
+      "pass": true,
+      "episode": 1,
+      "correct": true
+    },
+    {
+      "arm": "combined",
+      "question": "meter",
+      "seconds": 53.42784439,
+      "generated-tokens": 1896,
+      "prompt-tokens": 439,
+      "first-action": null,
+      "error": "Expected a numeric probe receipt",
+      "calls": 1,
+      "episode": 1
+    },
+    {
+      "arm": "collapsed",
+      "question": "meter",
+      "seconds": 75.225036367,
+      "generated-tokens": 2635,
+      "prompt-tokens": 372,
+      "first-action": null,
+      "error": "Expected a numeric probe receipt",
+      "calls": 1,
+      "episode": 2
+    },
+    {
+      "arm": "combined",
+      "question": "meter",
+      "seconds": 40.449882889,
+      "generated-tokens": 1417,
+      "prompt-tokens": 439,
+      "first-action": null,
+      "error": "Expected a numeric probe receipt",
+      "calls": 1,
+      "episode": 2
+    },
+    {
+      "joined": false,
+      "arm": "encouraged",
+      "supported": true,
+      "trial-count": 1,
+      "value": 860,
+      "question": "meter",
+      "reuse": true,
+      "seconds": 90.945540438,
+      "generated-tokens": 3273,
+      "expr": "(rate-y 82)",
+      "prompt-tokens": 703,
+      "expected": 860,
+      "first-action": {
+        "action": "run",
+        "seconds": 21.019722748,
+        "generated": 736
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 2,
+      "correct": true
+    },
+    {
+      "joined": false,
+      "arm": "baseline",
+      "supported": true,
+      "trial-count": 1,
+      "value": 860,
+      "question": "meter",
+      "reuse": true,
+      "seconds": 884.283149143,
+      "generated-tokens": 29219,
+      "expr": "(rate-y 82)",
+      "prompt-tokens": 569,
+      "expected": 860,
+      "first-action": {
+        "action": "run",
+        "seconds": 819.890568304,
+        "generated": 26924
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 2,
+      "correct": true
+    },
+    {
+      "joined": true,
+      "arm": "combined",
+      "supported": true,
+      "trial-count": 0,
+      "value": 22310,
+      "question": "order",
+      "reuse": true,
+      "seconds": 618.964254353,
+      "generated-tokens": 20147,
+      "expr": "(* (press-k 14) (tariff-b 14))",
+      "prompt-tokens": 1810,
+      "expected": 1305,
+      "first-action": {
+        "action": "read",
+        "seconds": 14.2599677,
+        "generated": 455
+      },
+      "calls": 2,
+      "pass": false,
+      "episode": 2,
+      "correct": false
+    },
+    {
+      "joined": false,
+      "arm": "baseline",
+      "supported": true,
+      "trial-count": 0,
+      "value": 1305,
+      "question": "order",
+      "reuse": true,
+      "seconds": 121.726598653,
+      "generated-tokens": 4233,
+      "expr": "(tariff-b (press-k 14))",
+      "prompt-tokens": 1488,
+      "expected": 1305,
+      "first-action": {
+        "action": "read",
+        "seconds": 8.93061584,
+        "generated": 287
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 2,
+      "correct": true
+    },
+    {
+      "arm": "collapsed",
+      "question": "order",
+      "seconds": 75.413869948,
+      "generated-tokens": 2539,
+      "prompt-tokens": 789,
+      "first-action": {
+        "action": "read",
+        "seconds": 75.413647898,
+        "generated": 2539
+      },
+      "error": "Invalid Lain expression",
+      "calls": 1,
+      "episode": 2
+    },
+    {
+      "joined": false,
+      "arm": "encouraged",
+      "supported": true,
+      "trial-count": 0,
+      "value": 1305,
+      "question": "order",
+      "reuse": true,
+      "seconds": 157.765214442,
+      "generated-tokens": 5277,
+      "expr": "(tariff-b (press-k 14))",
+      "prompt-tokens": 1622,
+      "expected": 1305,
+      "first-action": {
+        "action": "read",
+        "seconds": 10.28658631,
+        "generated": 325
+      },
+      "calls": 2,
+      "pass": true,
+      "episode": 2,
+      "correct": true
+    }
+  ],
+  "shared-setup": [
+    {
+      "seconds": 11.047326765,
+      "calls": 1,
+      "prompt-tokens": 159,
+      "generated-tokens": 426
+    },
+    {
+      "seconds": 19.601752225,
+      "calls": 1,
+      "prompt-tokens": 159,
+      "generated-tokens": 773
+    }
+  ]
+}

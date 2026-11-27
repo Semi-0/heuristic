@@ -325,7 +325,7 @@
             (assert (and (old-ids "target") (not (old-ids "target-v2"))))
             (assert (every? #(not (str/blank? (:description %))) (mapcat :dependencies (index-rows ctx)))))))
       (finally (h/close! owner)))))
-(if (= "reuse" (first *command-line-args*))
+(if (#{"reuse" "active" "rerank" "routed"} (first *command-line-args*))
   (load-file (str root "/experiments/dependency-context/reuse.clj"))
   (let [[mode path only-arm] *command-line-args*]
     (assert (#{"control" "live"} mode))
