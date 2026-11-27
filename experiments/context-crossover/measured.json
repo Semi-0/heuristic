@@ -1,0 +1,1452 @@
+[
+  {
+    "size": "files",
+    "arm": "lookup",
+    "question": "What is the variable quantity charge for 37 pieces priced at 19 cents apiece?",
+    "symbol": "linear-v1",
+    "expected": 703,
+    "archive_records": 4,
+    "compacted": false,
+    "initial_required": [
+      "lib-a"
+    ],
+    "ranking": [
+      {
+        "id": "lib-a",
+        "score": 0.9947799444198608
+      },
+      {
+        "id": "lib-c",
+        "score": 0.010986942797899246
+      }
+    ],
+    "projection_seconds": 2.2533941571600735,
+    "seconds": 20.15336037799716,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 228,
+          "total_tokens": 835,
+          "completion_tokens": 607,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 573
+          }
+        },
+        "seconds": 17.875833574,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 703,
+    "expr": "(linear-v1 37 19)",
+    "application": "propagators.ids.NodeId@1439df2b",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "lib-a",
+      "linear-v1",
+      "test/fixtures/catalog/library.lain"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "files",
+    "arm": "lookup",
+    "question": "Under the superseded legacy quantity tariff, what did 43 pieces cost?",
+    "symbol": "legacy-v1",
+    "expected": 86,
+    "archive_records": 4,
+    "compacted": false,
+    "initial_required": [
+      "lib-c"
+    ],
+    "ranking": [
+      {
+        "id": "lib-c",
+        "score": 0.4687906503677368
+      },
+      {
+        "id": "lib-a",
+        "score": 0.008061991073191166
+      }
+    ],
+    "projection_seconds": 2.0723211760632694,
+    "seconds": 24.296348778996617,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 221,
+          "total_tokens": 1000,
+          "completion_tokens": 779,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 737
+          }
+        },
+        "seconds": 22.202636501,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 86,
+    "expr": "(legacy-v1 43)",
+    "application": "propagators.ids.NodeId@b5b4e530",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "legacy-v1",
+        "source": "(define legacy-v1 (network [quantity] (* quantity 2)))",
+        "cell": "propagators.ids.NodeId@36b4eea5"
+      }
+    ],
+    "cited": [
+      "legacy-v1",
+      "lib-c"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "files",
+    "arm": "lookup",
+    "question": "A scanner accumulated prefix 714. Append digit 3. What is its new reading?",
+    "symbol": "append-digit",
+    "expected": 7143,
+    "archive_records": 4,
+    "compacted": false,
+    "initial_required": [
+      "lib-d"
+    ],
+    "ranking": [
+      {
+        "id": "lib-d",
+        "score": 0.9989012479782104
+      }
+    ],
+    "projection_seconds": 0.4672681172378361,
+    "seconds": 30.178676177281886,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 228,
+          "total_tokens": 1266,
+          "completion_tokens": 1038,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 989
+          }
+        },
+        "seconds": 29.68848786,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 7143,
+    "expr": "(append-digit 714 3)",
+    "application": "propagators.ids.NodeId@191587b5",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "append-digit",
+      "test/fixtures/behavior/scan.lain"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "short",
+    "arm": "full",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 26,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.005835970863699913,
+    "seconds": 12.726441272068769,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 1749,
+          "total_tokens": 2208,
+          "completion_tokens": 459,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 412
+          }
+        },
+        "seconds": 12.661050962,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@4f59a60b",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "short",
+    "arm": "editor",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 26,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.0033370046876370907,
+    "seconds": 44.67213486414403,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 1749,
+          "total_tokens": 3213,
+          "completion_tokens": 1464,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1417
+          }
+        },
+        "seconds": 44.598776744,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@3d08540b",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "short",
+    "arm": "selected",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 26,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [
+      {
+        "id": "ev-117",
+        "score": 0.9985895752906799
+      },
+      {
+        "id": "ev-291",
+        "score": 0.9940890073776245
+      },
+      {
+        "id": "lib-a",
+        "score": 0.985042929649353
+      },
+      {
+        "id": "lib-c",
+        "score": 0.3208213150501251
+      },
+      {
+        "id": "ev-694",
+        "score": 0.01798621006309986
+      },
+      {
+        "id": "ev-731",
+        "score": 0.0015978454612195492
+      },
+      {
+        "id": "ev-502",
+        "score": 0.0011695101857185364
+      },
+      {
+        "id": "ev-528",
+        "score": 0.001098731067031622
+      }
+    ],
+    "projection_seconds": 8.34697643108666,
+    "seconds": 81.57468212815002,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 308,
+          "total_tokens": 2840,
+          "completion_tokens": 2532,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2499
+          }
+        },
+        "seconds": 73.206761311,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@88807c3a",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "linear-v1"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "short",
+    "arm": "editor",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 26,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.0037134881131350994,
+    "seconds": 61.57310123136267,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 1756,
+          "total_tokens": 4004,
+          "completion_tokens": 2248,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2184
+          }
+        },
+        "seconds": 61.518710884,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@ee1803d2",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "short",
+    "arm": "selected",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 26,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [
+      {
+        "id": "ev-731",
+        "score": 0.9979493021965027
+      },
+      {
+        "id": "ev-528",
+        "score": 0.9875683188438416
+      },
+      {
+        "id": "ev-502",
+        "score": 0.9820137619972229
+      },
+      {
+        "id": "ev-694",
+        "score": 0.9626730680465698
+      },
+      {
+        "id": "lib-d",
+        "score": 0.4073334336280823
+      },
+      {
+        "id": "audit-10",
+        "score": 0.09534946084022522
+      },
+      {
+        "id": "audit-25",
+        "score": 0.053403329104185104
+      },
+      {
+        "id": "audit-22",
+        "score": 0.04208773002028465
+      }
+    ],
+    "projection_seconds": 9.22279507201165,
+    "seconds": 172.08749841386452,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 332,
+          "total_tokens": 5943,
+          "completion_tokens": 5611,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5571
+          }
+        },
+        "seconds": 162.837634462,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@d5e63b38",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "short",
+    "arm": "full",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 26,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.003628749866038561,
+    "seconds": 164.28995967563242,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 1756,
+          "total_tokens": 7502,
+          "completion_tokens": 5746,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5712
+          }
+        },
+        "seconds": 164.222338101,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@8aec6bb8",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "middle",
+    "arm": "editor",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 295,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.0077684782445430756,
+    "seconds": 21.851941804401577,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 20812,
+          "total_tokens": 21357,
+          "completion_tokens": 545,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 18128,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 498
+          }
+        },
+        "seconds": 21.440197384,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@9db3de9e",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "middle",
+    "arm": "selected",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 295,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [
+      {
+        "id": "ev-117",
+        "score": 0.9985895752906799
+      },
+      {
+        "id": "ev-291",
+        "score": 0.9940890073776245
+      },
+      {
+        "id": "lib-a",
+        "score": 0.985042929649353
+      },
+      {
+        "id": "lib-c",
+        "score": 0.3208213150501251
+      },
+      {
+        "id": "ev-694",
+        "score": 0.01798621006309986
+      },
+      {
+        "id": "ev-731",
+        "score": 0.0015978454612195492
+      },
+      {
+        "id": "ev-502",
+        "score": 0.0011695101857185364
+      },
+      {
+        "id": "ev-528",
+        "score": 0.001098731067031622
+      }
+    ],
+    "projection_seconds": 8.239745520986617,
+    "seconds": 328.90159899322316,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 308,
+          "total_tokens": 11303,
+          "completion_tokens": 10995,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 10965
+          }
+        },
+        "seconds": 320.638503351,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@14ec9981",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "linear-v1"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "middle",
+    "arm": "full",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 295,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.00876722065731883,
+    "seconds": 21.087977864779532,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 20812,
+          "total_tokens": 21558,
+          "completion_tokens": 746,
+          "prompt_tokens_details": {
+            "cached_tokens": 18128,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 702
+          }
+        },
+        "seconds": 20.665608609,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@6011fb8d",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a",
+      "linear-v1"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "middle",
+    "arm": "selected",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 295,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [
+      {
+        "id": "ev-731",
+        "score": 0.9979493021965027
+      },
+      {
+        "id": "ev-528",
+        "score": 0.9875683188438416
+      },
+      {
+        "id": "ev-502",
+        "score": 0.9820137619972229
+      },
+      {
+        "id": "ev-694",
+        "score": 0.9626730680465698
+      },
+      {
+        "id": "audit-30",
+        "score": 0.5926666259765625
+      },
+      {
+        "id": "lib-d",
+        "score": 0.4687906503677368
+      },
+      {
+        "id": "ev-117",
+        "score": 0.022977370768785477
+      },
+      {
+        "id": "ev-291",
+        "score": 0.008061991073191166
+      }
+    ],
+    "projection_seconds": 9.039496977813542,
+    "seconds": 98.21585523430258,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 332,
+          "total_tokens": 3556,
+          "completion_tokens": 3224,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3181
+          }
+        },
+        "seconds": 89.134996936,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@22201d5b",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "append-digit",
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  },
+  {
+    "size": "middle",
+    "arm": "full",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 295,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.008241217117756605,
+    "seconds": 78.55026076221839,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 20819,
+          "total_tokens": 23839,
+          "completion_tokens": 3020,
+          "prompt_tokens_details": {
+            "cached_tokens": 18128,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2956
+          }
+        },
+        "seconds": 78.129161322,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@bbd83687",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "middle",
+    "arm": "editor",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 295,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.008298560976982117,
+    "seconds": 145.38837884832174,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 20819,
+          "total_tokens": 26015,
+          "completion_tokens": 5196,
+          "prompt_tokens_details": {
+            "cached_tokens": 18128,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5156
+          }
+        },
+        "seconds": 144.964450082,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@bb18e2fe",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "long",
+    "arm": "selected",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 1275,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [
+      {
+        "id": "ev-117",
+        "score": 0.9985895752906799
+      },
+      {
+        "id": "ev-291",
+        "score": 0.9940890073776245
+      },
+      {
+        "id": "lib-a",
+        "score": 0.985042929649353
+      },
+      {
+        "id": "lib-c",
+        "score": 0.3208213150501251
+      },
+      {
+        "id": "ev-694",
+        "score": 0.01798621006309986
+      },
+      {
+        "id": "ev-731",
+        "score": 0.0015978454612195492
+      },
+      {
+        "id": "ev-502",
+        "score": 0.0011695101857185364
+      },
+      {
+        "id": "ev-528",
+        "score": 0.001098731067031622
+      }
+    ],
+    "projection_seconds": 8.249502596911043,
+    "seconds": 87.25701134186238,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 308,
+          "total_tokens": 3019,
+          "completion_tokens": 2711,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 2682
+          }
+        },
+        "seconds": 78.965596417,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@cd223b03",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "long",
+    "arm": "full",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 1275,
+    "compacted": false,
+    "initial_required": [
+      "ev-117",
+      "lib-a"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.027126372791826725,
+    "seconds": 48.482019619084895,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 91366,
+          "total_tokens": 92183,
+          "completion_tokens": 817,
+          "prompt_tokens_details": {
+            "cached_tokens": 18128,
+            "created_cache_tokens": 70864,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 770
+          }
+        },
+        "seconds": 47.007692626,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@17dea439",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "long",
+    "arm": "editor",
+    "question": "What variable quantity charge applied to the Indigo Finch order as originally invoiced, before the revision? Use the original order and its callable.",
+    "symbol": "linear-v1",
+    "expected": 1591,
+    "archive_records": 1275,
+    "compacted": true,
+    "initial_required": [],
+    "ranking": [],
+    "projection_seconds": 0.010871476959437132,
+    "seconds": 54.0763353430666,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 17407,
+          "total_tokens": 18471,
+          "completion_tokens": 1064,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 14832,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 1048
+          }
+        },
+        "seconds": 38.529384734,
+        "finish-reason": "stop"
+      },
+      {
+        "usage": {
+          "prompt_tokens": 17613,
+          "total_tokens": 17817,
+          "completion_tokens": 204,
+          "prompt_tokens_details": {
+            "cached_tokens": 14832,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 192
+          }
+        },
+        "seconds": 5.968048288,
+        "finish-reason": "stop"
+      },
+      {
+        "usage": {
+          "prompt_tokens": 17748,
+          "total_tokens": 18047,
+          "completion_tokens": 299,
+          "prompt_tokens_details": {
+            "cached_tokens": 14832,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 267
+          }
+        },
+        "seconds": 8.715983767,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 1591,
+    "expr": "(linear-v1 37 43)",
+    "application": "propagators.ids.NodeId@6da5011b",
+    "decl": [
+      {
+        "file": "test/fixtures/catalog/library.lain",
+        "symbol": "linear-v1",
+        "source": "(define linear-v1 (network [quantity unit-price] (* quantity unit-price)))",
+        "cell": "propagators.ids.NodeId@4000049c"
+      }
+    ],
+    "cited": [
+      "ev-117",
+      "lib-a"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "long",
+    "arm": "full",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 1275,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [],
+    "projection_seconds": 0.026047915685921907,
+    "seconds": 137.22001830022782,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 91373,
+          "total_tokens": 96469,
+          "completion_tokens": 5096,
+          "prompt_tokens_details": {
+            "cached_tokens": 88992,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 5056
+          }
+        },
+        "seconds": 135.739550893,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@cb748a74",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "long",
+    "arm": "editor",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 1275,
+    "compacted": true,
+    "initial_required": [],
+    "ranking": [],
+    "projection_seconds": 0.008734900038689375,
+    "seconds": 62.71199362212792,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 17414,
+          "total_tokens": 17997,
+          "completion_tokens": 583,
+          "prompt_tokens_details": {
+            "cached_tokens": 14832,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 571
+          }
+        },
+        "seconds": 17.741256742,
+        "finish-reason": "stop"
+      },
+      {
+        "usage": {
+          "prompt_tokens": 17607,
+          "total_tokens": 18237,
+          "completion_tokens": 630,
+          "prompt_tokens_details": {
+            "cached_tokens": 14832,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 600
+          }
+        },
+        "seconds": 19.644023435,
+        "finish-reason": "stop"
+      },
+      {
+        "usage": {
+          "prompt_tokens": 17898,
+          "total_tokens": 18796,
+          "completion_tokens": 898,
+          "prompt_tokens_details": {
+            "cached_tokens": 14832,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 858
+          }
+        },
+        "seconds": 24.509919586,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@c8900a27",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": true,
+    "pass": true
+  },
+  {
+    "size": "long",
+    "arm": "selected",
+    "question": "After the Indigo Scanner compiler repair, what reading results when the arithmetic ledger correction is appended to the CLI retry prefix? Use the post-repair receipt and all its dependencies.",
+    "symbol": "append-digit",
+    "expected": 6187,
+    "archive_records": 1275,
+    "compacted": false,
+    "initial_required": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "lib-d"
+    ],
+    "ranking": [
+      {
+        "id": "ev-731",
+        "score": 0.9979493021965027
+      },
+      {
+        "id": "ev-528",
+        "score": 0.9875683188438416
+      },
+      {
+        "id": "ev-502",
+        "score": 0.9820137619972229
+      },
+      {
+        "id": "ev-694",
+        "score": 0.9626730680465698
+      },
+      {
+        "id": "audit-30",
+        "score": 0.5926666259765625
+      },
+      {
+        "id": "lib-d",
+        "score": 0.4687906503677368
+      },
+      {
+        "id": "ev-117",
+        "score": 0.022977370768785477
+      },
+      {
+        "id": "ev-291",
+        "score": 0.008061991073191166
+      }
+    ],
+    "projection_seconds": 9.13613213505596,
+    "seconds": 107.91016821190715,
+    "calls": [
+      {
+        "usage": {
+          "prompt_tokens": 332,
+          "total_tokens": 3755,
+          "completion_tokens": 3423,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "created_cache_tokens": 0,
+            "multimodal_tokens": null
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 3353
+          }
+        },
+        "seconds": 98.738759465,
+        "finish-reason": "stop"
+      }
+    ],
+    "value": 6187,
+    "expr": "(append-digit 618 7)",
+    "application": "propagators.ids.NodeId@4643c3c6",
+    "decl": [
+      {
+        "file": "test/fixtures/behavior/scan.lain",
+        "symbol": "append-digit",
+        "source": "(define append-digit (network [acc next] (+ (* acc 10) next)))",
+        "cell": "propagators.ids.NodeId@22ab5f6c"
+      }
+    ],
+    "cited": [
+      "ev-528",
+      "ev-694",
+      "ev-731",
+      "test/fixtures/behavior/scan.lain"
+    ],
+    "correct": true,
+    "reuse": true,
+    "supported": false,
+    "pass": false
+  }
+]

@@ -292,3 +292,5 @@ In the [planner delegation pilot](2026-11-21-planner-delegation.md), a planner t
 Described dependency links make relations inspectable, but rendering the entire link index on every recognition call repeats descriptions. Per-question incremental retrieval and full prompt token budgeting remain untested. [Protocol trial](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)
 
 The reuse fixture supplies complete provenance edges and visible index labels. Its six matched decisions per arm measure one shop workflow. Long-history reliability and unsupervised edge recognition remain open. [Reuse experiment](2026-11-26-reuse-context.md)
+
+The crossover uses two composite questions per history length, fixed templated background records and a small seeded file catalog. Archive citation errors and numerical errors are reported separately. [Scope](2026-11-27-context-crossover.md)

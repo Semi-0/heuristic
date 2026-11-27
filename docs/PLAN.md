@@ -277,3 +277,5 @@ For [planner delegation](2026-11-21-planner-delegation.md), score ambiguity reco
 The described-link prototype checks whether stored premise references survive a later revision and whether the selected evidence packet contains the linked originals. A subsequent budgeted retrieval trial can measure which descriptions need to enter each question's context. [Experiment](2026-11-26-dependency-context.md#stored-descriptions-for-dependency-links)
 
 Assess generalization on longer histories with naturally recorded dependency edges and cases where neither stored tariff applies. [Reuse experiment](2026-11-26-reuse-context.md)
+
+Direct executable reuse and threshold crossing have been observed; a stable latency crossover across heterogeneous questions and cold/warm cache conditions remains open. [Crossover](2026-11-27-context-crossover.md)

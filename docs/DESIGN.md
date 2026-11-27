@@ -314,3 +314,5 @@ matched sequence; LifelongAgentBench remains paused.
 The [planner delegation pilot](2026-11-21-planner-delegation.md) uses two optional Lain assignment ports, separate model workers and lexical children, callable outputs and premise-supported invoice checks. The planner dispatches by publishing a job. Lain gates execution on source admission.
 
 In the question-rooted prototype, a Datomic dependency record carries a typed relation, target event reference and stored English description. Both the recognition index and the composed evidence packet expose these records. [Implementation](../experiments/dependency-context/probe.clj)
+
+The isolated crossover driver maintains a lexical FTS5 index beside the Datomic archive, reranks up to eight candidates, expands stored references and executes responses against declarations loaded from source files. [Source](../experiments/context-crossover/run.py)

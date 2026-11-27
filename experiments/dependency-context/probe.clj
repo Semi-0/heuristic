@@ -108,7 +108,7 @@
       {:file filename :bytes (alength bytes) :sha256 (.formatHex (java.util.HexFormat/of) digest)})))
 (defn call! [{:keys [owner dir calls] :as ctx} q stage role payload scripted]
   (let [id (str (name q) "-" (name stage))
-        packet {:id id :messages [{:role "system" :content role} {:role "user" :content payload}]}
+        packet {:id id :messages (if (vector? payload) payload [{:role "system" :content role} {:role "user" :content payload}])}
         start (System/nanoTime)]
     (save! dir (str id "-packet.edn") packet)
     (reset! (:script ctx) scripted)
@@ -325,7 +325,9 @@
             (assert (and (old-ids "target") (not (old-ids "target-v2"))))
             (assert (every? #(not (str/blank? (:description %))) (mapcat :dependencies (index-rows ctx)))))))
       (finally (h/close! owner)))))
-(if (#{"reuse" "active" "rerank" "routed"} (first *command-line-args*))
+(if (= "crossover" (first *command-line-args*))
+  (load-file (str root "/experiments/context-crossover/bridge.clj"))
+  (if (#{"reuse" "active" "rerank" "routed"} (first *command-line-args*))
   (load-file (str root "/experiments/dependency-context/reuse.clj"))
   (let [[mode path only-arm] *command-line-args*]
     (assert (#{"control" "live"} mode))
@@ -335,4 +337,4 @@
                  :let [arm-id (str scenario "-" (name arm))]
                  :when (or (nil? only-arm) (= only-arm arm-id))]
            (run-arm! (io/file path arm-id) mode arm (= scenario "overlap")))
-         (finally (shutdown-agents)))))
+         (finally (shutdown-agents))))))
