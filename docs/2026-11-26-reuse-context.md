@@ -21,3 +21,18 @@ All three setup generations passed admission and all 27 execution checks. Shared
 All 18 scheduled scores, independent expected amounts and provider usage sums were reconciled. The live JVM exited with a reader error after writing the last score. The outer launcher had been reindented while that JVM was still reading it. [Per-question scores and setup measurements](../experiments/dependency-context/reuse-measured.json). [Raw evidence](/home/lain/reports/lain-reuse-20261126).
 
 A fresh JVM loaded the saved launcher and completed the separate scripted overlap-selected control with six passing questions and its mutation check, exit code 0.
+
+## Time to first archive request
+
+Elapsed provider-call seconds through receipt of the first valid read request, with generated tokens for that call. These measurements exclude archive resolution.
+
+| Episode | Question | Seconds | Generated tokens |
+|---|---|---:|---:|
+| 1 | historical | 102.62 | 3,346 |
+| 1 | revision | 119.71 | 3,906 |
+| 2 | historical | 98.95 | 3,372 |
+| 2 | revision | 64.70 | 2,173 |
+| 3 | historical | 15.67 | 519 |
+| 3 | revision | 251.49 | 8,335 |
+
+Median across six reads: 100.78 seconds.
