@@ -279,3 +279,5 @@ The described-link prototype checks whether stored premise references survive a 
 Assess generalization on longer histories with naturally recorded dependency edges and cases where neither stored tariff applies. [Reuse experiment](2026-11-26-reuse-context.md)
 
 Direct executable reuse and threshold crossing have been observed; a stable latency crossover across heterogeneous questions and cold/warm cache conditions remains open. [Crossover](2026-11-27-context-crossover.md)
+
+The four-ticket comparison is complete. Measuring behavior after repeated evictions still requires a project trajectory that reaches the configured threshold. [Protocol](2026-11-27-autocomplete-project.md)

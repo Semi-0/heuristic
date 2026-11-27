@@ -1,0 +1,200 @@
+[
+  {
+    "arm": "full",
+    "feature_gates": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "existing_tests_pass": true,
+    "milestones": [
+      {
+        "ticket": 1,
+        "gates": [
+          true
+        ],
+        "seconds": 858.3199008470401,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 2,
+        "gates": [
+          true,
+          true
+        ],
+        "seconds": 1424.0026140287519,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 3,
+        "gates": [
+          true,
+          true,
+          true
+        ],
+        "seconds": 292.10335700726137,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 4,
+        "gates": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "seconds": 452.66903607174754,
+        "overflow": false,
+        "dispatches": 8
+      }
+    ],
+    "project_commit": "52ef99a31bec4be34d3ea3a2acd4c6fa260f53c2",
+    "calls": 32,
+    "length_limited_calls": 2,
+    "seconds": 3027.094907954801,
+    "model_seconds": 3006.31155626,
+    "context_seconds": 0.3950417125597596,
+    "prompt_tokens": 1153416,
+    "cached_prompt_tokens": 1015168,
+    "generated_tokens": 102166,
+    "largest_input": 59933,
+    "overflow": false,
+    "compacted_dispatches": 0
+  },
+  {
+    "arm": "editor",
+    "feature_gates": [
+      false,
+      false,
+      true,
+      true
+    ],
+    "existing_tests_pass": true,
+    "milestones": [
+      {
+        "ticket": 1,
+        "gates": [
+          true
+        ],
+        "seconds": 1382.6195396031253,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 2,
+        "gates": [
+          false,
+          false
+        ],
+        "seconds": 1057.5020379140042,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 3,
+        "gates": [
+          false,
+          false,
+          true
+        ],
+        "seconds": 268.5262041930109,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 4,
+        "gates": [
+          false,
+          false,
+          true,
+          true
+        ],
+        "seconds": 466.2594745759852,
+        "overflow": false,
+        "dispatches": 8
+      }
+    ],
+    "project_commit": "ead46d679d9a74be9da64bc90500ce7a251ccf58",
+    "calls": 32,
+    "length_limited_calls": 4,
+    "seconds": 3174.9072562861256,
+    "model_seconds": 3159.396136261,
+    "context_seconds": 0.38725160993635654,
+    "prompt_tokens": 984457,
+    "cached_prompt_tokens": 847072,
+    "generated_tokens": 108134,
+    "largest_input": 53615,
+    "overflow": false,
+    "compacted_dispatches": 0
+  },
+  {
+    "arm": "selected",
+    "feature_gates": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "existing_tests_pass": true,
+    "milestones": [
+      {
+        "ticket": 1,
+        "gates": [
+          true
+        ],
+        "seconds": 1277.7400837829337,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 2,
+        "gates": [
+          true,
+          false
+        ],
+        "seconds": 1178.8926065978594,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 3,
+        "gates": [
+          true,
+          false,
+          false
+        ],
+        "seconds": 1103.6176345031708,
+        "overflow": false,
+        "dispatches": 8
+      },
+      {
+        "ticket": 4,
+        "gates": [
+          true,
+          false,
+          false,
+          true
+        ],
+        "seconds": 1366.4114356050268,
+        "overflow": false,
+        "dispatches": 8
+      }
+    ],
+    "project_commit": "8d94e644d16a0aec8c43b4ed0b7b98a7c805793f",
+    "calls": 32,
+    "length_limited_calls": 3,
+    "seconds": 4926.661760488991,
+    "model_seconds": 2935.705945149,
+    "context_seconds": 1981.0329120829701,
+    "prompt_tokens": 397990,
+    "cached_prompt_tokens": 49440,
+    "generated_tokens": 87553,
+    "largest_input": 17845,
+    "overflow": false,
+    "compacted_dispatches": 0
+  }
+]

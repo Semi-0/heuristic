@@ -352,3 +352,5 @@ Encouragement reduced mean time from 507 to 95 seconds with four of four support
 Both rerankers selected the correct dependency and Flash xhigh solved 6/6. The 4B effort router chose medium six times and solved 0/6 on identical evidence. [Experiment](2026-11-27-reranker.md)
 
 Direct lookup reused the correct file declaration 3/3. Selected context stayed at 308–332 input tokens through 1,275 records. The editor compacted and recovered both long answers. Selection did not win on mean elapsed time at any checkpoint. [Experiment](2026-11-27-context-crossover.md)
+
+Full history passed 4/4 isolated autocomplete tickets in 50.5 minutes. Editor and dependency selection each passed 2/4. Selection used 65.5% less cumulative input and took 82.1 minutes. No run reached the window limit or triggered compaction. [Protocol and results](2026-11-27-autocomplete-project.md)

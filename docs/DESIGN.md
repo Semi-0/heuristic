@@ -316,3 +316,5 @@ The [planner delegation pilot](2026-11-21-planner-delegation.md) uses two option
 In the question-rooted prototype, a Datomic dependency record carries a typed relation, target event reference and stored English description. Both the recognition index and the composed evidence packet expose these records. [Implementation](../experiments/dependency-context/probe.clj)
 
 The isolated crossover driver maintains a lexical FTS5 index beside the Datomic archive, reranks up to eight candidates, expands stored references and executes responses against declarations loaded from source files. [Source](../experiments/context-crossover/run.py)
+
+The isolated project benchmark grants Flash structured search/read/edit actions in pinned snapshots, with offline Node execution and a journal of tool reads, writes and feedback. [Implementation](../experiments/autocomplete-project/run.py)

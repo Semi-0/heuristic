@@ -28,7 +28,8 @@
     (let [local (set (map :id batch))]
       (d/transact (:connection (:store ctx))
                 {:tx-data (mapv (fn [{:keys [id label body parents seq]}]
-                                  (cond-> {:db/id id :catalog/id (keyword id) :catalog/interface label :catalog/description body
+                                  (cond-> {:db/id id :catalog/id (keyword id) :catalog/interface label :catalog/description (if (System/getenv "LAIN_ARCHIVE_EXTERNAL_TEXT")
+                                                                  (subs body 0 (min 512 (count body))) body)
                                            :event/seq seq :event/time (java.util.Date. (long seq))}
                                     (not-empty parents) (assoc :catalog/depends-on (mapv #(if (local %) % [:catalog/id (keyword %)]) parents))))
                                 batch)})))
