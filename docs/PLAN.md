@@ -1,6 +1,6 @@
 # Plan and acceptance gates
 
-The prompt-speed comparison measures time to evidence, total latency, correctness and generated tokens in a crossed design. [Experiment](2026-11-27-active-prompt.md)
+The prompt-speed comparison measured all four conditions. A broader task mix is needed before selecting a production routing policy. [Experiment](2026-11-27-active-prompt.md)
 
 The isolated question-rooted comparison checks executable pricing, bracket repair, three linked arithmetic turns, receipt routing and a historical quote after a TTMS revision. The report retains both the original attempts and the receipt-assisted comparison. [Experiment and results](2026-11-26-dependency-context.md)
 

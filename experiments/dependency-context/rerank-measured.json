@@ -1,0 +1,2328 @@
+{
+  "0.6B + xhigh": {
+    "worker": {
+      "ready": true,
+      "load_seconds": 0.2559312619268894
+    },
+    "scores": [
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1562",
+        "question": "revision",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 54.94470693,
+        "generated-tokens": 1377,
+        "expr": "(tariff-m (press-k 20))",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1562,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9964063763618469
+            },
+            {
+              "id": "i1",
+              "score": 0.8519527316093445
+            },
+            {
+              "id": "shop-4",
+              "score": 0.016914913430809975
+            },
+            {
+              "id": "shop-0",
+              "score": 0.01590639166533947
+            },
+            {
+              "id": "shop-3",
+              "score": 0.014957086183130741
+            },
+            {
+              "id": "shop-12",
+              "score": 0.014957086183130741
+            },
+            {
+              "id": "shop-11",
+              "score": 0.014063626527786255
+            },
+            {
+              "id": "shop-5",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "shop-14",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "shop-6",
+              "score": 0.012431650422513485
+            },
+            {
+              "id": "shop-10",
+              "score": 0.012431650422513485
+            },
+            {
+              "id": "shop-13",
+              "score": 0.011687259189784527
+            },
+            {
+              "id": "shop-15",
+              "score": 0.011687259189784527
+            },
+            {
+              "id": "shop-7",
+              "score": 0.010986942797899246
+            },
+            {
+              "id": "shop-9",
+              "score": 0.010328153148293495
+            },
+            {
+              "id": "shop-2",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-8",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-16",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-17",
+              "score": 0.00912563782185316
+            },
+            {
+              "id": "shop-1",
+              "score": 0.007577241398394108
+            },
+            {
+              "id": "d2",
+              "score": 0.0002531563804950565
+            },
+            {
+              "id": "d3",
+              "score": 0.00016346470511052758
+            },
+            {
+              "id": "d1",
+              "score": 4.469407213036902e-05
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 15.274350206833333
+        },
+        "calls": 1,
+        "episode": 1,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1217",
+        "question": "historical",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 70.73703151,
+        "generated-tokens": 1937,
+        "expr": "(tariff-b (press-k 13))",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1217,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.9924227595329285
+            },
+            {
+              "id": "r1",
+              "score": 0.3073580265045166
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-3",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-0",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-6",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-10",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-7",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-11",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-14",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-13",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-2",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-8",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-17",
+              "score": 0.022977370768785477
+            },
+            {
+              "id": "d2",
+              "score": 0.0007793660624884069
+            },
+            {
+              "id": "d3",
+              "score": 0.000552778597921133
+            },
+            {
+              "id": "d1",
+              "score": 0.00010889690020121634
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 15.601723679807037
+        },
+        "calls": 1,
+        "episode": 1,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1305",
+        "question": "historical",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 47.629766501,
+        "generated-tokens": 1208,
+        "expr": "(tariff-b (press-k 14))",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1305,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.9928786158561707
+            },
+            {
+              "id": "r1",
+              "score": 0.25683197379112244
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-3",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-0",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-6",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-10",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-7",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-11",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-14",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-13",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-2",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-8",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-17",
+              "score": 0.022977370768785477
+            },
+            {
+              "id": "d2",
+              "score": 0.0007793660624884069
+            },
+            {
+              "id": "d3",
+              "score": 0.000552778597921133
+            },
+            {
+              "id": "d1",
+              "score": 0.00010889690020121634
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 15.52278829133138
+        },
+        "calls": 1,
+        "episode": 2,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1634",
+        "question": "revision",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 48.119980767,
+        "generated-tokens": 1187,
+        "expr": "(tariff-m (press-k 21))",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1634,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9961755275726318
+            },
+            {
+              "id": "i1",
+              "score": 0.8354835510253906
+            },
+            {
+              "id": "shop-4",
+              "score": 0.016914913430809975
+            },
+            {
+              "id": "shop-0",
+              "score": 0.01590639166533947
+            },
+            {
+              "id": "shop-3",
+              "score": 0.014957086183130741
+            },
+            {
+              "id": "shop-12",
+              "score": 0.014957086183130741
+            },
+            {
+              "id": "shop-11",
+              "score": 0.014063626527786255
+            },
+            {
+              "id": "shop-5",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "shop-14",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "shop-6",
+              "score": 0.012431650422513485
+            },
+            {
+              "id": "shop-10",
+              "score": 0.012431650422513485
+            },
+            {
+              "id": "shop-13",
+              "score": 0.011687259189784527
+            },
+            {
+              "id": "shop-15",
+              "score": 0.011687259189784527
+            },
+            {
+              "id": "shop-7",
+              "score": 0.010986942797899246
+            },
+            {
+              "id": "shop-9",
+              "score": 0.010328153148293495
+            },
+            {
+              "id": "shop-2",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-8",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-16",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-17",
+              "score": 0.00912563782185316
+            },
+            {
+              "id": "shop-1",
+              "score": 0.007577241398394108
+            },
+            {
+              "id": "d2",
+              "score": 0.0002531563804950565
+            },
+            {
+              "id": "d3",
+              "score": 0.00016346470511052758
+            },
+            {
+              "id": "d1",
+              "score": 4.469407213036902e-05
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 15.191854359116405
+        },
+        "calls": 1,
+        "episode": 2,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1706",
+        "question": "revision",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 53.422734474,
+        "generated-tokens": 1364,
+        "expr": "(tariff-m (press-k 22))",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1706,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9959298968315125
+            },
+            {
+              "id": "i1",
+              "score": 0.8519527316093445
+            },
+            {
+              "id": "shop-4",
+              "score": 0.016914913430809975
+            },
+            {
+              "id": "shop-0",
+              "score": 0.01590639166533947
+            },
+            {
+              "id": "shop-3",
+              "score": 0.014957086183130741
+            },
+            {
+              "id": "shop-12",
+              "score": 0.014957086183130741
+            },
+            {
+              "id": "shop-11",
+              "score": 0.014063626527786255
+            },
+            {
+              "id": "shop-5",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "shop-14",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "shop-6",
+              "score": 0.012431650422513485
+            },
+            {
+              "id": "shop-10",
+              "score": 0.012431650422513485
+            },
+            {
+              "id": "shop-13",
+              "score": 0.011687259189784527
+            },
+            {
+              "id": "shop-15",
+              "score": 0.011687259189784527
+            },
+            {
+              "id": "shop-7",
+              "score": 0.010986942797899246
+            },
+            {
+              "id": "shop-9",
+              "score": 0.010328153148293495
+            },
+            {
+              "id": "shop-2",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-8",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-16",
+              "score": 0.00970847625285387
+            },
+            {
+              "id": "shop-17",
+              "score": 0.00912563782185316
+            },
+            {
+              "id": "shop-1",
+              "score": 0.007577241398394108
+            },
+            {
+              "id": "d2",
+              "score": 0.0002694791473913938
+            },
+            {
+              "id": "d3",
+              "score": 0.00015356238873209804
+            },
+            {
+              "id": "d1",
+              "score": 4.832564081880264e-05
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 15.030731770209968
+        },
+        "calls": 1,
+        "episode": 3,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1393",
+        "question": "historical",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 166.263285589,
+        "generated-tokens": 5118,
+        "expr": "(tariff-b (press-k 15))",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1393,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.9928786158561707
+            },
+            {
+              "id": "r1",
+              "score": 0.25683197379112244
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-3",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-0",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-6",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-10",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-7",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-11",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-14",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-13",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-2",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-8",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-17",
+              "score": 0.022977370768785477
+            },
+            {
+              "id": "d2",
+              "score": 0.0007793660624884069
+            },
+            {
+              "id": "d3",
+              "score": 0.0004878571489825845
+            },
+            {
+              "id": "d1",
+              "score": 0.00014425987319555134
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 15.460448561701924
+        },
+        "calls": 1,
+        "episode": 3,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      }
+    ]
+  },
+  "4B + xhigh": {
+    "worker": {
+      "ready": true,
+      "load_seconds": 0.28156590927392244
+    },
+    "scores": [
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1562",
+        "question": "revision",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 99.889035821,
+        "generated-tokens": 1579,
+        "expr": "(tariff-m (press-k 20))",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1562,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9890130758285522
+            },
+            {
+              "id": "i1",
+              "score": 0.8740772008895874
+            },
+            {
+              "id": "shop-0",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-5",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "d2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-3",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-6",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-15",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-7",
+              "score": 0.0446808747947216
+            },
+            {
+              "id": "shop-1",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-8",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-10",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03963883966207504
+            },
+            {
+              "id": "shop-9",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-16",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-14",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "d3",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "d1",
+              "score": 0.00036829791497439146
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 56.04184291092679
+        },
+        "calls": 1,
+        "episode": 1,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1217",
+        "question": "historical",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 78.891021674,
+        "generated-tokens": 800,
+        "expr": "(tariff-b (press-k 13))",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1217,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.957912266254425
+            },
+            {
+              "id": "r1",
+              "score": 0.6513549089431763
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-10",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-7",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-8",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-2",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-4",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-6",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-14",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-0",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "d2",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "d3",
+              "score": 0.007121428847312927
+            },
+            {
+              "id": "d1",
+              "score": 0.00011235327110625803
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 57.07625699508935
+        },
+        "calls": 1,
+        "episode": 1,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1305",
+        "question": "historical",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 99.215577113,
+        "generated-tokens": 1451,
+        "expr": "(tariff-b (press-k 14))",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1305,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.957912266254425
+            },
+            {
+              "id": "r1",
+              "score": 0.5926666259765625
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-10",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-7",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-8",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-2",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-4",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-6",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-14",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-0",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "d2",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "d3",
+              "score": 0.007121428847312927
+            },
+            {
+              "id": "d1",
+              "score": 0.00011235327110625803
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 57.43962434399873
+        },
+        "calls": 1,
+        "episode": 2,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1634",
+        "question": "revision",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 159.006106802,
+        "generated-tokens": 3533,
+        "expr": "(tariff-m (press-k 21))",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1634,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9867772459983826
+            },
+            {
+              "id": "i1",
+              "score": 0.8807970285415649
+            },
+            {
+              "id": "shop-0",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-5",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "d2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-3",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-6",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-15",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-7",
+              "score": 0.0446808747947216
+            },
+            {
+              "id": "shop-1",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-8",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-10",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03963883966207504
+            },
+            {
+              "id": "shop-9",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-16",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-14",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "d3",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "d1",
+              "score": 0.00036829791497439146
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 56.05061047989875
+        },
+        "calls": 1,
+        "episode": 2,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1706",
+        "question": "revision",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 145.151201318,
+        "generated-tokens": 3031,
+        "expr": "(tariff-m (press-k 22))",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1706,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9867772459983826
+            },
+            {
+              "id": "i1",
+              "score": 0.8872045874595642
+            },
+            {
+              "id": "d2",
+              "score": 0.06754668802022934
+            },
+            {
+              "id": "shop-0",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-5",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-3",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-6",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-15",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-7",
+              "score": 0.0446808747947216
+            },
+            {
+              "id": "shop-1",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-8",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-10",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03963883966207504
+            },
+            {
+              "id": "shop-9",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-16",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "d3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-14",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "d1",
+              "score": 0.00047285447362810373
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 55.86003396427259
+        },
+        "calls": 1,
+        "episode": 3,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "1393",
+        "question": "historical",
+        "requested-effort": "xhigh",
+        "reuse": true,
+        "seconds": 92.516112921,
+        "generated-tokens": 1236,
+        "expr": "(tariff-b (press-k 15))",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 254,
+        "expected": 1393,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.9603611826896667
+            },
+            {
+              "id": "r1",
+              "score": 0.5926666259765625
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-10",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-7",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-8",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-2",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-4",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-6",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-14",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-0",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "d2",
+              "score": 0.01912403665482998
+            },
+            {
+              "id": "d3",
+              "score": 0.008577484637498856
+            },
+            {
+              "id": "d1",
+              "score": 0.00013552079326473176
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 56.99500125693157
+        },
+        "calls": 1,
+        "episode": 3,
+        "version": true,
+        "routing": null,
+        "correct": true,
+        "reads": 0
+      }
+    ]
+  },
+  "4B + adaptive": {
+    "worker": {
+      "ready": true,
+      "load_seconds": 0.2615263140760362
+    },
+    "scores": [
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "275",
+        "question": "revision",
+        "requested-effort": "medium",
+        "reuse": false,
+        "seconds": 102.537474017,
+        "generated-tokens": 1094,
+        "expr": "(tariff-m 20)",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 216,
+        "expected": 1562,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9890130758285522
+            },
+            {
+              "id": "i1",
+              "score": 0.8740772008895874
+            },
+            {
+              "id": "shop-0",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-5",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "d2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-3",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-6",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-15",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-7",
+              "score": 0.0446808747947216
+            },
+            {
+              "id": "shop-1",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-8",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-10",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03963883966207504
+            },
+            {
+              "id": "shop-9",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-16",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-14",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "d3",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "d1",
+              "score": 0.00036829791497439146
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 55.869485552888364
+        },
+        "calls": 1,
+        "episode": 1,
+        "version": true,
+        "routing": {
+          "scores": [
+            {
+              "id": "medium",
+              "score": 0.970687747001648
+            },
+            {
+              "id": "low",
+              "score": 0.4378235340118408
+            },
+            {
+              "id": "xhigh",
+              "score": 0.04208773002028465
+            }
+          ],
+          "input_tokens": 671,
+          "seconds": 19.94278930220753
+        },
+        "correct": false,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "question": "historical",
+        "requested-effort": "medium",
+        "seconds": 108.317613038,
+        "generated-tokens": 1249,
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 216,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.957912266254425
+            },
+            {
+              "id": "r1",
+              "score": 0.6513549089431763
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-10",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-7",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-8",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-2",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-4",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-6",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-14",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-0",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "d2",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "d3",
+              "score": 0.007121428847312927
+            },
+            {
+              "id": "d1",
+              "score": 0.00011235327110625803
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 57.774302882142365
+        },
+        "error": "Invalid Lain expression",
+        "calls": 1,
+        "episode": 1,
+        "routing": {
+          "scores": [
+            {
+              "id": "medium",
+              "score": 0.8354835510253906
+            },
+            {
+              "id": "low",
+              "score": 0.14804719388484955
+            },
+            {
+              "id": "xhigh",
+              "score": 0.03308597952127457
+            }
+          ],
+          "input_tokens": 674,
+          "seconds": 20.146229149773717
+        }
+      },
+      {
+        "arm": "reranked",
+        "supported": false,
+        "value": "194",
+        "question": "historical",
+        "requested-effort": "medium",
+        "reuse": false,
+        "seconds": 98.668186565,
+        "generated-tokens": 847,
+        "expr": "(tariff-b 14)",
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 216,
+        "expected": 1305,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.957912266254425
+            },
+            {
+              "id": "r1",
+              "score": 0.5926666259765625
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-10",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-7",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-8",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-2",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-4",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-6",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-14",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-0",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "d2",
+              "score": 0.013222821988165379
+            },
+            {
+              "id": "d3",
+              "score": 0.007121428847312927
+            },
+            {
+              "id": "d1",
+              "score": 0.00011235327110625803
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 57.83677759207785
+        },
+        "calls": 1,
+        "episode": 2,
+        "version": true,
+        "routing": {
+          "scores": [
+            {
+              "id": "medium",
+              "score": 0.8080672025680542
+            },
+            {
+              "id": "low",
+              "score": 0.14804719388484955
+            },
+            {
+              "id": "xhigh",
+              "score": 0.03963883966207504
+            }
+          ],
+          "input_tokens": 674,
+          "seconds": 20.159983091056347
+        },
+        "correct": false,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "284",
+        "question": "revision",
+        "requested-effort": "medium",
+        "reuse": false,
+        "seconds": 94.286125917,
+        "generated-tokens": 773,
+        "expr": "(tariff-m 21)",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 216,
+        "expected": 1634,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9867772459983826
+            },
+            {
+              "id": "i1",
+              "score": 0.8807970285415649
+            },
+            {
+              "id": "shop-0",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-5",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "d2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-3",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-6",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-15",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-7",
+              "score": 0.0446808747947216
+            },
+            {
+              "id": "shop-1",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-8",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-10",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03963883966207504
+            },
+            {
+              "id": "shop-9",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-16",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-14",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "d3",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "d1",
+              "score": 0.00036829791497439146
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 56.3782441499643
+        },
+        "calls": 1,
+        "episode": 2,
+        "version": true,
+        "routing": {
+          "scores": [
+            {
+              "id": "medium",
+              "score": 0.970687747001648
+            },
+            {
+              "id": "low",
+              "score": 0.3775406777858734
+            },
+            {
+              "id": "xhigh",
+              "score": 0.03963883966207504
+            }
+          ],
+          "input_tokens": 671,
+          "seconds": 19.99191052513197
+        },
+        "correct": false,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "supported": true,
+        "value": "293",
+        "question": "revision",
+        "requested-effort": "medium",
+        "reuse": false,
+        "seconds": 95.4902309,
+        "generated-tokens": 791,
+        "expr": "(tariff-m 22)",
+        "selected-ids": [
+          "d1",
+          "d3",
+          "r1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 216,
+        "expected": 1706,
+        "ranking": {
+          "scores": [
+            {
+              "id": "r1",
+              "score": 0.9867772459983826
+            },
+            {
+              "id": "i1",
+              "score": 0.8872045874595642
+            },
+            {
+              "id": "d2",
+              "score": 0.06754668802022934
+            },
+            {
+              "id": "shop-0",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-5",
+              "score": 0.06008664891123772
+            },
+            {
+              "id": "shop-2",
+              "score": 0.05665242299437523
+            },
+            {
+              "id": "shop-3",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-6",
+              "score": 0.053403329104185104
+            },
+            {
+              "id": "shop-4",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-15",
+              "score": 0.04742587357759476
+            },
+            {
+              "id": "shop-7",
+              "score": 0.0446808747947216
+            },
+            {
+              "id": "shop-1",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-8",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-10",
+              "score": 0.04208773002028465
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03963883966207504
+            },
+            {
+              "id": "shop-9",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-12",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-16",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "d3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-14",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "d1",
+              "score": 0.00047285447362810373
+            }
+          ],
+          "input_tokens": 2954,
+          "seconds": 56.41326138190925
+        },
+        "calls": 1,
+        "episode": 3,
+        "version": true,
+        "routing": {
+          "scores": [
+            {
+              "id": "medium",
+              "score": 0.9669140577316284
+            },
+            {
+              "id": "low",
+              "score": 0.3923368752002716
+            },
+            {
+              "id": "xhigh",
+              "score": 0.03514484688639641
+            }
+          ],
+          "input_tokens": 671,
+          "seconds": 20.01568089798093
+        },
+        "correct": false,
+        "reads": 0
+      },
+      {
+        "arm": "reranked",
+        "question": "historical",
+        "requested-effort": "medium",
+        "seconds": 107.467698161,
+        "generated-tokens": 1215,
+        "selected-ids": [
+          "d1",
+          "d2",
+          "i1"
+        ],
+        "target-top-one": true,
+        "prompt-tokens": 216,
+        "ranking": {
+          "scores": [
+            {
+              "id": "i1",
+              "score": 0.9603611826896667
+            },
+            {
+              "id": "r1",
+              "score": 0.5926666259765625
+            },
+            {
+              "id": "shop-1",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-5",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-10",
+              "score": 0.037326883524656296
+            },
+            {
+              "id": "shop-7",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-8",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-12",
+              "score": 0.03514484688639641
+            },
+            {
+              "id": "shop-2",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-3",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-4",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-11",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-13",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-15",
+              "score": 0.03308597952127457
+            },
+            {
+              "id": "shop-17",
+              "score": 0.031143832951784134
+            },
+            {
+              "id": "shop-6",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-14",
+              "score": 0.02931223064661026
+            },
+            {
+              "id": "shop-0",
+              "score": 0.027585284784436226
+            },
+            {
+              "id": "shop-9",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "shop-16",
+              "score": 0.02595735527575016
+            },
+            {
+              "id": "d2",
+              "score": 0.01912403665482998
+            },
+            {
+              "id": "d3",
+              "score": 0.008577484637498856
+            },
+            {
+              "id": "d1",
+              "score": 0.00013552079326473176
+            }
+          ],
+          "input_tokens": 3046,
+          "seconds": 58.10418879985809
+        },
+        "error": "Invalid Lain expression",
+        "calls": 1,
+        "episode": 3,
+        "routing": {
+          "scores": [
+            {
+              "id": "medium",
+              "score": 0.7879312038421631
+            },
+            {
+              "id": "low",
+              "score": 0.1259227693080902
+            },
+            {
+              "id": "xhigh",
+              "score": 0.027585284784436226
+            }
+          ],
+          "input_tokens": 674,
+          "seconds": 20.06897954782471
+        }
+      }
+    ]
+  }
+}

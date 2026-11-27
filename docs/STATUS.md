@@ -349,4 +349,4 @@ Lain reused her original functions, selected the applicable tariff and cited the
 
 Encouragement reduced mean time from 507 to 95 seconds with four of four supported answers in both staged arms. Joined plans passed zero of four alone and one of four with encouragement. [Experiment](2026-11-27-active-prompt.md)
 
-Qwen3-Reranker-0.6B followed by Flash xhigh was queued for the six recorded order questions. [Experiment](2026-11-27-reranker.md)
+Both rerankers selected the correct dependency and Flash xhigh solved 6/6. The 4B effort router chose medium six times and solved 0/6 on identical evidence. [Experiment](2026-11-27-reranker.md)

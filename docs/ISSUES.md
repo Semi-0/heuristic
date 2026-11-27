@@ -1,6 +1,6 @@
 # Remaining issues and limits
 
-The four prompt-speed blocks cover two tasks and two sessions with stochastic generation. Larger workloads and repeated samples per case are needed to estimate production latency. [Scope](2026-11-27-active-prompt.md)
+The four prompt-speed blocks cover two tasks and two sessions with stochastic generation. The 4B router chose one effort level for every order in the related six-case trial. Broader workloads and repeated samples per case are needed to estimate routing quality and production latency. [Matrix](2026-11-27-reranker.md) [Scope](2026-11-27-active-prompt.md)
 
 Dependency recognition can select unnecessary evidence. The question-rooted prototype uses one small catalog, a host scheduler, structured fixture tools and one trial per condition. General retrieval precision and concurrent production latency remain open. [Experiment and results](2026-11-26-dependency-context.md)
 
