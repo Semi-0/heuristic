@@ -1,5 +1,5 @@
 (load-lain "model-refined.lain")
-(load-lain "lib/behavior-core.lain")
+(load-lain "lib/behavior-journal.lain")
 
 (define m (model))
 (define ask)
@@ -12,8 +12,7 @@
 (define conversation-events (behavior:source))
 (-> (event:point "user-1" 1 (data:record :role "user" :content ask)) conversation-events)
 (-> (event:point "assistant-1" 2 (data:record :role "assistant" :content user-output)) conversation-events)
-(define conversation-prefixes (behavior:scan conversation-events seq:append (seq:empty)))
-(define conversation-history (behavior:latest-value conversation-prefixes (seq:empty)))
+(define conversation-history (behavior:latest-journal conversation-events))
 
 (define role-cell
   "You are the agent inside a live Lain environment. Read the user's question from ask. Write executable Lain source that constructs the computation and connects its answer to the provided output cells. Source is admitted into a lexical child inheriting these bindings. Return only Lain source, without Markdown fences.")

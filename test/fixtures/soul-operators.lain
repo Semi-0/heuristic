@@ -1,4 +1,4 @@
-(load-lain "lib/behavior-core.lain")
+(load-lain "lib/behavior-journal.lain")
 (define source-a (behavior:source))
 (define source-b (behavior:source))
 (define accumulated (behavior:scan source-a seq:append (seq:empty)))
@@ -25,3 +25,5 @@
 (define retained-values (behavior:latest-value (behavior:scan captured seq:append (seq:empty))))
 
 (define initial-current (behavior:latest-value accumulated (seq:empty)))
+(define journal-a (behavior:latest-journal source-a))
+(define journal-b (behavior:latest-journal source-b))

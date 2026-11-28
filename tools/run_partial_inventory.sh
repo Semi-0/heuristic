@@ -6,6 +6,7 @@ runtime_root=${LAIN_RUNTIME_ROOT:-"$(dirname "$harness_root")/lain-harness-runti
 evidence_root=${LAIN_EVIDENCE_DIR:-"$harness_root/runtime/partial-inventory-$(date +%Y%m%d-%H%M%S)"}
 mkdir -p "$evidence_root"
 git -C "$harness_root" archive HEAD | tar -x -C "$experiment_root"
+cp "$harness_root/lib/behavior-journal.lain" "$experiment_root/lib/"
 cp "${LAIN_EXPERIMENT_SOURCE:-$harness_root/examples/lain/partial-inventory.lain}" "$experiment_root/soul-refined.lain"
 cp "$harness_root/tools/probe_partial_inventory.clj" "$experiment_root/tools/probe_partial_inventory.clj"
 cp "$harness_root/tools/evaluate_partial_inventory.clj" "$experiment_root/tools/evaluate_partial_inventory.clj"

@@ -7,6 +7,7 @@ evidence_root=${LAIN_EVIDENCE_DIR:?Set a fresh evidence directory}
 if [ -e "$evidence_root" ]; then echo 'Evidence directory already exists' >&2; exit 1; fi
 mkdir -p "$evidence_root"
 git -C "$harness_root" archive HEAD src lib tools model-refined.lain | tar -x -C "$experiment_root"
+cp "$harness_root/lib/behavior-journal.lain" "$experiment_root/lib/"
 cp -R "$harness_root/src/lain_harness/." "$experiment_root/src/lain_harness/"
 cp "$harness_root/soul-refined.lain" "$experiment_root/soul-refined.lain"
 cp "$harness_root/lib/compiler.lain" "$experiment_root/lib/compiler.lain"
@@ -44,6 +45,7 @@ clojure -M "$harness_root/tools/evaluate_printshop_runtime.clj" "$evidence_root"
 cp "$experiment_root/soul-refined.lain" "$evidence_root/runtime.lain"
 cp "$experiment_root/lib/compiler.lain" "$evidence_root/compiler.lain"
 cp "$experiment_root/environments/printshop-three-stage.lain" "$evidence_root/environment.lain"
+cp "$experiment_root/lib/behavior-journal.lain" "$evidence_root/behavior-journal.lain"
 cp "$experiment_root/experiments/printshop-three-stage-requests.lain" "$evidence_root/requests.lain"
 cp "$experiment_root/examples/lain/printshop-runtime.lain" "$evidence_root/entry.lain"
 

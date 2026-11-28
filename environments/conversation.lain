@@ -1,6 +1,6 @@
 ;; Conversation environment, capabilities, IO endpoints and bootstrap policy.
 ;; Literal examples remain documentation; this module does not invoke the model.
-(load-lain "lib/behavior-core.lain")
+(load-lain "lib/behavior-journal.lain")
 (load-lain "lib/language-context.lain")
 
 (define model-result (model:output m))
@@ -68,8 +68,7 @@
 (source:initialize experiment-diagnostic-cell :not-started)
 ;; The parent history is generated source, distinct from conversation messages.
 (define written-code-events (behavior:source))
-(define written-code-prefixes (behavior:scan written-code-events seq:append (seq:empty)))
-(define code-history-cell (behavior:latest-value written-code-prefixes (seq:empty)))
+(define code-history-cell (behavior:latest-journal written-code-events))
 (-> (event:point (data:get :response-sequence model-result)
                  (data:get :response-sequence model-result)
                  (data:record :sequence (data:get :response-sequence model-result)

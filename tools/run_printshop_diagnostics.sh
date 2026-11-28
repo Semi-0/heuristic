@@ -7,6 +7,7 @@ evidence_root=${LAIN_EVIDENCE_DIR:?Set a fresh evidence directory}
 if [ -e "$evidence_root" ]; then echo 'Evidence directory already exists' >&2; exit 1; fi
 mkdir -p "$evidence_root"
 git -C "$harness_root" archive HEAD | tar -x -C "$experiment_root"
+cp "$harness_root/lib/behavior-journal.lain" "$experiment_root/lib/"
 cp "$harness_root/examples/lain/printshop-diagnostics.lain" "$experiment_root/soul-refined.lain"
 cp "$harness_root/tools/probe_printshop_diagnostics.clj" "$experiment_root/tools/probe_printshop_diagnostics.clj"
 cp "$harness_root/tools/printshop_diagnostics.clj" "$experiment_root/tools/printshop_diagnostics.clj"

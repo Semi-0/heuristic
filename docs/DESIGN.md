@@ -37,6 +37,8 @@ The current cumulative pilot deliberately uses a smaller environment: `role-cell
 
 ## Memory and validity
 
+Conversation and source journals pass independent event sources to `behavior:latest-journal`. The helper collects events in semantic order and projects the current vector, with an empty vector before the first event. [Journal helper](../lib/behavior-journal.lain)
+
 Distinguish generated source, provider thinking, delivered conversation replies, current cell values, supported observations and catalog metadata. They are not interchangeable histories. Callable reuse is checked through actual applications and declaration/environment identity; a model claiming reuse is insufficient.
 
 Durability currently stores selected source and dependency metadata, then reconstructs fresh runtime objects. The demonstrated subset does not cover arbitrary-depth restoration, persistent suspended TTMS state, full causal provenance, or automatic safe replay of external effects.

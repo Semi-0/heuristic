@@ -1,0 +1,5 @@
+(load-lain "lib/behavior-core.lain")
+
+(define behavior:latest-journal
+  (network [events]
+    (behavior:latest-value (behavior:scan events seq:append (seq:empty)) (seq:empty))))

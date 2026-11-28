@@ -53,6 +53,8 @@
                                      (collection/content {:base (temporal/occurrence id time v) :support #{}}))))]
         (is (value/nothing? (read-value owner 'latest)))
         (is (= [] (read-value owner 'initial-current)))
+        (is (= [] (read-value owner 'journal-a)))
+        (is (= [] (read-value owner 'journal-b)))
         (is (< (count (read-value owner 'overview)) 100000))
         (is (str/includes? (read-value owner 'overview) ":state :unknown"))
         (is (str/includes? (read-value owner 'overview) ":state :contradictory"))
@@ -66,12 +68,17 @@
         (publish 'source-a :one 1 1)
         (host/step! owner)
         (is (= [1 2] (read-value owner 'latest)))
+        (is (= [1 2] (read-value owner 'journal-a)))
+        (is (= [] (read-value owner 'journal-b)))
         (is (value/nothing? (read-value owner 'other-latest)))
         (publish 'source-b :one 1 9)
         (await! owner #(= [9] (read-value owner 'other-latest)))
         (is (= [1 2] (read-value owner 'latest)))
+        (is (= [1 2] (read-value owner 'journal-a)))
+        (is (= [9] (read-value owner 'journal-b)))
         (publish 'source-a :zero 3 0)
         (await! owner #(= [1 2 0] (read-value owner 'initial-current)))
+        (is (= [1 2 0] (read-value owner 'journal-a)))
         (is (= [1 2] (read-value owner 'latest)))
         (doseq [[revision v] [[1 10] [2 20]]]
           (host/submit! owner
