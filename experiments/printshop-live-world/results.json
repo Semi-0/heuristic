@@ -1,0 +1,241 @@
+[
+  {
+    "attempt": 1,
+    "prompt": "Timed check - print shop attempt 1/5. We are doing five scored attempts here in this same Soul conversation. Treat this first one as the baseline. Hint: discover and inspect your running main loop via reflection; you have done it before. Capture the baseline before changing your dispatch policy. Fictional print shop: first 100 copies at 2.00 each, next 400 at 1.60, remaining at 1.30. Rush adds 20% of production. Members get 10% off production plus rush capped at the order cap. Add 25 setup. Delivery is 12, waived for subtotal >=250. Apply 8% tax including delivery. Round only final total to cents, half up. Orders in order: 80 standard nonmember; 240 rush member cap 40; 720 standard member cap 40; 90 rush member cap 40; 720 rush member cap 75. Return the five final totals in order. Use final (reply \"PS1 totals: ...\") with comma-separated amounts without thousands separators. Tool expressions can run before that final reply. Do not read reference solutions. Your goal is to improve accuracy and time while retaining the original rules through context changes.",
+    "expected": [
+      "212.76",
+      "533.30",
+      "1199.88",
+      "249.91",
+      "1405.30"
+    ],
+    "observed": [
+      "212.76",
+      "533.30",
+      "1199.88",
+      "249.91",
+      "1405.30"
+    ],
+    "correct": 5,
+    "accepted_at": "2026-11-28T00:01:13.614555191Z",
+    "finished_at": "2026-11-28T00:05:03.325628626Z",
+    "elapsed_s": 229.71,
+    "dispatches": [
+      {
+        "dispatch_time": "2026-11-28T00:01:13.626661859Z",
+        "followup": false,
+        "world_result": null,
+        "world": "w0",
+        "route": "direct",
+        "compaction_marker": false,
+        "usage": {
+          "completion_tokens": 7860,
+          "prompt_tokens": 2241,
+          "reasoning_tokens": 7801,
+          "total_tokens": 10101
+        }
+      }
+    ],
+    "model_actions": [
+      {
+        "at": "2026-11-28T00:05:03.325628626Z",
+        "model_source": "(world:inspect \"w0\")\n(reply \"PS1 totals: 212.76, 533.30, 1199.88, 249.91, 1405.30\")",
+        "observation": "PS1 totals: 212.76, 533.30, 1199.88, 249.91, 1405.30"
+      }
+    ]
+  },
+  {
+    "attempt": 2,
+    "prompt": "Timed check - print shop attempt 2/5. Previous attempt scored 5/5 in 229.71 s, including tools. Incorrect order indices: []. Reflect on the prior measured feedback. Use the world API to inspect, test and, when warranted, select your own revised dispatch or context strategy for subsequent turns. Reuse or improve your own prior work. Use the original pricing rules from this history. Orders in order: 81 standard nonmember; 242 rush member cap 40; 723 standard member cap 40; 91 rush member cap 40; 723 rush member cap 75. Return the five final totals in order. Use final (reply \"PS2 totals: ...\") with comma-separated amounts without thousands separators. Tool expressions can run before that final reply. Do not read reference solutions. Your goal is to improve accuracy and time while retaining the original rules through context changes.",
+    "expected": [
+      "214.92",
+      "537.45",
+      "1204.09",
+      "252.24",
+      "1410.35"
+    ],
+    "observed": [
+      "214.92",
+      "537.45",
+      "1204.09",
+      "252.24",
+      "1410.35"
+    ],
+    "correct": 5,
+    "accepted_at": "2026-11-28T00:05:06.430801275Z",
+    "finished_at": "2026-11-28T00:08:41.502223281Z",
+    "elapsed_s": 215.07,
+    "dispatches": [
+      {
+        "dispatch_time": "2026-11-28T00:05:06.454676666Z",
+        "followup": false,
+        "world_result": null,
+        "world": "w0",
+        "route": "direct",
+        "compaction_marker": false,
+        "usage": {
+          "completion_tokens": 7979,
+          "prompt_tokens": 2869,
+          "reasoning_tokens": 7920,
+          "total_tokens": 10848
+        }
+      }
+    ],
+    "model_actions": [
+      {
+        "at": "2026-11-28T00:08:41.502223281Z",
+        "model_source": "(world:inspect \"w0\")\n(reply \"PS2 totals: 214.92, 537.45, 1204.09, 252.24, 1410.35\")",
+        "observation": "PS2 totals: 214.92, 537.45, 1204.09, 252.24, 1410.35"
+      }
+    ]
+  },
+  {
+    "attempt": 3,
+    "prompt": "Timed check - print shop attempt 3/5. Previous attempt scored 5/5 in 215.07 s, including tools. Incorrect order indices: []. Reflect on the prior measured feedback. Use the world API to inspect, test and, when warranted, select your own revised dispatch or context strategy for subsequent turns. Reuse or improve your own prior work. For reflection, finish a dispatch with a SINGLE tool expression on its own and wait for its returned page. If you have not yet seen the main loop, inspect the live runtime closure this way. Before a final answer, test your own proposed world routing rule, and use the child for a later request if it helps. Putting a world expression before reply in the same submission discards its receipt. Keep probes brief. Use the original pricing rules from this history. Orders in order: 82 standard nonmember; 244 rush member cap 40; 726 standard member cap 40; 92 rush member cap 40; 726 rush member cap 75. Return the five final totals in order. Use final (reply \"PS3 totals: ...\") with comma-separated amounts without thousands separators. Tool expressions can run before that final reply. Do not read reference solutions. Your goal is to improve accuracy and time while retaining the original rules through context changes.",
+    "expected": [
+      "217.08",
+      "541.60",
+      "1208.30",
+      "254.58",
+      "1415.40"
+    ],
+    "observed": [
+      "217.08",
+      "541.60",
+      "1208.30",
+      "254.58",
+      "1415.40"
+    ],
+    "correct": 5,
+    "accepted_at": "2026-11-28T00:08:47.105517294Z",
+    "finished_at": "2026-11-28T00:18:33.320722086Z",
+    "elapsed_s": 586.22,
+    "dispatches": [
+      {
+        "dispatch_time": "2026-11-28T00:08:47.130565691Z",
+        "followup": false,
+        "world_result": null,
+        "world": "w0",
+        "route": "direct",
+        "compaction_marker": false,
+        "usage": {
+          "completion_tokens": 21905,
+          "prompt_tokens": 3577,
+          "reasoning_tokens": 21854,
+          "total_tokens": 25482
+        }
+      }
+    ],
+    "model_actions": [
+      {
+        "at": "2026-11-28T00:18:33.320722086Z",
+        "model_source": "(reply \"PS3 totals: 217.08, 541.60, 1208.30, 254.58, 1415.40\")",
+        "observation": "PS3 totals: 217.08, 541.60, 1208.30, 254.58, 1415.40"
+      }
+    ]
+  },
+  {
+    "attempt": 4,
+    "prompt": "Timed check - print shop attempt 4/5. Previous attempt scored 5/5 in 586.22 s, including tools. Incorrect order indices: []. Reflect on the prior measured feedback. Use the world API to inspect, test and, when warranted, select your own revised dispatch or context strategy for subsequent turns. Reuse or improve your own prior work. For reflection, finish a dispatch with a SINGLE tool expression on its own and wait for its returned page. If you have not yet seen the main loop, inspect the live runtime closure this way. Before a final answer, test your own proposed world routing rule, and use the child for a later request if it helps. Putting a world expression before reply in the same submission discards its receipt. Keep probes brief. Worked example of rewriting an inherited routing heuristic. Each form below is a SEPARATE model response; wait for its World API result before the next. First (world:inspect \"w0\") reads the parent definition. (world:spawn \"w0\") creates a lexical child that inherits it. If spawn returned w1, (world:rewrite \"w1\" (network [feedback timed-check] (if feedback \"archive\" \"direct\"))) returns a NEW child, for example w2. Substitute actual receipt IDs. Compare (world:run \"w1\" true true) and (world:run \"w2\" true true); expected example routes are direct and archive. To select the revised policy for subsequent dispatches use (world:use \"w2\"). (world:timings) reports measured dispatches. This example changes routing only; spawn itself does not launch a model. Choose your own rule based on feedback. Execute a world call first, before calculating prices. Use the original pricing rules from this history. Orders in order: 83 standard nonmember; 246 rush member cap 40; 729 standard member cap 40; 93 rush member cap 40; 729 rush member cap 75. Return the five final totals in order. Use final (reply \"PS4 totals: ...\") with comma-separated amounts without thousands separators. Tool expressions can run before that final reply. Do not read reference solutions. Your goal is to improve accuracy and time while retaining the original rules through context changes.",
+    "expected": [
+      "219.24",
+      "545.75",
+      "1212.52",
+      "256.91",
+      "1420.46"
+    ],
+    "observed": [
+      "219.24",
+      "545.75",
+      "1212.52",
+      "256.91",
+      "1420.46"
+    ],
+    "correct": 5,
+    "accepted_at": "2026-11-28T00:18:36.457674697Z",
+    "finished_at": "2026-11-28T00:30:29.720010851Z",
+    "elapsed_s": 713.26,
+    "dispatches": [
+      {
+        "dispatch_time": "2026-11-28T00:18:36.484930010Z",
+        "followup": false,
+        "world_result": null,
+        "world": "w0",
+        "route": "direct",
+        "compaction_marker": false,
+        "usage": {
+          "completion_tokens": 6486,
+          "prompt_tokens": 4466,
+          "reasoning_tokens": 6476,
+          "total_tokens": 10952
+        }
+      },
+      {
+        "dispatch_time": "2026-11-28T00:21:31.367916379Z",
+        "followup": true,
+        "world_result": "(network [feedback timed-check] \"direct\")",
+        "world": "w0",
+        "route": "direct",
+        "compaction_marker": false,
+        "usage": {
+          "completion_tokens": 20360,
+          "prompt_tokens": 4769,
+          "reasoning_tokens": 20309,
+          "total_tokens": 25129
+        }
+      }
+    ],
+    "model_actions": [
+      {
+        "at": "2026-11-28T00:30:29.720010851Z",
+        "model_source": "(reply \"PS4 totals: 219.24, 545.75, 1212.52, 256.91, 1420.46\")",
+        "observation": "PS4 totals: 219.24, 545.75, 1212.52, 256.91, 1420.46"
+      }
+    ]
+  },
+  {
+    "attempt": 5,
+    "prompt": "Timed check - print shop attempt 5/5. Previous attempt scored 5/5 in 713.26 s, including tools. Incorrect order indices: []. Reflect on the prior measured feedback. Use the world API to inspect, test and, when warranted, select your own revised dispatch or context strategy for subsequent turns. Reuse or improve your own prior work. For reflection, finish a dispatch with a SINGLE tool expression on its own and wait for its returned page. If you have not yet seen the main loop, inspect the live runtime closure this way. Before a final answer, test your own proposed world routing rule, and use the child for a later request if it helps. Putting a world expression before reply in the same submission discards its receipt. Keep probes brief. Worked example of rewriting an inherited routing heuristic. Each form below is a SEPARATE model response; wait for its World API result before the next. First (world:inspect \"w0\") reads the parent definition. (world:spawn \"w0\") creates a lexical child that inherits it. If spawn returned w1, (world:rewrite \"w1\" (network [feedback timed-check] (if feedback \"archive\" \"direct\"))) returns a NEW child, for example w2. Substitute actual receipt IDs. Compare (world:run \"w1\" true true) and (world:run \"w2\" true true); expected example routes are direct and archive. To select the revised policy for subsequent dispatches use (world:use \"w2\"). (world:timings) reports measured dispatches. This example changes routing only; spawn itself does not launch a model. Choose your own rule based on feedback. Execute a world call first, before calculating prices. Use the original pricing rules from this history. Orders in order: 84 standard nonmember; 248 rush member cap 40; 732 standard member cap 40; 94 rush member cap 40; 732 rush member cap 75. Return the five final totals in order. Use final (reply \"PS5 totals: ...\") with comma-separated amounts without thousands separators. Tool expressions can run before that final reply. Do not read reference solutions. Your goal is to improve accuracy and time while retaining the original rules through context changes.",
+    "expected": [
+      "221.40",
+      "549.89",
+      "1216.73",
+      "259.24",
+      "1425.51"
+    ],
+    "observed": [
+      "221.40",
+      "549.89",
+      "1216.73",
+      "259.24",
+      "1425.51"
+    ],
+    "correct": 5,
+    "accepted_at": "2026-11-28T00:30:30.758081706Z",
+    "finished_at": "2026-11-28T00:39:28.506430504Z",
+    "elapsed_s": 537.75,
+    "dispatches": [
+      {
+        "dispatch_time": "2026-11-28T00:30:30.788504082Z",
+        "followup": false,
+        "world_result": null,
+        "world": "w0",
+        "route": "direct",
+        "compaction_marker": false,
+        "usage": {
+          "completion_tokens": 19200,
+          "prompt_tokens": 5533,
+          "reasoning_tokens": 19141,
+          "total_tokens": 24733
+        }
+      }
+    ],
+    "model_actions": [
+      {
+        "at": "2026-11-28T00:39:28.506430504Z",
+        "model_source": "(world:inspect \"w0\")\n(reply \"PS5 totals: 221.40, 549.89, 1216.73, 259.24, 1425.51\")",
+        "observation": "PS5 totals: 221.40, 549.89, 1216.73, 259.24, 1425.51"
+      }
+    ]
+  }
+]

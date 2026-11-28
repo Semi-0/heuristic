@@ -356,3 +356,5 @@ Direct lookup reused the correct file declaration 3/3. Selected context stayed a
 Full history passed 4/4 isolated autocomplete tickets in 50.5 minutes. Editor and dependency selection each passed 2/4. Selection used 65.5% less cumulative input and took 82.1 minutes. No run reached the window limit or triggered compaction. [Protocol and results](2026-11-27-autocomplete-project.md)
 
 2026-11-27 — [Chronological editor hot reload](../experiments/editor-hot-reload/README.md) passed a live session check with two reloads, a subsequent executable reply, and browser reattachment.
+
+The November 28 live Soul editor trial returned 25/25 correct print-shop totals. Lain inspected the parent policy once in a standalone call. All six dispatches used the original routing heuristic. [Trial protocol and outcomes](2026-11-28-live-printshop-world.md)
