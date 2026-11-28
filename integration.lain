@@ -57,17 +57,17 @@
 (define initial-input-queue (queue:empty pending-event-limit))
 (define initial-round-state (round:initial inference-round-budget))
 
-(define model-session)
-(define user-input)
-(define message-to-user)
-(define conversation-child)
-(define result)
-(define weather-at)
-(define umbrella-advice)
+(define model-session (let-cell [port] port))
+(define user-input (let-cell [port] port))
+(define message-to-user (let-cell [port] port))
+(define conversation-child (let-cell [port] port))
+(define result (let-cell [port] port))
+(define weather-at (let-cell [port] port))
+(define umbrella-advice (let-cell [port] port))
 
 ;; External effects are supplied independently; loading declarations starts no IO.
-(define transport:stream)
-(define message:deliver)
+(define transport:stream (let-cell [port] port))
+(define message:deliver (let-cell [port] port))
 
 (define integration:user
   (network [identity]

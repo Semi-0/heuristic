@@ -49,7 +49,7 @@ sequence. Two independent networks compose into a third.
 ## 2. The three semantic layers: verbs, relations, sentences
 
 * verbs — factories that build transformations (`network`, `struct`, `slot`, `|>`, `compose`);
-* relations — named endpoints that hold information (`def-cells`, `let-cell`, `<->`);
+* relations — named endpoints that hold information (`let-cell`, `<->`);
 * sentences — statements that connect them (`->`, applications, assertions).
 
 ```lain
@@ -57,9 +57,7 @@ sequence. Two independent networks compose into a third.
 
 (define scale (network [x] (* x 3)))
 (define shift (network [x] (+ x 10)))
-(def-cells raw result)
-(-> 4 raw)
-(-> (|> raw scale shift) result)
+(define result (|> 4 scale shift))
 ;; => result 22
 ```
 
@@ -71,10 +69,12 @@ relationship and two of them are driven.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells total left right)
-(constraint:+ left right total)
-(-> 7 left)
-(-> 5 right)
+(define total
+  (let-cell [sum left right]
+    (constraint:+ left right sum)
+    (-> 7 left)
+    (-> 5 right)
+    sum))
 ;; => total 12
 ```
 
@@ -86,20 +86,24 @@ and the same answer. Textual order never schedules execution.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b c)
-(-> 3 a)
-(-> (+ a 1) b)
-(-> (* b 2) c)
+(define c
+  (let-cell [a b result]
+    (-> 3 a)
+    (-> (+ a 1) b)
+    (-> (* b 2) result)
+    result))
 ;; => c 8
 ```
 
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b c)
-(-> (* b 2) c)
-(-> 3 a)
-(-> (+ a 1) b)
+(define c
+  (let-cell [a b result]
+    (-> (* b 2) result)
+    (-> 3 a)
+    (-> (+ a 1) b)
+    result))
 ;; => c 8
 ```
 
@@ -112,22 +116,24 @@ questions.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b c)
-(constraint:+ a b c)
-(-> 4 a)
-(-> 6 b)
-(define sum c)
+(define sum
+  (let-cell [a b c]
+    (constraint:+ a b c)
+    (-> 4 a)
+    (-> 6 b)
+    c))
 ;; => sum 10
 ```
 
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b c)
-(constraint:+ a b c)
-(-> 10 c)
-(-> 4 b)
-(define missing a)
+(define missing
+  (let-cell [a b c]
+    (constraint:+ a b c)
+    (-> 10 c)
+    (-> 4 b)
+    a))
 ;; => missing 6
 ```
 
@@ -139,30 +145,33 @@ never chains.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b)
-(-> a b)
-(-> 7 a)
-(define forwarded b)
+(define forwarded
+  (let-cell [a b]
+    (-> a b)
+    (-> 7 a)
+    b))
 ;; => forwarded 7
 ```
 
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b)
-(-> a b)
-(-> 7 b)
-(define back-propagated a)
+(define back-propagated
+  (let-cell [a b]
+    (-> a b)
+    (-> 7 b)
+    a))
 ;; => back-propagated :unresolved
 ```
 
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b)
-(<-> a b)
-(-> 7 b)
-(define coordinated a)
+(define coordinated
+  (let-cell [a b]
+    (<-> a b)
+    (-> 7 b)
+    a))
 ;; => coordinated 7
 ```
 
@@ -203,10 +212,11 @@ information.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b)
-(-> 1 a)
-(-> a b)
-(define answer b)
+(define answer
+  (let-cell [a b]
+    (-> 1 a)
+    (-> a b)
+    b))
 ;; => answer 1
 ```
 
@@ -218,9 +228,7 @@ arrival order and ignores reevaluation of the same publication.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(define incoming)
-(-> 7 incoming)
-(define samples (|> incoming (history 4)))
+(define samples (|> 7 (history 4)))
 ;; => samples [7]
 ```
 
@@ -242,10 +250,9 @@ stages around it, and the gate reacts when evidence arrives later.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(define permission)
+(define permission (let-cell [port] port))
 (define permitted? (network [x] permission))
-(define cleaned)
-(-> 6 cleaned)
+(define cleaned 6)
 (define answer (|> cleaned (switch permitted?)))
 (define audit-log (|> cleaned (history 4)))
 ;; => answer :unresolved
@@ -266,7 +273,7 @@ nothing reaches into its internals.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(define incoming)
+(define incoming (let-cell [port] port))
 (define object (struct :nested (struct :value incoming)))
 (-> 42 (|> object (slot :nested) (slot :value)))
 ;; => incoming 42
@@ -295,11 +302,8 @@ with an assertion.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells width height perimeter)
 (define perimeter-of (network [w h] (* 2 (+ w h))))
-(-> 3 width)
-(-> 4 height)
-(-> (perimeter-of width height) perimeter)
+(define perimeter (perimeter-of 3 4))
 ;; => perimeter 14
 ```
 
@@ -313,10 +317,11 @@ justified directions and returns its endpoints as a list.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells x y)
-(-> (+ x 1) y)
-(-> 5 y)
-(define inverse-answer x)
+(define inverse-answer
+  (let-cell [x y]
+    (-> (+ x 1) y)
+    (-> 5 y)
+    x))
 ;; => inverse-answer :unresolved
 ```
 
@@ -328,10 +333,11 @@ justified directions and returns its endpoints as a list.
     (-> (+ x 1) y)
     (-> (- y 1) x)
     (list x y)))
-(def-cells x y)
-(next x y)
-(-> 5 y)
-(define inverse-answer x)
+(define inverse-answer
+  (let-cell [x y]
+    (next x y)
+    (-> 5 y)
+    x))
 ;; => inverse-answer 4
 ```
 
@@ -342,10 +348,11 @@ Coordinating a filtered view with its source does not recover the source.
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
 (define keep-positive (network [x] (switch x (> x 0))))
-(def-cells source mirror)
-(<-> source (keep-positive source))
-(-> 5 mirror)
-(define recovered source)
+(define recovered
+  (let-cell [source mirror]
+    (<-> source (keep-positive source))
+    (-> 5 mirror)
+    source))
 ;; => recovered :unresolved
 ```
 
@@ -355,10 +362,11 @@ reported, not silently overwritten.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(define c)
-(-> 1 c)
-(-> 2 c)
-(define answer c)
+(define answer
+  (let-cell [c]
+    (-> 1 c)
+    (-> 2 c)
+    c))
 ;; => answer :contradiction
 ```
 
@@ -377,11 +385,12 @@ relationship, preserved boundaries, and an observable inverse question.
     (-> (/ c a) b)
     (list a b c)))
 
-(def-cells price quantity total)
-(product price quantity total)
-(-> 4 price)
-(-> 3 quantity)
-(define bill total)
+(define bill
+  (let-cell [price quantity total]
+    (product price quantity total)
+    (-> 4 price)
+    (-> 3 quantity)
+    total))
 ;; => bill 12
 ```
 
@@ -395,11 +404,12 @@ relationship, preserved boundaries, and an observable inverse question.
     (-> (/ c a) b)
     (list a b c)))
 
-(def-cells price quantity total)
-(product price quantity total)
-(-> 12 total)
-(-> 3 quantity)
-(define bill price)
+(define bill
+  (let-cell [price quantity total]
+    (product price quantity total)
+    (-> 12 total)
+    (-> 3 quantity)
+    price))
 ;; => bill 4
 ```
 
@@ -411,11 +421,12 @@ relationship, preserved boundaries, and an observable inverse question.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells left right sum)
-(constraint:+ left right sum)
-(-> 2 left)
-(-> 3 right)
-(define answer sum)
+(define answer
+  (let-cell [left right sum]
+    (constraint:+ left right sum)
+    (-> 2 left)
+    (-> 3 right)
+    sum))
 ;; => answer 5
 ```
 
@@ -463,7 +474,7 @@ process the available prefix and wait for the rest.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/list.lain")
 
-(define tail)
+(define tail (let-cell [port] port))
 (define xs (cons 1 tail))
 (define doubled (map-list (network [x] (* x 2)) xs))
 (define first-value (car doubled))
@@ -505,7 +516,9 @@ relationship; the ports are symmetric even though the source text is not.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 
-(def-cells a b c)
+(define a (let-cell [port] port))
+(define b (let-cell [port] port))
+(define c (let-cell [port] port))
 (constraint:+ a b c)
 (-> 1 a)
 (-> 2 b)
@@ -584,7 +597,9 @@ justified directions.
 ```lain
 (load-lain "propagators/compiler_2/runtime/lain/list.lain")
 
-(def-cells needle haystack result)
+(define needle (let-cell [port] port))
+(define haystack (let-cell [port] port))
+(define result (let-cell [port] port))
 
 (define position-of
   (network [x xs]

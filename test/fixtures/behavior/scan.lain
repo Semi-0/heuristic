@@ -1,5 +1,5 @@
 (load-lain "lib/behavior.lain")
-(define input-cell)
+(define input-cell (let-cell [port] port))
 (define sums (scan input-cell +))
 (define initialized (scan input-cell + 10))
 (define append-digit (network [acc next] (+ (* acc 10) next)))
@@ -15,5 +15,5 @@
 (define reversed (history sums :filo))
 (define latest (last sums))
 (define mapped-history (history-map sums (network [x] (+ x 100))))
-(define other-input)
+(define other-input (let-cell [port] port))
 (define independent (scan other-input +))

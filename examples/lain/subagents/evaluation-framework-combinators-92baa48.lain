@@ -17,26 +17,26 @@
 
 ;; Pure policy and translation primitives supplied by a session extension.
 ;; Outputs are facts or requests; these declarations invoke no external I/O.
-(define evaluation:derive-trials)
-(define evaluation:incorporate-results)
-(define evaluation:select-pending-assignment)
-(define evaluation:derive-assignment-updates)
-(define harbor:observe-context)
-(define harbor:observe-assessment)
-(define harbor:prepare)
-(define harbor:grade)
+(define evaluation:derive-trials (let-cell [port] port))
+(define evaluation:incorporate-results (let-cell [port] port))
+(define evaluation:select-pending-assignment (let-cell [port] port))
+(define evaluation:derive-assignment-updates (let-cell [port] port))
+(define harbor:observe-context (let-cell [port] port))
+(define harbor:observe-assessment (let-cell [port] port))
+(define harbor:prepare (let-cell [port] port))
+(define harbor:grade (let-cell [port] port))
 
 (define evaluation:plan-trials
   (network [shared-assignments]
-    (define trials)
-    (evaluation:derive-trials shared-assignments trials)
-    trials))
+    (let-cell [trials]
+      (evaluation:derive-trials shared-assignments trials)
+      trials)))
 
 (define evaluation:accept-runner-results
   (network [trials runtime-results]
-    (define updates)
-    (evaluation:incorporate-results trials runtime-results updates)
-    updates))
+    (let-cell [updates]
+      (evaluation:incorporate-results trials runtime-results updates)
+      updates)))
 
 ;; Select pending work in user order; preserve already-running work.
 ;; Pi owns execution and child lifecycle. This output is a view, not another queue.
@@ -46,27 +46,27 @@
 
 (define harbor:request-preparation
   (network [shared-assignments trials]
-    (define requests)
-    (harbor:prepare shared-assignments trials requests)
-    requests))
+    (let-cell [requests]
+      (harbor:prepare shared-assignments trials requests)
+      requests)))
 
 (define harbor:attach-contexts
   (network [trials observations]
-    (define updates)
-    (harbor:observe-context trials observations updates)
-    updates))
+    (let-cell [updates]
+      (harbor:observe-context trials observations updates)
+      updates)))
 
 (define harbor:request-grading
   (network [trials assessments]
-    (define requests)
-    (harbor:grade trials assessments requests)
-    requests))
+    (let-cell [requests]
+      (harbor:grade trials assessments requests)
+      requests)))
 
 (define harbor:derive-assessments
   (network [trials observations]
-    (define assessments)
-    (harbor:observe-assessment trials observations assessments)
-    assessments))
+    (let-cell [assessments]
+      (harbor:observe-assessment trials observations assessments)
+      assessments)))
 
 ;; Feed evaluation outcomes into the same assignment facts, by stable ID.
 ;; Feedback preserves user order. Request identity is independent of priority.

@@ -4,23 +4,23 @@
 
 ;; Public protocol ports. Accessors connect partial cells without unwrapping the
 ;; whole actor. The current assignment is a derived output, not another task queue.
-(define assignments)
-(define on-going-assignment)
-(define assignment-result)
-(define evaluation:parameters)
-(define evaluation:observations)
-(define evaluation:requests)
-(define evaluation:trials)
-(define evaluation:assessments)
+(define assignments (let-cell [port] port))
+(define on-going-assignment (let-cell [port] port))
+(define assignment-result (let-cell [port] port))
+(define evaluation:parameters (let-cell [port] port))
+(define evaluation:observations (let-cell [port] port))
+(define evaluation:requests (let-cell [port] port))
+(define evaluation:trials (let-cell [port] port))
+(define evaluation:assessments (let-cell [port] port))
 
 ;; Deferred constraints over shared assignment, trial and assessment information.
-(define evaluation:assignment-trials)
-(define evaluation:assessment-updates)
-(define evaluation:trial-execution)
-(define evaluation:runnable-assignments)
-(define evaluation:trial-contexts)
-(define evaluation:trial-assessments)
-(define evaluation:required-actions)
+(define evaluation:assignment-trials (let-cell [port] port))
+(define evaluation:assessment-updates (let-cell [port] port))
+(define evaluation:trial-execution (let-cell [port] port))
+(define evaluation:runnable-assignments (let-cell [port] port))
+(define evaluation:trial-contexts (let-cell [port] port))
+(define evaluation:trial-assessments (let-cell [port] port))
+(define evaluation:required-actions (let-cell [port] port))
 
 ;; Assignment facts constrain trials; assessments contribute assignment outcomes.
 ;; Updates retain stable assignment/trial/run identities and merge monotonically.

@@ -22,7 +22,7 @@ def build():
     catalog = (ROOT / "docs/operator-examples.edn").read_text()
     matches = list(re.finditer(r':operators (\[[^\]]*\]) :source ("(?:\\.|[^"\\])*") :checks ', catalog))
     descriptions = {
-        "define": "Bind cells and define a callable network; invoke the callable with connected arguments.",
+        "define": "Give a value or callable a name. Compose intermediate results directly; use let-cell for a local feedback or shared port.",
         "->": "Connect a source value to a target cell. This propagates values; it does not call a function.",
         "event:point": "Convert connected identity, time and payload inputs into retained temporal occurrences. Arguments may change reactively.",
         "behavior:source": "Create one independent temporal source that receives explicit occurrences.",

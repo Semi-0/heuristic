@@ -32,13 +32,13 @@
 (doseq [[label source publish? expected]
         [[:slot-delayed fixture true expected-context]
          [:reference-delayed reference-fixture true expected-context]
-         [:slot-immediate (str/replace fixture "(define raw-input-text)" "(define raw-input-text \"Analysis text\")") false expected-context]
-         [:reference-immediate (str/replace reference-fixture "(define raw-input-text)" "(define raw-input-text \"Analysis text\")") false expected-context]
+         [:slot-immediate (str/replace fixture "(define raw-input-text (let-cell [port] port))" "(define raw-input-text \"Analysis text\")") false expected-context]
+         [:reference-immediate (str/replace reference-fixture "(define raw-input-text (let-cell [port] port))" "(define raw-input-text \"Analysis text\")") false expected-context]
          [:native-projection-delayed (str/replace reference-fixture "data:get" "audit:get") true expected-context]
          [:frozen-context-delayed (str/replace reference-fixture
                                                "(network [envref context]\n  (let [e"
                                                "(network [envref context-input]\n  (let [context (cell:first context-input) e") true expected-context]
-         [:record-delayed "(load-lain \"soul-refined.lain\") (define raw-input-text) (define record (data:record :phase \"generalization\" :input (cell:first raw-input-text))) (define observed (data:get :phase record))" true "generalization"]
+         [:record-delayed "(load-lain \"soul-refined.lain\") (define raw-input-text (let-cell [port] port)) (define record (data:record :phase \"generalization\" :input (cell:first raw-input-text))) (define observed (data:get :phase record))" true "generalization"]
          [:struct-select "(load-lain \"soul-refined.lain\") (define f (network [o] (select ((slot :c) o) 10 20))) (define observed (f (struct :c false)))" false 20]
          [:premise-struct-select "(load-lain \"soul-refined.lain\") (define f (ttms:ttms-premise-closure (network [o] (ttms:select ((slot :c) o) 10 20)) 1)) (define observed (f (struct :c false)))" false 20]]]
   (let [path (str directory "/" (name label) ".lain")

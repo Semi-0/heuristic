@@ -20,7 +20,7 @@
 (deftest compiled-list-consumers-follow-definition-premises
   (doseq [nested? [false true]]
     (testing (if nested? "Nested list through Lain accessors" "Flat list through Lain accessors")
-      (let [endpoint (compile-program "(define definition-one)")
+      (let [endpoint (compile-program "(define definition-one (let-cell [port] port))")
             with-premise (publication/publish endpoint 'definition-one 1 :active 'definition-one)
             program (str "(define f (ttms-premise-closure (network [x] "
                          (if nested? "(list (list x (+ x 1)))" "(list x (+ x 1))")
@@ -45,7 +45,7 @@
         (is (empty? (:cells (session/session-declarations restored))))))))
 
 (deftest producer-extensions-replay-without-changing-the-session
-  (let [initial (compile-program "(define input) (define result (+ input 1))")
+  (let [initial (compile-program "(define input (let-cell [port] port)) (define result (+ input 1))")
         admitted (publication/publish initial 'input 1 :active 10)]
     (is (= 11 (observed admitted 'result)))
     (is (identical? admitted (publication/publish admitted 'input 1 :active 10)))
@@ -55,7 +55,7 @@
 
 (deftest compiled-list-consumers-follow-a-new-return-shape
   (let [initial (compile-program
-                 "(define definition-one)
+                 "(define definition-one (let-cell [port] port))
                   (define f (ttms-premise-closure
                     (if (= definition-one 1) (network [x] (list x x)) (network [x] (list x)))
                     definition-one))

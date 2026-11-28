@@ -20,7 +20,7 @@
                     (session/create-session {:id (random-uuid) :run-id (random-uuid)
                                              :native-extensions [primitives/session-extension]})
                     (session/session-extension
-                     {:id label :files {"main.lain" (str "(define subtotal) (define fee) (define result " source ")")}}))
+                     {:id label :files {"main.lain" (str "(define subtotal (let-cell [port] port)) (define fee (let-cell [port] port)) (define result " source ")")}}))
           settled (-> compiled
                       (publication/publish 'subtotal 1 :active 185)
                       (publication/publish 'fee 1 :active 12))

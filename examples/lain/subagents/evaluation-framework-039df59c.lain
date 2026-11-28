@@ -4,22 +4,22 @@
 
 ;; Public protocol ports. Accessors connect partial cells without unwrapping the
 ;; whole actor. The current assignment is a derived output, not another task queue.
-(define assignments)
-(define on-going-assignment)
-(define assignment-result)
-(define evaluation:observations)
-(define evaluation:requests)
-(define evaluation:trials)
-(define evaluation:assessments)
+(define assignments (let-cell [port] port))
+(define on-going-assignment (let-cell [port] port))
+(define assignment-result (let-cell [port] port))
+(define evaluation:observations (let-cell [port] port))
+(define evaluation:requests (let-cell [port] port))
+(define evaluation:trials (let-cell [port] port))
+(define evaluation:assessments (let-cell [port] port))
 
 ;; Deferred constraints over shared assignment, trial and assessment information.
-(define evaluation:assignment-trials)
-(define evaluation:assessment-updates)
-(define evaluation:trial-execution)
-(define evaluation:runnable-assignments)
-(define evaluation:trial-contexts)
-(define evaluation:trial-assessments)
-(define evaluation:required-actions)
+(define evaluation:assignment-trials (let-cell [port] port))
+(define evaluation:assessment-updates (let-cell [port] port))
+(define evaluation:trial-execution (let-cell [port] port))
+(define evaluation:runnable-assignments (let-cell [port] port))
+(define evaluation:trial-contexts (let-cell [port] port))
+(define evaluation:trial-assessments (let-cell [port] port))
+(define evaluation:required-actions (let-cell [port] port))
 
 ;; Assignment facts constrain trials; assessments contribute assignment outcomes.
 ;; Updates retain stable assignment/trial/run identities and merge monotonically.
@@ -59,8 +59,7 @@
 ;; fresh protocol cells; only this constructor composes the internal networks.
 (define make-evaluation-framework
   (network []
-    (define actor)
-    (let-cell [shared-assignments ongoing-assignment trials assessments
+    (let-cell [actor shared-assignments ongoing-assignment trials assessments
                runtime-observations framework-observations framework-requests]
       (assignments actor shared-assignments)
       (on-going-assignment actor ongoing-assignment)
@@ -73,5 +72,5 @@
       (evaluation:assignment-protocol shared-assignments trials assessments)
       (evaluation:execution-protocol shared-assignments trials runtime-observations ongoing-assignment)
       (evaluation:assessment-protocol trials framework-observations assessments)
-      (evaluation:external-protocol shared-assignments trials assessments framework-requests))
-    (list actor)))
+      (evaluation:external-protocol shared-assignments trials assessments framework-requests)
+      (list actor))))

@@ -111,16 +111,16 @@
 ;; This finite journal retains the exact admitted sequence for deterministic scan.
 (define model:record
   (network [journal-cell identity kind payload]
-    (define no-event)
-    (let [journal (cell:value journal-cell)
-          events (data:get :events journal)]
-      (session:feedback journal-cell (data:get :version journal)
-        (if (or (= identity :idle) (queue:contains events identity)) no-event
-          (state:advance journal
-            (data:record :events
-              (queue:append-list events
-                (data:record :id identity :time (+ 1 (data:get :version journal))
-                             :value (data:record :kind kind :payload payload))))))))))
+    (let-cell [no-event]
+      (let [journal (cell:value journal-cell)
+            events (data:get :events journal)]
+        (session:feedback journal-cell (data:get :version journal)
+          (if (or (= identity :idle) (queue:contains events identity)) no-event
+            (state:advance journal
+              (data:record :events
+                (queue:append-list events
+                  (data:record :id identity :time (+ 1 (data:get :version journal))
+                               :value (data:record :kind kind :payload payload)))))))))))
 
 (define model:unseen
   (network [recorded kind events]
@@ -173,25 +173,25 @@
 
 (define model:new
   (network [identity request capacity budget user]
-    (define inlet)
-    (let [initial (data:with (model:initial capacity budget) (data:record :model-id identity))
-          journal (source:new (data:record :version 0 :events (data:list)))
-          occurrences (behavior:from-events (data:get :events (cell:value journal)))
-          states (behavior:scan occurrences model:reduce initial)
-          current (behavior:current states initial)
-          state (cell:reference current)
-          events (source:new (data:list))
-          delivered (source:new (data:list))
-          commands (source:new (data:list))
-          premise (source:new identity)
-          transition (network [previous next] (model:connect-transition journal previous next))
-          instance (struct :transition transition :state-cell state :inlet inlet :journal-cell journal
-                           :events-cell events :delivered-cell delivered
-                           :commands-cell commands :request request :premise premise)]
-      (session:export :model identity :model state)
-      (session:export :journal identity :event-journal journal)
-      (session:export :source identity :source events)
-      (session:export :messages identity :messages delivered)
-      (session:export :control identity :model-control commands)
-      (model:connect instance inlet user)
-      instance)))
+    (let-cell [inlet]
+      (let [initial (data:with (model:initial capacity budget) (data:record :model-id identity))
+            journal (source:new (data:record :version 0 :events (data:list)))
+            occurrences (behavior:from-events (data:get :events (cell:value journal)))
+            states (behavior:scan occurrences model:reduce initial)
+            current (behavior:current states initial)
+            state (cell:reference current)
+            events (source:new (data:list))
+            delivered (source:new (data:list))
+            commands (source:new (data:list))
+            premise (source:new identity)
+            transition (network [previous next] (model:connect-transition journal previous next))
+            instance (struct :transition transition :state-cell state :inlet inlet :journal-cell journal
+                             :events-cell events :delivered-cell delivered
+                             :commands-cell commands :request request :premise premise)]
+        (session:export :model identity :model state)
+        (session:export :journal identity :event-journal journal)
+        (session:export :source identity :source events)
+        (session:export :messages identity :messages delivered)
+        (session:export :control identity :model-control commands)
+        (model:connect instance inlet user)
+        instance))))

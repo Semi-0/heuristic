@@ -4,31 +4,31 @@
 
 ;; Deferred provider and public protocol accessors. Harbor denotes a protocol
 ;; provider, not a process launch; outside handlers own preparation/grading I/O.
-(define harbor:framework)
-(define harbor:observe-context)
-(define harbor:observe-assessment)
-(define harbor:prepare)
-(define harbor:grade)
+(define harbor:framework (let-cell [port] port))
+(define harbor:observe-context (let-cell [port] port))
+(define harbor:observe-assessment (let-cell [port] port))
+(define harbor:prepare (let-cell [port] port))
+(define harbor:grade (let-cell [port] port))
 
 (define harbor
   (network []
-    (define evaluation-framework)
-    (harbor:framework evaluation-framework)
-    (list evaluation-framework)))
-(define assignments)
-(define on-going-assignment)
-(define assignment-result)
-(define evaluation:observations)
-(define evaluation:requests)
-(define evaluation:trials)
-(define evaluation:assessments)
+    (let-cell [evaluation-framework]
+      (harbor:framework evaluation-framework)
+      (list evaluation-framework))))
+(define assignments (let-cell [port] port))
+(define on-going-assignment (let-cell [port] port))
+(define assignment-result (let-cell [port] port))
+(define evaluation:observations (let-cell [port] port))
+(define evaluation:requests (let-cell [port] port))
+(define evaluation:trials (let-cell [port] port))
+(define evaluation:assessments (let-cell [port] port))
 
 ;; Pure relationships supplied by the session extension. Each connects focused
 ;; cells; implementations must not require a resolved whole actor or workflow.
-(define evaluation:assignment-trials)
-(define evaluation:assessment-updates)
-(define evaluation:trial-execution)
-(define evaluation:runnable-assignments)
+(define evaluation:assignment-trials (let-cell [port] port))
+(define evaluation:assessment-updates (let-cell [port] port))
+(define evaluation:trial-execution (let-cell [port] port))
+(define evaluation:runnable-assignments (let-cell [port] port))
 ;; Named Harbor relationships remain visible while primitive bodies are partial.
 ;; These primitives normalize facts or derive requests; they do not invoke I/O.
 (define harbor:trial-contexts

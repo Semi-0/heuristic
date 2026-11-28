@@ -37,7 +37,7 @@
       (h/extend! owner (s/session-extension
                         {:id :task :files {"task.lain"
                           (cond (= *entry* :measure)
-                            "(define stage-result) (define outcome (context:request (cell:reference context-seed)
+                            "(define stage-result (let-cell [port] port)) (define outcome (context:request (cell:reference context-seed)
                               \"q0-work\" \"Test task\" :work \"No history\" \"No diagnostic\" (cell:reference stage-result)))"
                             (= *entry* :attempt)
                             "(define outcome (context:attempt (cell:reference context-seed) (cell:reference (model:input context-model))

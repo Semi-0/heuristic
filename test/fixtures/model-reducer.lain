@@ -4,7 +4,7 @@
 (load-lain "lib/rounds.lain")
 (load-lain "lib/compiler-streaming.lain")
 (load-lain "lib/model.lain")
-(define test-events)
+(define test-events (let-cell [port] port))
 (define test-initial (data:with (model:initial 8 2) (data:record :model-id "isolated")))
 (define test-states (behavior:scan (behavior:from-events test-events) model:reduce test-initial))
 (define test-current (behavior:current test-states test-initial))

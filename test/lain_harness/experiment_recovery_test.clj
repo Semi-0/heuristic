@@ -146,7 +146,7 @@
     (try
       (host/extend! owner (observation/facilities))
       (host/extend-source! owner
-                           "(define missing)
+                           "(define missing (let-cell [port] port))
                             (define rejected (logic:all false missing))
                             (define accepted (logic:any true missing))
                             (define waiting (logic:all true missing))")
@@ -173,7 +173,7 @@
                             (define incomplete (experiment:ready? (data:record :outputs outputs :missing-supports missing)))
                             (define unknown-value (experiment:usable? :unknown))
                             (define contradictory-value (experiment:usable? :contradictory))
-                            (define delayed)
+                            (define delayed (let-cell [port] port))
                             (define ready (experiment:ready? delayed))")
       (is (false? (read-value 'incomplete)))
       (is (false? (read-value 'unknown-value)))

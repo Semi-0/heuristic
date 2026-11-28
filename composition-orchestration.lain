@@ -1,24 +1,27 @@
 ;; Three actors; four high-level interactions. Pi owns its child agents.
 ;; Actor data, accessors and task policies remain partial until session extension.
 (load-lain "propagators/compiler_2/runtime/lain/tracers.lain")
-(def-cells harbor user-input pi-runtime session-context)
+(define harbor (let-cell [port] port))
+(define user-input (let-cell [port] port))
+(define pi-runtime (let-cell [port] port))
+(define session-context (let-cell [port] port))
 (define backend :observe)
 
 ;; Reactive actor accessors; field representation is deferred.
-(define harbor:trials)
-(define harbor:report)
-(define user:commands)
-(define user:feedback)
-(define pi:observations)
-(define pi:requests)
+(define harbor:trials (let-cell [port] port))
+(define harbor:report (let-cell [port] port))
+(define user:commands (let-cell [port] port))
+(define user:feedback (let-cell [port] port))
+(define pi:observations (let-cell [port] port))
+(define pi:requests (let-cell [port] port))
 
 ;; Application policies, supplied later: intake, dispatch, reporting and feedback.
 ;; Dispatch reconciles task requests with Pi's run IDs/receipts; it does not
 ;; implement another child lifecycle. Harbor alone grades task correctness.
-(define tasks:intake)
-(define tasks:dispatch)
-(define trials:report)
-(define tasks:feedback)
+(define tasks:intake (let-cell [port] port))
+(define tasks:dispatch (let-cell [port] port))
+(define trials:report (let-cell [port] port))
+(define tasks:feedback (let-cell [port] port))
 
 ;; Harbor + user -> queued work and user controls.
 (define accept-work
@@ -68,7 +71,7 @@
 
 ;; A later session extension connects these actors to outside handlers.
 ;; Observation/replay must never invoke live Pi handlers.
-(define interpret-actors)
+(define interpret-actors (let-cell [port] port))
 (define outside
   (interpret-actors backend session-context harbor user-input pi-runtime))
 

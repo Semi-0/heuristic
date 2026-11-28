@@ -14,21 +14,21 @@
 
 ;; Deferred primitives normalize observations or derive request facts. They do
 ;; not perform Harbor I/O. Outside handlers own effects, receipts and cleanup.
-(define harbor:framework)
-(define harbor:observe-context)
-(define harbor:observe-assessment)
-(define harbor:prepare)
-(define harbor:grade)
-(define evaluation:assignment-trials)
-(define evaluation:assessment-updates)
-(define evaluation:trial-execution)
-(define evaluation:runnable-assignments)
+(define harbor:framework (let-cell [port] port))
+(define harbor:observe-context (let-cell [port] port))
+(define harbor:observe-assessment (let-cell [port] port))
+(define harbor:prepare (let-cell [port] port))
+(define harbor:grade (let-cell [port] port))
+(define evaluation:assignment-trials (let-cell [port] port))
+(define evaluation:assessment-updates (let-cell [port] port))
+(define evaluation:trial-execution (let-cell [port] port))
+(define evaluation:runnable-assignments (let-cell [port] port))
 
 (define harbor
   (network []
-    (define evaluation-framework)
-    (harbor:framework evaluation-framework)
-    evaluation-framework))
+    (let-cell [evaluation-framework]
+      (harbor:framework evaluation-framework)
+      evaluation-framework)))
 
 ;; Named relationships remain inspectable while their primitive bodies are open.
 (define harbor:trial-contexts
@@ -38,21 +38,21 @@
 
 (define harbor:trial-assessments
   (network [trials observations]
-    (define assessments)
-    (harbor:observe-assessment trials observations assessments)
-    assessments))
+    (let-cell [assessments]
+      (harbor:observe-assessment trials observations assessments)
+      assessments)))
 
 (define harbor:preparation-requests
   (network [shared-assignments trials]
-    (define requests)
-    (harbor:prepare shared-assignments trials requests)
-    requests))
+    (let-cell [requests]
+      (harbor:prepare shared-assignments trials requests)
+      requests)))
 
 (define harbor:grading-requests
   (network [trials assessments]
-    (define requests)
-    (harbor:grade trials assessments requests)
-    requests))
+    (let-cell [requests]
+      (harbor:grade trials assessments requests)
+      requests)))
 
 ;; Trials and graded outcomes enrich the same assignment facts.
 (define evaluation:assignment-protocol

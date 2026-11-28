@@ -43,7 +43,7 @@
                     (session/create-session {:id (random-uuid) :run-id (random-uuid)
                                              :native-extensions [primitives/session-extension application/session-extension]})
                     (session/session-extension
-                     {:id :probe :files {"probe.lain" (str "(define definition-one) (define result " source ")")}}))
+                     {:id :probe :files {"probe.lain" (str "(define definition-one (let-cell [port] port)) (define result " source ")")}}))
           active (publication/publish compiled 'definition-one 1 :active 'definition-one)
           actual (observation/base (session/binding-value active 'result))
           expected (if (.contains source "250") 12 20)]

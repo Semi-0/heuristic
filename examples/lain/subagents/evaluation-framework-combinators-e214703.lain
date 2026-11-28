@@ -18,14 +18,14 @@
 
 ;; Pure policies supplied by the session extension. Handlers outside this network
 ;; execute requests, return observations, and own receipts and process cleanup.
-(define harbor:observe-context)
-(define harbor:observe-assessment)
-(define harbor:prepare)
-(define harbor:grade)
-(define evaluation:assignment-trials)
-(define evaluation:assessment-updates)
-(define evaluation:trial-execution)
-(define evaluation:runnable-assignments)
+(define harbor:observe-context (let-cell [port] port))
+(define harbor:observe-assessment (let-cell [port] port))
+(define harbor:prepare (let-cell [port] port))
+(define harbor:grade (let-cell [port] port))
+(define evaluation:assignment-trials (let-cell [port] port))
+(define evaluation:assessment-updates (let-cell [port] port))
+(define evaluation:trial-execution (let-cell [port] port))
+(define evaluation:runnable-assignments (let-cell [port] port))
 
 (define harbor:trial-contexts
   (network [trials observations]
@@ -34,21 +34,21 @@
 
 (define harbor:trial-assessments
   (network [trials observations]
-    (define assessments)
-    (harbor:observe-assessment trials observations assessments)
-    assessments))
+    (let-cell [assessments]
+      (harbor:observe-assessment trials observations assessments)
+      assessments)))
 
 (define harbor:preparation-requests
   (network [shared-assignments trials]
-    (define requests)
-    (harbor:prepare shared-assignments trials requests)
-    requests))
+    (let-cell [requests]
+      (harbor:prepare shared-assignments trials requests)
+      requests)))
 
 (define harbor:grading-requests
   (network [trials assessments]
-    (define requests)
-    (harbor:grade trials assessments requests)
-    requests))
+    (let-cell [requests]
+      (harbor:grade trials assessments requests)
+      requests)))
 
 ;; Assignments are shared facts with stable IDs, user order, and evaluation results.
 ;; Results enrich the matching assignment; they never replace the user's order.

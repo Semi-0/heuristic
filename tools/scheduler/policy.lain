@@ -1,5 +1,5 @@
 ;; One coherent observation; effects are interpreted after session advancement.
-(define observation)
+(define observation (let-cell [port] port))
 (define decide
   (network [o]
     (if (field o "notified") "done"

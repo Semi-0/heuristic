@@ -233,7 +233,7 @@
     (try
       (host/extend! owner (soul/extension owner (atom [])))
       (host/extend! owner (model/declaration root "test/fixtures/operator-examples-base.lain" {}))
-      (host/extend-source! owner "(define port-target)
+      (host/extend-source! owner "(define port-target (let-cell [port] port))
                                  (define memory-port (data:record :value (cell:reference port-target)))
                                  (define port-environment (lexical-child (extend-env (empty-env) (env:reference-slot \"memory-port\" (cell:reference memory-port)))))")
       (let [e (read-value owner 'port-environment)]

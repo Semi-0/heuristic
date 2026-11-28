@@ -40,7 +40,7 @@
             "(define margin" i " (- usable" i " order-quantity-" i "))\n"
             "(define fill" i " (>= margin" i " 0))\n"
             "(-> usable" i " observed-usable-" i ")\n(-> margin" i " observed-margin-" i ")\n(-> fill" i " observed-fulfillment-" i ")\n")
-       "(define open-usable)\n(-> open-usable observed-usable-1)\n")
+       "(let-cell [open-usable] (-> open-usable observed-usable-1))\n")
      (if (= i 1)
        "(-> (str \"Total=\" total1 \"; damage unknown; usable and fulfillment unresolved.\") user-output-1)\n"
        "(-> (str \"Usable=\" usable2 \"; margin=\" margin2 \"; fulfillment=\" fill2) user-output-2)\n"))))

@@ -2,7 +2,7 @@
 (load-lain "lib/behavior-core.lain")
 
 (define m (model))
-(define ask-event)
+(define ask-event (let-cell [port] port))
 (define ask (data:get :content ask-event))
 (define active-round (data:get :round ask-event))
 (define conversation-events (behavior:source))
@@ -14,20 +14,20 @@
 (define written-code (behavior:latest-value source-prefixes (seq:empty)))
 (define model-result (model:output m))
 (-> (event:point (data:get :response-sequence model-result) (data:get :response-sequence model-result) (data:get :text model-result)) source-events)
-(define user-output-1)
-(define observed-value-1)
+(define user-output-1 (let-cell [port] port))
+(define observed-value-1 (let-cell [port] port))
 (define observed-1 (struct :result observed-value-1))
-(define trigger-1)
+(define trigger-1 (let-cell [port] port))
 (-> (event:point "assistant-1" 2 (data:record :role "assistant" :content user-output-1)) conversation-events)
-(define user-output-2)
-(define observed-value-2)
+(define user-output-2 (let-cell [port] port))
+(define observed-value-2 (let-cell [port] port))
 (define observed-2 (struct :result observed-value-2))
-(define trigger-2)
+(define trigger-2 (let-cell [port] port))
 (-> (event:point "assistant-2" 4 (data:record :role "assistant" :content user-output-2)) conversation-events)
-(define user-output-3)
-(define observed-value-3)
+(define user-output-3 (let-cell [port] port))
+(define observed-value-3 (let-cell [port] port))
 (define observed-3 (struct :result observed-value-3))
-(define trigger-3)
+(define trigger-3 (let-cell [port] port))
 (-> (event:point "assistant-3" 6 (data:record :role "assistant" :content user-output-3)) conversation-events)
 (define role-cell
   "You are the agent inside a live Lain environment. Read the user's question from ask. Write executable Lain source that constructs the computation and connects its answer to the provided output cells. Source is admitted into a lexical child inheriting these bindings. Return only Lain source, without Markdown fences.")
@@ -38,8 +38,8 @@
   "Lain uses prefix arithmetic and connected expressions. (define name expression) binds a cell. + adds, - subtracts, * multiplies, / divides. A nested call composes computations. (-> value target) connects cells. (struct :key cell) exposes a cell as a named slot. ((slot :key) object) accesses that slot, including as a connection target. text:format constructs text from a template and connected values. Unknown cells wait for information. The following examples are documentation only.")
 (define examples-cell
   "Arithmetic: (define demo-number (- 9 (* 2 3))) produces 3.
-Observation: given (define demo-result) and (define demo-observed (struct :result demo-result)), (-> demo-number ((slot :result) demo-observed)) attaches that number to the result slot.
-Reply: given (define demo-output), (-> (text:format \"The answer is %s.\" demo-number) demo-output) writes text derived from the computed number.
+Observation: given (define demo-result (let-cell [port] port)) and (define demo-observed (struct :result demo-result)), (-> demo-number ((slot :result) demo-observed)) attaches that number to the result slot.
+Reply: given (define demo-output (let-cell [port] port)), (-> (text:format \"The answer is %s.\" demo-number) demo-output) writes text derived from the computed number.
 Reading history: history is a vector of role/content records maintained by the parent reducer. It contains real user inputs and output-cell replies, not model source or thinking.")
 (define context:include (network [name] (network [names] (seq:append names name))))
 (define contribute (network [name reference] (network [environment] (extend-env environment (env:reference-slot name reference)))))

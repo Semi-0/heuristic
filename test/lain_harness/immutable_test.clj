@@ -120,7 +120,7 @@
                                           :files {"lib/ports.lain" (slurp (str root "/lib/ports.lain"))
                                                   "receipts.lain" "(load-lain \"lib/ports.lain\")
                                                     (define premise-reference (source:new :test))
-                                                    (define receipt-first) (define receipt-second) (define receipt-third)"}}))
+                                                    (define receipt-first (let-cell [port] port)) (define receipt-second (let-cell [port] port)) (define receipt-third (let-cell [port] port))"}}))
         premise (data/payload (session/binding-value initial 'premise-reference))
         declaration (fn [id text]
                       {:id id :target child :support-cell premise :files {(str id ".lain") text}})
@@ -148,7 +148,7 @@
         (let [initial (host/current-session owner)
               source (str "(define admission-child (lexical-child (empty-env)))\n"
                           "(define admission-plan (incremental-compile-form :generated \"(define admitted-result 42)\" admission-child nil))\n"
-                          "(define declaration (data:get :declaration admission-plan))\n(define admission-receipt)")
+                          "(define declaration (data:get :declaration admission-plan))\n(define admission-receipt (let-cell [port] port))")
               prepared (session/extend-session initial
                                                (session/session-extension {:id :plan :files {"plan.lain" source}}))
               declaration (connected/payload (data/payload (session/binding-value prepared 'declaration)))
@@ -187,7 +187,7 @@
                                                        "(load-lain \"lib/observation-example.lain\")
                                   (define observed-child (lexical-child (empty-env)))
                                   (define notes (observe-review-notes observed-child))
-                                  (define facts (lexical:bindings observed-child))\n(define observation-receipt)\n(define observation-support (source:new :observation))"}}))
+                                  (define facts (lexical:bindings observed-child))\n(define observation-receipt (let-cell [port] port))\n(define observation-support (source:new :observation))"}}))
             e (data/payload (session/binding-value prepared 'observed-child))
             support (data/payload (session/binding-value prepared 'observation-support))
             declaration {:id :observed-addition :target (:id e) :frames (:frames e)
@@ -294,7 +294,7 @@
          (define logic-empty-and (and))
          (define logic-empty-or (or))
          (define logic-not (not false))
-         (define logic-pending)
+         (define logic-pending (let-cell [port] port))
          (define logic-decided (and false logic-pending))
          (define cond-selected (cond [true 7 else logic-pending]))
          (define string-capacity (data:get :status (queue:offer (queue:empty \"bad\") (data:record :id :a :payload 7))))

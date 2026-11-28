@@ -557,7 +557,7 @@ The following examples use the production Compiler-2 source/session loader. Run 
 | --- | --- | --- |
 | Declare a reusable network | `(define f (network [x] (+ x 1)))` | A name belongs in `define`, not between `network` and its parameters. |
 | Return a result | The final body expression | There is no separate output vector after the parameters. Return `(list ...)` when those cell connections form the intended interface. |
-| Introduce unknown endpoints | `(define input)`, `(def-cells a b)`, `(let-cell [local] ...)` | An unresolved cell is information not yet available, not an empty list or an assignment variable. |
+| Introduce unknown endpoints | `(let-cell [local] ...)` for local wiring, `(define input (let-cell [port] port))` for an externally addressed input | An unresolved cell is information not yet available, not an empty list or an assignment variable. |
 | Select a result | `(if condition then-expression else-expression)` | Exactly three operands; use a boolean-valued predicate. |
 | Select among ordered cases | `(cond [test expression test expression else expression])` | One vector of pairs; the default is bare `else`, not Clojure's `:else`. |
 | Install guarded topology | `(when guard body ...)` | It waits for usable information, not specifically boolean true. |
@@ -619,17 +619,17 @@ answer
 This is an intentional distinction from ordinary Lisp `when`:
 
 ```clojure
-(define answer)
-(when false (-> 42 answer))
-answer
+(let-cell [answer]
+  (when false (-> 42 answer))
+  answer)
 ;; 42: false is usable information, so the body can be installed.
 ```
 
 To require a boolean true before installation, gate that information explicitly. The two-argument `switch` takes the value first and the condition second:
 
 ```clojure
-(define enabled)
-(define answer)
+(define enabled (let-cell [port] port))
+(define answer (let-cell [port] port))
 (when (switch true enabled)
   (-> 42 answer))
 answer
@@ -655,7 +655,9 @@ Partial information is not the same as delayed construction. A struct can have a
 
 ```clojure
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
-(def-cells enabled left-reading right-reading)
+(define enabled (let-cell [port] port))
+(define left-reading (let-cell [port] port))
+(define right-reading (let-cell [port] port))
 (define left (struct :inner (struct :reading left-reading)))
 (define right (struct :inner (struct :reading right-reading)))
 (define selected (if enabled left right))
@@ -686,7 +688,7 @@ The inactive right value does not leak into the selected result. The selected ow
 
 ```clojure
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
-(define incoming)
+(define incoming (let-cell [port] port))
 (define object (struct :nested (struct :value incoming)))
 (-> 42 (|> object (slot :nested) (slot :value)))
 (define answer incoming)
@@ -699,10 +701,11 @@ Likewise, compatible partial components can share endpoints:
 ```clojure
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
 (define position-of (slot :position))
-(def-cells left right)
-(<-> (position-of left) (position-of right))
-(-> 7 (position-of left))
-(define answer (position-of right))
+(define answer
+  (let-cell [left right]
+    (<-> (position-of left) (position-of right))
+    (-> 7 (position-of left))
+    (position-of right)))
 answer
 ;; 7
 ```
@@ -713,11 +716,12 @@ For a mathematical relation, make its justified directions explicit:
 
 ```clojure
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
-(def-cells a b c)
-(constraint:+ a b c)
-(-> 3 b)
-(-> 5 c)
-(define answer a)
+(define answer
+  (let-cell [a b c]
+    (constraint:+ a b c)
+    (-> 3 b)
+    (-> 5 c)
+    a))
 answer
 ;; 2, inferred through the declared reverse arithmetic relationship.
 ```
@@ -740,7 +744,7 @@ A pending field is therefore indistinguishable from a field that will never arri
 
 ```clojure
 (load-lain "propagators/compiler_2/runtime/lain/combinator.lain")
-(define pending)
+(define pending (let-cell [port] port))
 (define object (struct :a 1 :b pending))
 (define waiting (|> object (slot :b)))
 (define absent (|> object (slot :c)))
@@ -784,7 +788,7 @@ The displayed list notation describes connected cons cells, not a request to cop
 
 ```clojure
 (load-lain "propagators/compiler_2/runtime/lain/list.lain")
-(define tail)
+(define tail (let-cell [port] port))
 (define xs (cons 1 tail))
 (define doubled (map-list (network [x] (* x 2)) xs))
 (define first-value (car doubled))
@@ -809,7 +813,7 @@ This is information arriving at a previously unresolved tail, not an initializat
 ```clojure
 (define add-two (network [x y] (+ x y)))
 (define closed-sum (apply add-two (list 2 3)))
-(define tail)
+(define tail (let-cell [port] port))
 (define answer (apply add-two (cons 2 (cons 3 tail))))
 answer
 ;; closed-sum = 5, answer = 5, even though tail is unresolved.
@@ -821,7 +825,7 @@ A variadic network receives the live remaining list:
 
 ```clojure
 (define rest-of (network [head & tail] tail))
-(define later)
+(define later (let-cell [port] port))
 (define arguments (cons 9 later))
 (define remaining (apply rest-of arguments))
 (define answer (car remaining))
@@ -959,7 +963,7 @@ Each applied history stage owns bounded recording state. Reevaluating the same p
   :propagators.compiler-2.runtime.one-time-network/trace-environment
   0)
 (load-lain "propagators/compiler_2/runtime/lain/network_trace.lain" 0)
-(define node-to-inspect)
+(define node-to-inspect (let-cell [port] port))
 (define answer (trace-network-once node-to-inspect :upstream))
 answer
 ;; Pending until node-to-inspect receives a valid node identity.
@@ -994,7 +998,7 @@ Run the following Clojure examples in order from the `datalog-research` reposito
   (s/session-extension
     {:id :guide/program
      :files {"guide-main.lain"
-             "(define input) (define result (+ input 1))"}}))
+             "(define input (let-cell [port] port)) (define result (+ input 1))"}}))
 (def s1 (s/extend-session s0 program))
 (assert (value/nothing? (data/payload (s/binding-value s1 'result))))
 
@@ -1087,14 +1091,14 @@ For async capabilities, declare `:dependencies` using `session.dependencies/call
 
 - A non-nil extension `:id` identifies its declaration. Retrying the same recorded declaration is a no-op; reusing the ID with different parts fails. Retain primitive/dependency declaration values for equal retries rather than constructing new function identities.
 - Primitive names, dependency IDs, file identities, and prepared imports are conflict-checked. A new extension ID does not authorize replacing an existing source file's text or a value-bearing binding. Compile/propagation failure leaves the original immutable session intact.
-- A bare `(define name)` can receive information later. Ordinary `define` adds information; it does not overwrite an earlier incompatible value. Use source-publication revisions for changing external values, and opt-in support/premise policies for retractable definitions.
+- A public endpoint defined with `(define input (let-cell [port] port))` can receive information later. Ordinary `define` adds information; it does not overwrite an earlier incompatible value. Use source-publication revisions for changing external values, and opt-in support/premise policies for retractable definitions.
 - `s/rerun` rebuilds the current declaration catalog with a fresh run ID; it does not edit that catalog. A live owner uses `host/rerun!` so old callbacks and resources are retired. For a changed catalog, construct a candidate with the same session ID and a fresh run ID, then use `host/replace!`; replacement validates the candidate and retires the old run before activation.
 - Advanced scoped extensions use `:target` for a live lexical frame and optionally `:support-cell` for definition support. `:cells` and `:frames` declare required structure. These identities must belong to canonical topology; resolve scoped bindings with `s/scoped-binding-cell`, not a materialized environment map.
 - Named application interfaces are available through `s/interfaces` and `s/interface-cell`. Use these declared connections when composing with an application boundary rather than inventing node IDs. `s/source-result-cell` exposes the retained result cell for a source identity.
 
 The design question is: **which new relationship should join this live network, and which existing endpoints should it retain?** Extend declarations for new topology, advance inputs for new information, and use the host for committed external effects.
 
-Source authority: [session implementation](../compiler_2/session.clj), [operator builders](../compiler_2/session/operators.clj), [file preparation](../compiler_2/session/files.clj), [live host](../compiler_2/session/host.clj), and [immutable session contracts](immutable-compiler-sessions.md). On 2026-11-07, all four Clojure blocks in this section were executed in order against the production implementation and their assertions passed. This verification is separate from the historical counts in the next section. The existing `clojure -M:test compiler-session` contract suite also passed: 92 tests, 935 assertions, zero failures/errors.
+Source authority: [session implementation](../compiler_2/session.clj), [operator builders](../compiler_2/session/operators.clj), [file preparation](../compiler_2/session/files.clj), [live host](../compiler_2/session/host.clj), and [immutable session contracts](immutable-compiler-sessions.md). On 2026-11-07, the four Clojure blocks in the then-current version of this section were executed in order against the production implementation and their assertions passed. This verification is separate from the historical counts in the next section. The existing `clojure -M:test compiler-session` contract suite also passed: 92 tests, 935 assertions, zero failures/errors.
 
 ## 25. Verification and Source References
 

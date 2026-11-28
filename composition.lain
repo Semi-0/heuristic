@@ -1,8 +1,12 @@
 ;; Three external actors, connected by one reactive harness network.
 ;; Ports expose independently available slots; unresolved operations stay partial.
 ;; Outside session handlers own transport I/O. Observation/replay never launches Pi.
-(def-cells session-context harbor-transport user-transport pi-transport)
-(def-cells recorded-observations inspection)
+(define session-context (let-cell [port] port))
+(define harbor-transport (let-cell [port] port))
+(define user-transport (let-cell [port] port))
+(define pi-transport (let-cell [port] port))
+(define recorded-observations (let-cell [port] port))
+(define inspection (let-cell [port] port))
 (define backend :observe)
 
 ;; Actor ports: Harbor trials/outputs, user commands/status, Pi operations/responses.

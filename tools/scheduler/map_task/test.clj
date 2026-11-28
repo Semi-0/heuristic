@@ -31,13 +31,13 @@
 (def report (atom {}))
 (try
   (host/extend! owner (adapter/extension m))
-  (host/extend! owner (extension :test/start "(define clock (clock:shared 0.2)) (define tasks) (define result (runtime clock tasks))"))
+  (host/extend! owner (extension :test/start "(define clock (clock:shared 0.2)) (define tasks (let-cell [port] port)) (define result (runtime clock tasks))"))
   (await! #(>= @(:tick m) 2) :empty-clock)
   (assert (empty? @(:scopes m)))
-  (host/extend! owner (extension :test/a "(define tail-a) (-> (cons (task:record \"a\" \"run-1\" 999999) tail-a) tasks)"))
+  (host/extend! owner (extension :test/a "(define tail-a (let-cell [port] port)) (-> (cons (task:record \"a\" \"run-1\" 999999) tail-a) tasks)"))
   (await! #(>= (get-in @state [:observations "a"] 0) 2) :waiting-a)
   (let [late (first (vals @(:subscribers m)))
-        replay (extension :test/b "(define tail-b) (-> (cons (task:record \"b\" \"run-1\" 0) tail-b) tail-a)")]
+        replay (extension :test/b "(define tail-b (let-cell [port] port)) (-> (cons (task:record \"b\" \"run-1\" 0) tail-b) tail-a)")]
     (swap! state update :terminal conj "a")
     (await! #(and (empty? @(:scopes m)) (contains? @(:completed m) ["a" "run-1"])) :retired-a)
     (assert (= :closed (late 999999)) "Late child callback must be rejected")
@@ -48,9 +48,9 @@
     (host/extend! owner replay)
     (await! #(contains? @(:completed m) ["b" "run-1"]) :deadline-b))
   ;; Duplicate acknowledged task: no child, no additional notification.
-  (host/extend! owner (extension :test/duplicate "(define tail-c) (-> (cons (task:record \"a\" \"run-1\" 999999) tail-c) tail-b)"))
+  (host/extend! owner (extension :test/duplicate "(define tail-c (let-cell [port] port)) (-> (cons (task:record \"a\" \"run-1\" 999999) tail-c) tail-b)"))
   (swap! state update :terminal conj "c")
-  (host/extend! owner (extension :test/c "(define tail-d) (-> (cons (task:record \"c\" \"run-1\" 999999) tail-d) tail-c)"))
+  (host/extend! owner (extension :test/c "(define tail-d (let-cell [port] port)) (-> (cons (task:record \"c\" \"run-1\" 999999) tail-d) tail-c)"))
   (await! #(contains? @(:completed m) ["c" "run-1"]) :added-c)
   (assert (= 3 (:created @(:metrics m))))
   (assert (= 3 (:retired @(:metrics m))))

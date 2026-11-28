@@ -3,7 +3,7 @@
 ;; Temporal behavior experiment: opt in with (load-lain "lib/behavior.lain").
 ;; Its native import declares the evaluator for this immutable session.
 ;;
-;; (define input-cell)
+;; (define input-cell (let-cell [port] port))
 ;; (define sums (scan input-cell +))
 ;; (define with-initial (scan input-cell + 0))
 ;; (define digits (scan input-cell (network [acc next] (+ (* acc 10) next))))

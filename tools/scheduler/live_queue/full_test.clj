@@ -29,11 +29,11 @@
       (host/extend! owner (bridge/extension root metrics callback))
       (host/extend! owner
                     (declaration :scheduler/start
-                                 "(define clock (clock:every 1)) (define tasks) (define notifications (runtime clock :queue :codex tasks))"))
+                                 "(define clock (clock:every 1)) (define tasks (let-cell [port] port)) (define notifications (runtime clock :queue :codex tasks))"))
       (await! owner #(>= (get @metrics :ticks 0) 2))
       (assert (zero? (get @metrics :observe 0)) "Empty open queue must not observe a task")
       (let [task (declaration :scheduler/add
-                              (str "(define tail) (-> (cons " task-source " tail) tasks)"))]
+                              (str "(define tail (let-cell [port] port)) (-> (cons " task-source " tail) tasks)"))]
         (host/extend! owner task)
         (await! owner #(pos? (get @metrics :observe 0)))
         (if (= pass 1)

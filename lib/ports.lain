@@ -2,6 +2,6 @@
 ;; No session coordinator or host initialization transaction is involved.
 (define source:new
   (network [initial]
-           (define value)
-           (source:initialize value initial)
-           (cell:reference value)))
+    (let-cell [value]
+      (source:initialize value initial)
+      (cell:reference value))))

@@ -1,9 +1,9 @@
 (load-lain "soul-refined.lain")
-(define phase)
-(define ask)
-(define analysis-record)
+(define phase (let-cell [port] port))
+(define ask (let-cell [port] port))
+(define analysis-record (let-cell [port] port))
 (load-lain "experiments/phase-orchestration.lain")
-(define raw-input-text)
+(define raw-input-text (let-cell [port] port))
 (define input-text (cell:first raw-input-text))
 (define base-environment (lexical-child (empty-env)))
 (define selected (seq:of "phase" "analysis-record" "generalization-record" "inspection-feedback" "ask"))
@@ -21,7 +21,7 @@
     (environment:snapshot v4 selected))))
 (define observed (make-view (cell:reference base-environment)
  (experiment:context "generalization" input-text "No interface yet." (data:record :status :not-started) "Test question")))
-(define mutable-source)
+(define mutable-source (let-cell [port] port))
 (define mutable-environment
   (extend-env base-environment (env:reference-slot "mutable-source" (cell:reference mutable-source))))
 (define once-snapshot

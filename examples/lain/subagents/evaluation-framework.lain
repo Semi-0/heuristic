@@ -4,25 +4,25 @@
 
 ;; Public actor accessors. Their slot-backed implementations must preserve partial
 ;; fields and connect cells bidirectionally without unwrapping the actor value.
-(define assignments)
-(define on-going-assignment)
-(define assignment-result)
-(define evaluation:specification)
-(define evaluation:observations)
-(define evaluation:requests)
-(define evaluation:trials)
-(define evaluation:assessments)
+(define assignments (let-cell [port] port))
+(define on-going-assignment (let-cell [port] port))
+(define assignment-result (let-cell [port] port))
+(define evaluation:specification (let-cell [port] port))
+(define evaluation:observations (let-cell [port] port))
+(define evaluation:requests (let-cell [port] port))
+(define evaluation:trials (let-cell [port] port))
+(define evaluation:assessments (let-cell [port] port))
 
 ;; Pure policy interfaces. Requests are data for outside Harbor handlers;
 ;; preparation and grading observations return through evaluation:observations.
-(define evaluation:preparation-demand)
-(define evaluation:trial-contexts)
-(define evaluation:eligible-work)
-(define evaluation:execution-evidence)
-(define evaluation:grading-demand)
-(define evaluation:assessment-facts)
-(define evaluation:assignment-updates)
-(define evaluation:request-facts)
+(define evaluation:preparation-demand (let-cell [port] port))
+(define evaluation:trial-contexts (let-cell [port] port))
+(define evaluation:eligible-work (let-cell [port] port))
+(define evaluation:execution-evidence (let-cell [port] port))
+(define evaluation:grading-demand (let-cell [port] port))
+(define evaluation:assessment-facts (let-cell [port] port))
+(define evaluation:assignment-updates (let-cell [port] port))
+(define evaluation:request-facts (let-cell [port] port))
 
 ;; The public actor and its internal cells describe the same information.
 (define evaluation:interface

@@ -32,13 +32,13 @@
          [:nested "(network [x] (list (list x (+ x 1))))"]
          [:shape "(if (= definition-one 1) (network [x] (list x x)) (network [x] (list x)))"]]]
   (try
-    (let [source (str "(define definition-one)\n(define f (ttms-premise-closure " body
+    (let [source (str "(define definition-one (let-cell [port] port))\n(define f (ttms-premise-closure " body
                       " definition-one))\n(define result (f 5))\n"
                       (if (= :nested kind)
                         "(define accessed-list (car result))\n(define left (car accessed-list))\n(define right (car (cdr accessed-list)))"
                         (if (= :flat kind)
                           "(define left (car result))\n(define right (car (cdr result)))"
-                          "(define left (car result))\n(define right)")))
+                          "(define left (car result))\n(define right (let-cell [port] port))")))
           declaration (session/session-extension {:id kind :files {"repro.lain" source}})
           initial (session/extend-session
                    (session/create-session {:id (random-uuid) :run-id (random-uuid)

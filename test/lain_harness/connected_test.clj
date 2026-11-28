@@ -20,7 +20,7 @@
                           'reference (data/reference-operator)
                           'input (data/input-operator)}
              :files {"ports.lain"
-                     "(define target) (define later)
+                     "(define target (let-cell [port] port)) (define later (let-cell [port] port))
                       (export :example \"ready\" :observation (reference target))
                       (export :example later :observation (reference target))
                       (-> 17 (input (reference target)))"}}))
@@ -34,7 +34,7 @@
     (let [conflicting (session/extend-session ready
                                               (session/session-extension
                                                {:id :conflict :files {"conflict.lain"
-                                                                      "(define other) (export :example \"ready\" :observation (reference other))"}}))]
+                                                                      "(define other (let-cell [port] port)) (export :example \"ready\" :observation (reference other))"}}))]
       (is (thrown? Exception (session/interfaces conflicting))))))
 
 (deftest selected-lain-feedback-stops-without-a-host
@@ -48,7 +48,7 @@
                                  'field (primitive data/field-value)
                                  'record (primitive data/record-value)}
                     :files {"counter.lain"
-                            "(define state)
+                            "(define state (let-cell [port] port))
                              (initialize state (record :version 0))
                              (define next (if (< (field :version state) 3)
                                (record :version (+ 1 (field :version state))) state))
@@ -73,7 +73,7 @@
                     :primitives {'initialize (data/initialize-operator)
                                  'ref (data/reference-operator)
                                  'record (primitive data/record-value)}
-                    :files {"state.lain" "(define state) (define receipt)
+                    :files {"state.lain" "(define state (let-cell [port] port)) (define receipt (let-cell [port] port))
                                          (initialize state (record :version 0 :value 1))"}}))
         id (session/binding-cell declared 'state)
         receipt (session/binding-cell declared 'receipt)
@@ -125,7 +125,7 @@
                   (session/session-extension
                    {:id :wired-initialization
                     :primitives {'initialize (data/initialize-operator)}
-                    :files {"initialize.lain" "(define seed) (define target) (initialize target seed)"}}))
+                    :files {"initialize.lain" "(define seed (let-cell [port] port)) (define target (let-cell [port] port)) (initialize target seed)"}}))
         seed (session/binding-cell declared 'seed)
         target (session/binding-cell declared 'target)
         first-value {:version 0 :payload :first}
@@ -148,7 +148,7 @@
                   {:id :boolean-propagators
                    :primitives {'initialize (data/initialize-operator)
                                 'and (data/and-operator) 'or (data/or-operator)}
-                   :files {"logic.lain" "(define left) (define right)
+                   :files {"logic.lain" "(define left (let-cell [port] port)) (define right (let-cell [port] port))
                                          (initialize left false)
                                          (define conjunction (and left right))
                                          (define disjunction (or left right))"}}))

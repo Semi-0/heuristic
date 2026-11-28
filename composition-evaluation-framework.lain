@@ -3,8 +3,10 @@
 (load-lain "propagators/compiler_2/runtime/lain/tracers.lain")
 (load-lain "/home/lain/projects/lain-workspace/examples/lain/subagents/evaluation-framework.lain")
 
-(def-cells user evaluation-framework runtime)
-(define execute-assignment)
+(define user (let-cell [port] port))
+(define evaluation-framework (let-cell [port] port))
+(define runtime (let-cell [port] port))
+(define execute-assignment (let-cell [port] port))
 (make-evaluation-framework evaluation-framework)
 
 (<-> (assignments user)

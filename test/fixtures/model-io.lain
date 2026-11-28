@@ -1,12 +1,12 @@
 (load-lain "examples/lain/model-refined-demo.lain")
 
-(define input)
+(define input (let-cell [port] port))
 (-> input (model:input m))
 (define output (model:output m))
 (define thinking (model:thinking m))
 (define actions (model:action m))
 
 (define other (model))
-(define other-input)
+(define other-input (let-cell [port] port))
 (-> other-input (model:input other))
 (define other-output (model:output other))

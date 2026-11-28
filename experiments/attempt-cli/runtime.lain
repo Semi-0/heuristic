@@ -1,6 +1,6 @@
 (load-lain "soul-refined.lain")
 (load-lain "lib/behavior-core.lain")
-(define spec)
+(define spec (let-cell [port] port))
 (define agent (model))
 (define requests (behavior:source))
 (-> (behavior:latest-value requests) (model:input agent))
@@ -13,9 +13,9 @@
 (define workspace (lexical-child bindings))
 
 ;; The invoice operator publishes the named observation only when requested.
-(define invoice120)
-(define policy)
-(define target-count)
+(define invoice120 (let-cell [port] port))
+(define policy (let-cell [port] port))
+(define target-count (let-cell [port] port))
 (define marginal (ttms:ttms-premise-closure (network [n] (if (ttms:<= n 100)
   (ttms:* n 200) (ttms:+ 20000 (ttms:* 150 (ttms:- n 100))))) policy))
 (define whole (ttms:ttms-premise-closure (network [n] (if (ttms:<= n 100) (ttms:* n 200) (ttms:* n 150))) policy))

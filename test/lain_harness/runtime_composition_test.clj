@@ -76,7 +76,7 @@
 (deftest premise-publication-uses-an-existing-lain-endpoint
   (let [owner (host/open! (model/compiler))]
     (try
-      (host/extend-source! owner "(define observation)")
+      (host/extend-source! owner "(define observation (let-cell [port] port))")
       (let [reference (session/binding-cell (host/current-session owner) 'observation)]
         (is (= reference (premises/source! owner reference 7)))
         (is (= 7 (read-value owner 'observation)))

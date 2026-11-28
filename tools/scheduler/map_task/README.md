@@ -10,10 +10,10 @@ the public host API. No kernel changes and no deployment.
 
 ```lain
 (define clock (clock:shared 1))
-(define tasks)
+(define tasks (let-cell [port] port))
 (define notifications (runtime clock tasks))
 ;; A later session extension can supply an open queue prefix:
-(define later)
+(define later (let-cell [port] port))
 (-> (cons (task:record "example" "run-1" 100) later) tasks)
 ```
 

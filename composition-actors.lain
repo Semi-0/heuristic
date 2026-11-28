@@ -3,27 +3,27 @@
 ;; unresolved. They must preserve partial fields, not unwrap complete actor values.
 
 ;; Harbor: trial inputs and execution reports. Harbor alone grades correctness.
-(define harbor:make)
-(define harbor:trials)
-(define harbor:report)
+(define harbor:make (let-cell [port] port))
+(define harbor:trials (let-cell [port] port))
+(define harbor:report (let-cell [port] port))
 
 ;; Interactive user: commands in, state/receipts/diagnostics out.
-(define user:make)
-(define user:commands)
-(define user:feedback)
+(define user:make (let-cell [port] port))
+(define user:commands (let-cell [port] port))
+(define user:feedback (let-cell [port] port))
 
 ;; Pi/subagent runtime: intended requests in, observations/artifacts out.
-(define pi:make)
-(define pi:requests)
-(define pi:observations)
+(define pi:make (let-cell [port] port))
+(define pi:requests (let-cell [port] port))
+(define pi:observations (let-cell [port] port))
 
 ;; Coordination is a declaration of the internal harness, to be refined later
 ;; into ordered event accumulation, the pure FSM and the session effect boundary.
 ;; Its outputs are intentions and evidence; it never performs external I/O.
-(define subagent:coordinate)
-(define subagent:requests)
-(define subagent:feedback)
-(define subagent:report)
+(define subagent:coordinate (let-cell [port] port))
+(define subagent:requests (let-cell [port] port))
+(define subagent:feedback (let-cell [port] port))
+(define subagent:report (let-cell [port] port))
 
 ;; Connect domain ports without choosing their representation or transport.
 (define connect-actors
@@ -44,9 +44,9 @@
 ;; These interfaces will connect actor accessors to the session extension's
 ;; external effect/observation ports. Outside handlers own bridges, sockets/RPC,
 ;; child processes, receipts and cleanup; these declarations do not invoke them.
-(define harbor:interpret)
-(define user:interpret)
-(define pi:interpret)
+(define harbor:interpret (let-cell [port] port))
+(define user:interpret (let-cell [port] port))
+(define pi:interpret (let-cell [port] port))
 
 (define interpret-actors
   (network [backend session harbor user-input pi-runtime]
@@ -59,7 +59,7 @@
 ;; One session extension will supply the interpreter capabilities. Observation
 ;; mode leaves external work unresolved; recorded replay must use recorded facts
 ;; and must never resolve live handlers. Reopening this file launches no children.
-(def-cells session-context)
+(define session-context (let-cell [port] port))
 (define backend :observe)
 (define harbor (harbor:make :harbor))
 (define user-input (user:make :user-input))

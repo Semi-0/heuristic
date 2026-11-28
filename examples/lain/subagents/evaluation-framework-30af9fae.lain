@@ -4,25 +4,25 @@
 
 ;; Deferred provider and public protocol accessors. Harbor denotes a protocol
 ;; provider, not a process launch; outside handlers own preparation/grading I/O.
-(define harbor)
-(define assignments)
-(define on-going-assignment)
-(define assignment-result)
-(define evaluation:observations)
-(define evaluation:requests)
-(define evaluation:trials)
-(define evaluation:assessments)
+(define harbor (let-cell [port] port))
+(define assignments (let-cell [port] port))
+(define on-going-assignment (let-cell [port] port))
+(define assignment-result (let-cell [port] port))
+(define evaluation:observations (let-cell [port] port))
+(define evaluation:requests (let-cell [port] port))
+(define evaluation:trials (let-cell [port] port))
+(define evaluation:assessments (let-cell [port] port))
 
 ;; Pure relationships supplied by the session extension. Each connects focused
 ;; cells; implementations must not require a resolved whole actor or workflow.
-(define evaluation:assignment-trials)
-(define evaluation:assessment-updates)
-(define evaluation:trial-execution)
-(define evaluation:runnable-assignments)
-(define harbor:trial-contexts)
-(define harbor:trial-assessments)
-(define harbor:preparation-requests)
-(define harbor:grading-requests)
+(define evaluation:assignment-trials (let-cell [port] port))
+(define evaluation:assessment-updates (let-cell [port] port))
+(define evaluation:trial-execution (let-cell [port] port))
+(define evaluation:runnable-assignments (let-cell [port] port))
+(define harbor:trial-contexts (let-cell [port] port))
+(define harbor:trial-assessments (let-cell [port] port))
+(define harbor:preparation-requests (let-cell [port] port))
+(define harbor:grading-requests (let-cell [port] port))
 
 ;; Shared assignment facts constrain trials. Assessments constrain assignment
 ;; outcomes through updates to that same fact collection, not a second queue.

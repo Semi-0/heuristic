@@ -14,7 +14,7 @@
 (let [directory (first *command-line-args*)
       _ (when-not directory (throw (ex-info "Supply an evidence directory" {})))
       _ (.mkdirs (io/file directory))
-      code "(define subtotal) (define fee) (define result (* (+ subtotal (select (>= subtotal 250) 0 fee)) 0.08M))"]
+      code "(define subtotal (let-cell [port] port)) (define fee (let-cell [port] port)) (define result (* (+ subtotal (select (>= subtotal 250) 0 fee)) 0.08M))"]
   (with-open [writer (io/writer (io/file directory "propagation.log"))]
     (let [profiled (fn [operation]
                      (let [profile (debug/activation-profile)

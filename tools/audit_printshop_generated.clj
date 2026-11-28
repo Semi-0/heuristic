@@ -54,7 +54,7 @@
                                                       n (fn [& xs] (if-let [bad (first (filter value/unusable? xs))]
                                                                      bad (apply f xs)))))]))}))
         source (str (apply str (for [n (concat (keys pricing) '[quantity-1 rush-1 member-1 discount-cap-1 question-1 shared-rule user-output-1 self-check-1])]
-                                 (str "(define " n ")")))
+                                 (str "(define " n " (let-cell [port] port))")))
                     "(define pricing (struct " (str/join " " (for [n (keys pricing)] (str ":" n " " n))) "))"
                     "(define order-1 (struct :quantity quantity-1 :rush? rush-1 :member? member-1 :discount-cap discount-cap-1 :question question-1))"
                     (apply str (for [f fields] (str "(define observed-" (name f) "-1)")))

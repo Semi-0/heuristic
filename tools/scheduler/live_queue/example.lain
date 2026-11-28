@@ -1,6 +1,6 @@
 (load-lain "runtime.lain")
 (define clock (clock:every 1))
-(define later-tasks)
+(define later-tasks (let-cell [port] port))
 (define tasks
   (cons (task:record "a" 100)
     (cons (task:record "b" 6) later-tasks)))

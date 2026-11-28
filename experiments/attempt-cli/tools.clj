@@ -37,7 +37,7 @@
 (defn submit! [owner frame id body]
   (let [{:keys [form error]} (read-draft body)]
     (if error {:error error :admitted false}
-      (if-not (and (list? form) (= '(define price) (take 2 form)) (= 3 (count form))
+      (if-not (and (list? form) (= ['define 'price] (take 2 form)) (= 3 (count form))
                    (list? (last form)) (= 'network (first (last form))))
         {:error "Expected one (define price (network [n] ...))" :admitted false}
         (do (extend-source! owner frame [id :definition] body)
